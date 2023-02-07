@@ -1,11 +1,11 @@
-import { AuthStatus } from "./sdk/constant/AuthStatus";
-import { GrantType } from "./sdk/constant/grantType";
-import { AuthorizationCode } from "./sdk/oauth2/AuthorizationCode";
-import { ClientCredentials } from "./sdk/oauth2/ClientCredentials";
-import { PKCE } from "./sdk/oauth2/PCKE";
-import { createSession, parseJWT } from "./sdk/utils/Utils";
+import AuthStatus from "./sdk/constant/AuthStatus";
+import GrantType from "./sdk/constant/grantType";
+import AuthorizationCode from "./sdk/oauth2/AuthorizationCode";
+import ClientCredentials from "./sdk/oauth2/ClientCredentials";
+import PKCE from "./sdk/oauth2/PCKE";
+import { parseJWT } from "./sdk/utils/Utils";
 
-export default class KindleClient {
+export default class KindeClient {
 
     constructor(options) {
         const {
@@ -13,6 +13,7 @@ export default class KindleClient {
           clientId,
           clientSecret,
           redirectUri,
+          callbackUri,
           logoutRedirectUri,
           grantType,
         } = options;
@@ -42,7 +43,7 @@ export default class KindleClient {
         }
 
         if (![GrantType.CLIENT_CREDENTIALS, GrantType.AUTHORIZATION_CODE, GrantType.PKCE].includes(grantType)) {
-            throw new Error("Please provide a valid grant_type");
+            throw new Error("Please provide correct grant_type");
         }
         this.grantType = grantType;
     
@@ -50,12 +51,7 @@ export default class KindleClient {
             throw new Error("Please provide logout_redirect_uri");
         }
         this.logoutRedirectUri = logoutRedirectUri;
-      
-        // this.domain = domain;
-        // this.redirectUri = redirectUri;
-        // this.clientId = clientId;
-        // this.clientSecret = clientSecret;
-        // this.grantType = grantType;
+        this.callbackUri = callbackUri;
         
         // other endpoint
         this.tokenEndpoint = `${domain}/oauth2/token`;
@@ -63,9 +59,12 @@ export default class KindleClient {
         this.authorizationEndpoint = `${domain}/oauth2/auth`;
 
         this.authStatus = AuthStatus.UNAUTHENTICATED;
-        this.session = createSession();
+        this.session = null;
     }
 
+    setSession(session) {
+        this.session = session;
+    }
     /**
      * A function that is used to login to the API.
      *
@@ -76,34 +75,39 @@ export default class KindleClient {
      * authorization server. The authorization server will return this value to you in the response.
      * @param string scope The scopes you want to request.
      * @param string is_create_org 
-     * @param string org_id Organization id.
      * @param string org_name Organization name.
      * @param string org_code Organization code.
      * 
      * @return 
      */
-    async login(options) {
+    async login(options = {}) {
+        if (this.session === null) {
+            return new Error('Please call setSession before call this method'); 
+        }
         this.cleanSession();
         let auth;
+        let url;
         try {
             this.updateAuthStatus(AuthStatus.AUTHENTICATING);
             switch (this.grantType) {
                 case GrantType.CLIENT_CREDENTIALS:
                     auth = new ClientCredentials();
-                    const token = await auth.getToken(this);
+                    const token = await auth.getToken(this, options);
                     return token
                 case GrantType.AUTHORIZATION_CODE:
                     auth = new AuthorizationCode();
-                    return auth.getAuthorizeURL(this, {
+                    url = await auth.getAuthorizeURL(this, {
                         ...options,
                         start_page: 'login'
                     });
+                    return url;
                 case GrantType.PKCE:
                     auth = new PKCE();
-                    return auth.getAuthorizeURL(this, {
+                    url = await auth.getAuthorizeURL(this, {
                         ...options,
                         start_page: 'login'
                     });
+                    return url;
                 default:
                     this.authStatus = AuthStatus.UNAUTHENTICATED;
                     throw new Error("Please provide correct grant_type");
@@ -125,13 +129,15 @@ export default class KindleClient {
      * authorization server. The authorization server will return this value to you in the response.
      * @param string scope The scopes you want to request.
      * @param string is_create_org 
-     * @param string org_id Organization id.
      * @param string org_name Organization name.
      * @param string org_code Organization code.
      * 
      * @return 
      */
     register(options) {
+        if (this.session === null) {
+            return new Error('Please call setSession before call this method'); 
+        }
         this.updateAuthStatus(AuthStatus.AUTHENTICATING);
         if (this.grantType === GrantType.AUTHORIZATION_CODE){
             const auth = new AuthorizationCode();
@@ -156,40 +162,35 @@ export default class KindleClient {
      * 
      * @param string urlCallback The call back url from auth server.
      */
-    async getToken(urlCallback) {
+    async getTokenFromCallbackURL(options) {
+        const {
+            code, state, scope, error, error_description
+        } = options
         let token;
         let auth;
-        let urlComponents = new URL(urlCallback);
-        let params = new URLSearchParams(urlComponents.search);
-        let stateServer = params.get('state') || null;
-        this.checkStateAuthentication(stateServer);
-        let error = params.get('error') || '';
+        this.checkStateAuthentication(state);
         if (error) {
-          let errorDescription = params.get('error_description') || '';
-          let msg = errorDescription ? errorDescription : error;
+          let msg = error_description ? error_description : error;
           throw new Error(msg);
         }
-        let authorizationCode = params.get('code') || '';
-        if (!authorizationCode) {
+        if (!code) {
           throw new Error('Not found code param');
         }
-        let scope = params.get('scope');
         if (this.grantType === GrantType.PKCE) {
-            let codeVerifier = this.session.getItem('kinde.oauthCodeVerifier') || "";
+            let codeVerifier = this.session['kinde_oauth_code_verifier'] || '';
             if ( !codeVerifier && this.grantType === GrantType.PKCE) {
               throw new Error('Not found code_verifier');
             }
             auth = new PKCE();
-            token = await auth.getToken(this, authorizationCode, codeVerifier);
+            token = await auth.getToken(this, code, codeVerifier);
         } else if (this.grantType === GrantType.AUTHORIZATION_CODE) {
             auth = new AuthorizationCode();
-            token = await auth.getToken(this, authorizationCode, scope)
+            token = await auth.getToken(this, code, scope)
         } else {
-            throw new Error("getToken method doesn't support for this grant_type")
+            throw new Error("Method doesn't support for this grant_type")
         }
     
-        this.session.setItem('kinde.token', token);
-        this.saveDataToSession(token);
+        this.session.kinde_token = token;
         this.updateAuthStatus(AuthStatus.AUTHENTICATED);
         return token;
     }
@@ -200,7 +201,7 @@ export default class KindleClient {
      *
      *  @param array additionalParameters The array includes params to pass api.
      */
-    createOrg() {
+    createOrg(options) {
         return this.register({
             ...options,
             start_page: 'registration',
@@ -209,42 +210,37 @@ export default class KindleClient {
     }
 
     /**
-     * This function takes a grant type and returns the grant type in the format that the API expects
-     * 
-     * @param string grantType The type of grant you want to use.
-     * 
-     * @return The grant type is being returned.
+     * It unset's the token from the session and redirects the user to the logout endpoint
      */
-    getGrantType(grantType) {
-        switch (grantType) {
-            case GrantType.AUTHORIZATION_CODE:
-                break;
-            case GrantType.PKCE:
-                return 'authorization_code';
-            case GrantType.CLIENT_CREDENTIALS:
-                return 'client_credentials';
-            default:
-                throw new Error('Please provide correct grant_type');
+    async logout() {
+        try {
+            this.cleanSession();
+            this.updateAuthStatus(AuthStatus.UNAUTHENTICATED);
+            const searchParams = {
+                redirect: this.logoutRedirectUri
+            };
+            const res = await fetch(client.logoutEndpoint, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'          
+                },
+                body: new URLSearchParams(searchParams),
+              });
+              const response = await res.json();
+              return response
+        } catch(e) {
+            throw new Error(e)
         }
     }
 
     /**
-     * It unset's the token from the session and redirects the user to the logout endpoint
+     * Save token in req.session
      */
-    async logout() {
-        this.cleanSession();
-        this.updateAuthStatus(AuthStatus.UNAUTHENTICATED);
-        const searchParams = {
-            redirect: this.logoutRedirectUri
-        };
-        return `${this.logoutEndpoint}?${new URLSearchParams(searchParams).toString()}`;
-    }
-
     saveDataToSession(token) {
-        this.session.setItem('kinde.login_time_stamp', Date.now());
-        this.session.setItem('kinde.access_token', token.access_token || '');
-        this.session.setItem('kinde.id_token', token.id_token || '');
-        this.session.setItem('kinde.expires_in', token.expires_in || 0);
+        this.session.kinde_login_time_stamp = Date.now();
+        this.session.kinde_access_token = token.access_token || '';
+        this.session.kinde_id_token = token.id_token || '';
+        this.session.kinde_expires_in= token.expires_in || 0;
         const payload = parseJWT(token.id_token || '');
         if (payload) {
           const user = {
@@ -253,29 +249,30 @@ export default class KindleClient {
             family_name: payload.family_name || '',
             email: payload.email || ''
           };
-          this.session.setItem('kinde.user', JSON.stringify(user));
+          this.session.kinde_user = user;
         }
     }
 
+    /**
+     * Update authStatus and save in req.session
+     */
     updateAuthStatus(authStatus) {
-        this.session.setItem['kinde.auth_status'] = authStatus;
+        this.session.kinde_auth_status = authStatus;
         this.authStatus = authStatus;
     }
 
-
+    /**
+     * Clean session
+     */
     cleanSession() {
-        this.session.removeItem('kindle.token')
-        this.session.removeItem('kindle.access_token')
-        this.session.removeItem('kindle.id_token')
-        this.session.removeItem('kindle.auth_status')
-        this.session.removeItem('kindle.oauthState')
-        this.session.removeItem('kindle.oauthCodeVerifier')
-        this.session.removeItem('kindle.login_time_stamp')
-        this.session.removeItem('kindle.user')
+        this.session?.destroy();
     }
 
+    /**
+     * Check state authentication
+     */
     checkStateAuthentication(stateServer) {
-        if (!this.session.getItem('kinde.oauthState') || stateServer !== this.session.getItem('kinde.oauthState')) {
+        if (!this.session?.kinde_oauth_state || stateServer !== this.session?.kinde_oauth_state) {
             throw new Error("Authentication failed because it tries to validate state");
         }
     }
@@ -286,19 +283,19 @@ export default class KindleClient {
      * @return bool The response is a bool, which check user logged or not
      */
     isAuthenticated() {
-        if (!this.session.getItem('kinde.login_time_stamp') || !this.session.getItem('kinde.expires_in')) {
+        if (!this.session?.kinde_login_time_stamp || !this.session?.kinde_expires_in) {
             return false;
         }
-        return Date.now() / 1000 - this.session.getItem('kinde.login_time_stamp') < this.session.getItem('kinde.expires_in');
+        return Date.now() / 1000 - this.session.kinde_login_time_stamp < this.session.kinde_expires_in;
     }
 
     /**
      * It returns user's information after successful authentication
      *
-     * @return array The response is a array containing id, given_name, family_name and email.
+     * @return object The response is a array containing id, given_name, family_name and email.
      */
     getUserDetails() {
-        return this.session.getItem('kinde.user');
+        return this.session?.kinde_user;
     }
 
     /**
@@ -313,7 +310,7 @@ export default class KindleClient {
         if (!['access_token', 'id_token'].includes(tokenType)) {
             throw new Error('Please provide valid token (access_token or id_token) to get claim');
         }
-        token = this.session.getItem(`kinde.${tokenType}`) || '';
+        const token = this.session[`kinde_${tokenType}`] || '';
         if (!token) {
             throw new Error('Request is missing required authentication credential');
         }
@@ -330,7 +327,7 @@ export default class KindleClient {
      * @return any The response is a data in token.
      */
     getClaim(keyName, tokenType = 'access_token') {
-        data = this.getClaims(tokenType);
+        const data = this.getClaims(tokenType);
         return data[keyName] ;
     }
 

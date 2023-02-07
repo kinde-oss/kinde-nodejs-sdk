@@ -2,7 +2,7 @@ import { pkceChallengeFromVerifier, randomString } from "../utils/Utils";
 
 export default class PKCE {
   /**
-   * It generates a code challenge and code verifier, stores the code verifier in the cache, and
+   * It generates a code challenge and code verifier, stores the code verifier in the req.session, and
    * redirects the user to the authorization endpoint with the code challenge and other parameters
    * 
    * @param string clientId The client ID of your application.
@@ -23,16 +23,14 @@ export default class PKCE {
       state = randomString(),
       scope = 'openid profile email offline',
       is_create_org = false,
-      org_id,
-      org_name = '',
+      org_name,
       org_code
     } = options;
     const codeVerifier = randomString();
     const codeChallenge = await pkceChallengeFromVerifier(codeVerifier);
 
-    client.session.setItem('kindle.oauthState', state)
-    client.session.setItem('kindle.oauthCodeVerifier', codeVerifier)
-
+    client.session.kinde_oauth_state = state;
+    client.session.kinde_oauth_code_verifier = codeVerifier;
     let searchParams = {
       client_id: client.clientId,
       client_secret: client.clientSecret,
@@ -41,7 +39,7 @@ export default class PKCE {
       scope,
       state,
       start_page,
-      redirect_uri: client.redirectUri,
+      redirect_uri: client.callbackUri,
       code_challenge: codeChallenge,
       code_challenge_method: 'S256',
     };
@@ -59,20 +57,16 @@ export default class PKCE {
       searchParams.org_name = org_name;
     }
 
-    if (org_id) {
-      searchParams.org_id = org_id;
-    }
-
     return `${client.authorizationEndpoint}?${new URLSearchParams(searchParams).toString()}`;
   }
 
   async getToken(client, code, codeVerifier) {
     try {
       let searchParams = {
-        grant_type: client.grantType,
+        grant_type: 'authorization_code',
         client_id: client.clientId,
         client_secret: client.clientSecret,
-        redirect_uri: client.redirectUri,
+        redirect_uri: client.callbackUri,
         code,
         code_verifier: codeVerifier,
       }
@@ -85,7 +79,6 @@ export default class PKCE {
         body: new URLSearchParams(searchParams),
       });
       const token = await res.json();
-
       client.saveDataToSession(token);
       return token;
     } catch (e) {

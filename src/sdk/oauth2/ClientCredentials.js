@@ -18,7 +18,7 @@ export default class ClientCredentials {
       const res = await fetch(client.tokenEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'          
+          'Content-Type': 'application/x-www-form-urlencoded',          
         },
         body: new URLSearchParams(searchParams),
       });
