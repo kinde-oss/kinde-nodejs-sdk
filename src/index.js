@@ -83,7 +83,7 @@ export {
 
     /**
      * The GrantType constant.
-     * @property {const:KindeClient}
+     * @property {const:GrantType}
      */
     GrantType,
 

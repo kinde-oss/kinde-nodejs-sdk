@@ -1,7 +1,0 @@
-const AuthStatus = {
-    AUTHENTICATING: 'AUTHENTICATING',
-    AUTHENTICATED: 'AUTHENTICATED',
-    UNAUTHENTICATED: 'UNAUTHENTICATED'
-};
-
-export default AuthStatus

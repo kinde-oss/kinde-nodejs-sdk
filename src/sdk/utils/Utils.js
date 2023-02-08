@@ -39,4 +39,31 @@ export const parseJWT = (token) => {
   }
 }
 
+/**
+ * createStore- creates a new store object to store and retrieve data
+ *
+ * @returns {Object} - an object with the following methods:
+ *    - getItem(key) - retrieves the value associated with the key from the store
+ *    - setItem(key, value) - sets the value for the given key in the store
+ *    - removeItem(key) - removes the key-value pair from the store
+ */
+export function createStore() {
+  let items = {};
+
+  const getItem = (key) => items[key];
+
+  const setItem = (key, value) => {
+    items[key] = value;
+  };
+
+  const removeItem = (key) => {
+    delete items[key];
+  };
+
+  return {
+    getItem,
+    removeItem,
+    setItem
+  };
+};
 

@@ -2,19 +2,21 @@ import { pkceChallengeFromVerifier, randomString } from "../utils/Utils";
 
 export default class PKCE {
   /**
-   * It generates a code challenge and code verifier, stores the code verifier in the req.session, and
-   * redirects the user to the authorization endpoint with the code challenge and other parameters
+   * Function to get the authorization URL to redirect the user to the authorization server and data to save in req.session
    * 
-   * @param string clientId The client ID of your application.
-   * @param string clientSecret The client secret of your application.
-   * @param string redirectUri The redirect URI that you specified in the app settings.
-   * @param string authorizationEndpoint The URL of the authorization endpoint.
-   * @param string scope The scopes you want to request.
-   * @param string state This is an optional parameter that you can use to pass a value to the
-   * authorization server. The authorization server will return this value to you in the response.
+   * @param {Object} client - Object containing client details like clientId, callbackUri, and authorizationEndpoint
+   * @param {Object} options - Object containing options to include in the authorization URL
+   * @param {String} [options.audience] - Identifier for the resource server that you want to access
+   * @param {String} [options.start_page] - Start page for authorization
+   * @param {String} [options.state=randomString()] - Optional parameter used to pass a value to the authorization server
+   * @param {String} [options.scope='openid profile email offline'] - The scopes you want to request
+   * @param {Boolean} [options.is_create_org=false] - Flag to indicate if the user wants to create an organization
+   * @param {String} [options.org_code] - Organization code
    * 
-   * @return A redirect to the authorization endpoint with the parameters needed to start the
-   * authorization process.
+   * @returns {Object} Object with state, codeVerifier, and url properties
+   * @property {String} state - The value of the state parameter
+   * @property {String} codeVerifier - Code verifier for Proof Key for Code Exchange (PKCE)
+   * @property {String} url - The authorization URL to redirect the user to
    */
   async getAuthorizeURL(client, options) {
     const {
@@ -23,66 +25,58 @@ export default class PKCE {
       state = randomString(),
       scope = 'openid profile email offline',
       is_create_org = false,
-      org_name,
       org_code
     } = options;
     const codeVerifier = randomString();
     const codeChallenge = await pkceChallengeFromVerifier(codeVerifier);
 
-    client.session.kinde_oauth_state = state;
-    client.session.kinde_oauth_code_verifier = codeVerifier;
-    let searchParams = {
+    const searchParams = {
       client_id: client.clientId,
-      client_secret: client.clientSecret,
       response_type: 'code',
-      grant_type : 'authorization_code',
       scope,
       state,
       start_page,
       redirect_uri: client.callbackUri,
       code_challenge: codeChallenge,
       code_challenge_method: 'S256',
+      ...(!!audience && { audience }),
+      ...(!!is_create_org && { is_create_org }),
+      ...(!!org_code && { org_code }),
     };
 
-    if (audience) {
-      searchParams.audience = audience;
+    return {
+      state,
+      codeVerifier,
+      url: `${client.authorizationEndpoint}?${new URLSearchParams(searchParams).toString()}`
     }
-
-    if (org_code) {
-      searchParams.org_code = org_code;
-    }
-
-    if (is_create_org) {
-      searchParams.is_create_org = is_create_org;
-      searchParams.org_name = org_name;
-    }
-
-    return `${client.authorizationEndpoint}?${new URLSearchParams(searchParams).toString()}`;
   }
 
+  /**
+   * Function to get token from authorization code
+   * @param {Object} client - KindeClient instance
+   * @param {string} code - Authorization code obtained from authorization server
+   * @param {string} codeVerifier - Code verifier generated during authorization request
+   * 
+   * @returns {Object} JSON object with token information like access_token, refresh_token, expires_in etc.
+   */
   async getToken(client, code, codeVerifier) {
-    try {
-      let searchParams = {
-        grant_type: 'authorization_code',
-        client_id: client.clientId,
-        client_secret: client.clientSecret,
-        redirect_uri: client.callbackUri,
-        code,
-        code_verifier: codeVerifier,
-      }
-
-      const res = await fetch(client.tokenEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'          
-        },
-        body: new URLSearchParams(searchParams),
-      });
-      const token = await res.json();
-      client.saveDataToSession(token);
-      return token;
-    } catch (e) {
-      throw Error(e);
+    const searchParams = {
+      grant_type: 'authorization_code',
+      client_id: client.clientId,
+      client_secret: client.clientSecret,
+      redirect_uri: client.callbackUri,
+      code,
+      code_verifier: codeVerifier,
     }
+
+    const res = await fetch(client.tokenEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'          
+      },
+      body: new URLSearchParams(searchParams),
+    });
+    const token = await res.json();
+    return token;
   }
 }
