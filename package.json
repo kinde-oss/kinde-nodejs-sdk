@@ -1,5 +1,5 @@
 {
-  "name": "kinde_management_api",
+  "name": "@kinde-oss/kinde-nodejs-sdk",
   "version": "1",
   "description": "Provides endpoints to manage your Kinde Businesses",
   "license": "Unlicense",
