@@ -102,7 +102,7 @@ Please follow the [installation](#installation) instruction and execute the foll
 ```javascript
 require('dotenv').config();
 const express = require('express');
-const { createKindeClient, GrantType } = require('@kinde-oss/kinde-nodejs-sdk');
+const { KindeClient, GrantType } = require('@kinde-oss/kinde-nodejs-sdk');
 const session = require('express-session');
 const app = express();
 const port = 3000;
@@ -125,12 +125,13 @@ const options = {
   homepageUri: process.env.KINDE_HOMEPAGE_URI,
 };
 
-const client = createKindeClient(options);
+const client = new KindeClient(options);
 
 
 // Configure Bearer (JWT) access token for authorization: kindeBearerAuth
+var defaultClient = KindeManagementApi.ApiClient.instance;
 var kindeBearerAuth = defaultClient.authentications['kindeBearerAuth'];
-kindeBearerAuth.accessToken = "YOUR ACCESS TOKEN"
+kindeBearerAuth.accessToken = client.getToken()
 
 var api = new KindeManagementApi.OAuthApi()
 var callback = function(error, data, response) {
@@ -150,22 +151,30 @@ The Kinde client provides methods for easy to implement login / registration by 
 
 ```javascript
 ...
-app.get('/login', async (req, res) => {
-  await client.login(req, res);
+app.get('/login', client.login(),(req, res) => {
+  console.log("kindeAccessToken", req.session.kindeAccessToken)
+  return res.status(200).json({
+    accessToken: req.session.kindeAccessToken
+  })
 });
 
-app.get('/register', async (req, res) => {
-  await client.register(req, res);
+app.get('/register', client.register(),(req, res) => {
+  console.log("kindeAccessToken", req.session.kindeAccessToken)
+  return res.status(200).json({
+    accessToken: req.session.kindeAccessToken
+  })
 });
 ...
-
 ```
 ## Manage redirects
 
 When the user is redirected back to your site from Kinde, this will call your callback URL defined in the `KINDE_REDIRECT_URL` variable. You will need to route `/callback` to call a function to handle this.
 ```javascript
-app.get('/callback', async (req, res) => {
-  await client.callbackKinde(req, res);
+app.get('/callback', client.callback(), (req, res) => {
+  console.log("kindeAccessToken", req.session.kindeAccessToken)
+  return res.status(200).json({
+    accessToken: req.session.kindeAccessToken
+  })
 });
 ```
 
@@ -174,9 +183,7 @@ app.get('/callback', async (req, res) => {
 The Kinde client comes with a logout method.
 
 ```javascript
-app.get('/logout', async (req, res) => {
-  await client.logout(req, res);
-});
+app.get('/logout',client.logout());
 ```
 
 ## Get user information
@@ -296,32 +303,43 @@ To have a new organization created within your application, you will need to run
 
 ```javascript
 ...
-app.get('/create-org', async (req, res) => {
-  await client.createOrg(req, res);
-})
+app.get('/createOrg', client.createOrg(),(req, res) => {
+  console.log("kindeAccessToken", req.session.kindeAccessToken)
+  return res.status(200).json({
+    accessToken: req.session.kindeAccessToken
+  })
+});
 ...
 ```
 
-You can also pass org_name as your organization
-```javascript
-    ...
-    await client.createOrg(req, res, { org_name: 'your_org_name'});
-    ...
+You can also pass org_name as your organization url
+```link
+http://localhost:3000/create-org?org_name=<org_name>
 ```
 
 #### Sign up and sign in to organizations
 
 Kinde has a unique code for every organization. You’ll have to pass this code through when you register a new user. Example function below:
 
-```javascript
-    await client.register(req, res, {org_code: 'your_org_code'});
+```link
+http://localhost:3000/register?org_code=<org_code>
 ```
+You can also pass state as your register url
+```link
+http://localhost:3000/register?org_code=<org_code>&state=<state>
+```
+
 
 If you want a user to sign into a particular organization, pass this code along with the sign in method.
 
-```javascript
-    await client.login(req, res, {org_code: 'your_org_code'});
+```link
+http://localhost:3000/login?org_code=<org_code>
 ```
+You can also pass state as your login url
+```link
+http://localhost:3000/login?org_code=<org_code>&state=<state>
+```
+
 
 Following authentication, Kinde provides a json web token (jwt) to your application. Along with the standard information we also include the org_code and the permissions for that organization (this is important as a user can belong to multiple organizations and have different permissions for each). Example of a returned token:
 
@@ -363,11 +381,12 @@ client.getUserOrganizations();
 
 | Property                        | Type   | Is required | Default                      | Description                                                                         |
 | ------------------------------- | ------ | ----------- | ---------------------------- | ----------------------------------------------------------------------------------- |
-| host                            | string | Yes         |                              | Either your Kinde instance url or your custom domain. e.g https://yourapp.kinde.com |
-| redirectUri                     | string | Yes         |                              | The url that the user will be returned to after authentication                      |
+| domain                            | string | Yes         |                              | Either your Kinde instance url or your custom domain. e.g https://yourapp.kinde.com |
+| redirectUri                     | string | Yes         |   http://{backend_uri}/callback                           | The redirection URI registered in the authorization server
 | clientId                        | string | Yes         |                              | The id of your application - get this from the Kinde admin area                     |
 | clientSecret                    | string | Yes         |                              | The id secret of your application - get this from the Kinde admin area              |
-| logoutRedirectUri               | string | Yes         |                              | Where your user will be redirected upon logout                                      |
+| logoutRedirectUri               | string | Yes         |                              | Where your user will be redirected upon logout
+| audience                         | string | No          |                             | The API Identifier for the target API                                        |
 | scope                           | string | No          | openid profile email offline | The scopes to be requested from Kinde                                               |
 
 
@@ -375,14 +394,14 @@ client.getUserOrganizations();
 
 | Property             | Description                                                                                       | Arguments                        | Usage                                                                                  | Sample output                                                                                         |
 | -------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| login                | Constructs redirect url and sends user to Kinde to sign in                                        | org\_code?: string               | await client.login(req,res, { org_code: 'org_code'});                                                                       |                                                                                                       |
-| register             | Constructs redirect url and sends user to Kinde to sign up                                        | org\_code?: string               | await client.register(req,res, { org_code: 'org_code'} );  ();                                                                    |                                                                                                       |
-| logout               | Logs the user out of Kinde                                                                        |                                  | await client.logout(req, res);                                                                      |                                                                                                       |
-| callbackKinde             | Returns the raw access token from URL after logged from Kinde                                     |                                  | await client.callbackKinde(req, res);                                                                    | eyJhbGciOiJIUzI1...                                                                                   |
-| createOrg            | Constructs redirect url and sends user to Kinde to sign up and create a new org for your business | org\_name?: string               | await client.createOrg(req, res); or client.createOrg(req, res,{'org\_name' : 'your organization name'}); | redirect                                                                                              |
-| getClaim             | Gets a claim from an access or id token                                                           | claim: string, tokenKey?: string | client.getClaim('given\_name', 'id\_token');                                          | David'                                                                                                |
+| login                | Constructs redirect url and sends user to Kinde to sign in                                        | org\_code?: string               |                                                                        |                                                                                                       |
+| register             | Constructs redirect url and sends user to Kinde to sign up                                        | org\_code?: string               |                                                                     |                                                                                                       |
+| logout               | Logs the user out of Kinde                                                                        |                                  |                                                              |                                                                                                       |
+| callback             | Returns the raw access token from URL after logged from Kinde                                     |                                  |                                                                  | eyJhbGciOiJIUzI1...                                                                                   |
+| createOrg            | Constructs redirect url and sends user to Kinde to sign up and create a new org for your business | org\_name?: string               |            | redirect to url createOrg                                                                                             |
+| getClaim             | Gets a claim from an access or id token                                                           | claim: string, tokenKey?: string | client.getClaim('given\_name', 'id\_token');                                          | David                                                                                                |
 | getPermission        | Returns the state of a given permission                                                           | key: string                      | client.getPermission('read:todos');                                                   | \{'orgCode' : 'org\_1234', 'isGranted' : true\}                                                    |
-| getPermissions       | Returns all permissions for the current user for the organization they are logged into            |                                  | $kinde->getPermissions();                                                              | \{'orgCode' : 'org\_1234', permissions : \['create:todos', 'update:todos', 'read:todos'\]\}       |
+| getPermissions       | Returns all permissions for the current user for the organization they are logged into            |                                  | client.getPermissions();                                                              | \{'orgCode' : 'org\_1234', permissions : \['create:todos', 'update:todos', 'read:todos'\]\}       |
 | getOrganization      | Get details for the organization your user is logged into                                         |                                  | client.getOrganization();                                                             | \{'orgCode' : 'org\_1234'\}                                                                          |
 | getUserDetails       | Returns the profile for the current user                                                          |                                  | client.getUserDetails();                                                              | {'given\_name': 'Dave', 'id': 'abcdef', 'family\_name' : 'Smith', 'email' : 'dave@smith.com'\} |
 | getUserOrganizations | Gets an array of all organizations the user has access to                                         |                                   |  client.getUserOrganizations();                                                                                        |                                                                                                       |
