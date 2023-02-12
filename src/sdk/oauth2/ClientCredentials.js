@@ -1,9 +1,7 @@
 export default class ClientCredentials {
   /**
      * getToken function to obtain an access token from the authorization server.
-     *
      * @param {Object} client - Kinde client instance
-     *
      * @returns {Object} JSON object with token information like access_token, refresh_token, expires_in etc.
      */
   async getToken (client) {

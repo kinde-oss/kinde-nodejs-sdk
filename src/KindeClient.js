@@ -8,14 +8,14 @@ import { createStore, parseJWT, randomString } from "./sdk/utils/Utils";
  * KindeClient class for OAuth 2.0 authentication.
  * @class KindeClient
  * @param {Object} options - Options object
- * @property {string} options.domain - Base URL of the Kinde authorization server
- * @property {string} options.clientId - Client ID of the application
- * @property {string} options.clientSecret - Client secret of the application
- * @property {string} options.redirectUri - Redirection URI registered in the authorization server
- * @property {string} options.logoutRedirectUri - URI to redirect the user after logout
- * @property {string} options.grantType - Grant type for the authentication process (client_credentials, authorization_code or pkce)
- * @property {string} options.audience - API Identifier for the target API (Optional)
- * @property {string} options.scope - List of scopes requested by the application (default: 'openid profile email offline')
+ * @property {String} options.domain - Base URL of the Kinde authorization server
+ * @property {String} options.clientId - Client ID of the application
+ * @property {String} options.clientSecret - Client secret of the application
+ * @property {String} options.redirectUri - Redirection URI registered in the authorization server
+ * @property {String} options.logoutRedirectUri - URI to redirect the user after logout
+ * @property {String} options.grantType - Grant type for the authentication process (client_credentials, authorization_code or pkce)
+ * @property {String} options.audience - API Identifier for the target API (Optional)
+ * @property {String} options.scope - List of scopes requested by the application (default: 'openid profile email offline')
  */
 export default class KindeClient {
   constructor(options) {
@@ -77,11 +77,10 @@ export default class KindeClient {
 
   /**
     * Login middleware function to handle OAuth 2.0 authentication.
-    *
     * @returns {Function} Middleware function for handling the authorization response
     * @property {Object} request - Request object
-    * @property {string} request.query.state - Optional parameter used to pass a value to the authorization server
-    * @property {string} request.query.org_code - Organization code
+    * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
+    * @property {String} request.query.org_code - Organization code
     */
   login() {
     return async (req, res, next) => {
@@ -130,11 +129,10 @@ export default class KindeClient {
 
   /**
     * Register middleware function to handle OAuth 2.0 authentication.
-    *
     * @returns {Function} Middleware function for handling the authorization response
     * @property {Object} request - Request object
-    * @property {string} request.query.state - Optional parameter used to pass a value to the authorization server
-    * @property {string} request.query.org_code - Organization code
+    * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
+    * @property {String} request.query.org_code - Organization code
     */
   register() {
     return async (req, res, next) => {
@@ -180,7 +178,6 @@ export default class KindeClient {
    * Callback middleware function for Kinde OAuth 2.0 flow
    * This function is responsible for handling the response from the authorization server
    * and obtaining the access token.
-   * 
    * @returns {Function} Middleware function for handling the authorization response
    */
   callback() {
@@ -243,17 +240,16 @@ export default class KindeClient {
 
   /**
    * CreateOrg middleware functions allows an organization to be created.
-   *
    * @returns {Function} Middleware function for handling the authorization response
    * @property {Object} request - Request object
-   * @property {string} request.query.state - Optional parameter used to pass a value to the authorization server
-   * @property {bool} request.query.is_create_org - Flag indicating if the user is creating a new organization
-   * @property {string} request.query.org_name - Organization name
+   * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
+   * @property {Boolean} request.query.is_create_org - Flag indicating if the user is creating a new organization
+   * @property {String} request.query.org_name - Organization name
    */
   createOrg() {
     return async (req, res, next) => {
       if (!req.session) {
-        next(new Error('OAuth 2.0 authentication requires session support when using state. Did you forget to use express-session middleware?'));
+        return next(new Error('OAuth 2.0 authentication requires session support when using state. Did you forget to use express-session middleware?'));
       }
 
       const {
@@ -295,17 +291,13 @@ export default class KindeClient {
 
   /**
     * It destroy the token from the req.session and redirects the user to the logout endpoint
-    *
     * @returns {Response} HTTP response with redirect logout URL
     */
-  async logout() {
+  logout() {
     return (req, res) => {
       try {
         this.cleanSession(req);
-        const searchParams = {
-          redirect: this.logoutRedirectUri
-        }
-        return res.redirect(`${this.logoutEndpoint}?${new URLSearchParams(searchParams).toString()}`);
+        return res.redirect(`${this.logoutEndpoint}?redirect_uri=${this.logoutRedirectUri}`);
       } catch (e) {
         return res.status(500).json({ error: e.message });
       }
@@ -314,7 +306,6 @@ export default class KindeClient {
 
   /**
    * saveToken - saves the tokens and user information to the store and req.session.
-   *
    * @param  {Object} request - Request object
    * @param  {Object} token - Token object containing access_token, id_token, expires_in
    */
@@ -344,7 +335,6 @@ export default class KindeClient {
 
   /**
    * cleanSession - Function is used to destroy the current session and remove related data from store.
-   *
    * @param {Object} request - Request object
    */
   cleanSession(request) {
@@ -361,8 +351,7 @@ export default class KindeClient {
 
   /**
    * Check if the user is authenticated.
-   *
-   * @returns {bool} true if the user is authenticated, otherwise false.
+   * @returns {Boolean} true if the user is authenticated, otherwise false.
    */
   isAuthenticated() {
     if (!this.store.getItem('kindeLoginTimeStamp') || !this.store.getItem('kindeExpiresIn')) {
@@ -373,7 +362,6 @@ export default class KindeClient {
 
   /**
    * It returns user's information after successful authentication
-   *
    * @return {Object} The response is a object containing id, given_name, family_name and email.
    */
   getUserDetails() {
@@ -383,9 +371,7 @@ export default class KindeClient {
   /**
    * Accept a key for a token and returns the claim value.
    * Optional argument to define which token to check - defaults to Access token  - e.g.
-   *
-   * @param {string} tokenType Optional argument to define which token to check.
-   *
+   * @param {String} tokenType Optional argument to define which token to check.
    * @return any The response is a data in token.
    */
   getClaims(tokenType = 'access_token') {
@@ -403,10 +389,8 @@ export default class KindeClient {
   /**
    * Accept a key for a token and returns the claim value.
    * Optional argument to define which token to check - defaults to Access token  - e.g.
-   *
-   * @param {string} keyName - Accept a key for a token.
-   * @param {string} tokenType - Optional argument to define which token to check.
-   *
+   * @param {String} keyName - Accept a key for a token.
+   * @param {String} tokenType - Optional argument to define which token to check.
    * @return any The response is a data in token.
    */
   getClaim(keyName, tokenType = 'access_token') {
@@ -417,7 +401,6 @@ export default class KindeClient {
   /**
    * Get an array of permissions (from the permissions claim in access token)
    * And also the relevant org code (org_code claim in access token). e.g
-   *
    * @return {Object} The response includes orgCode and permissions.
    */
   getPermissions() {
@@ -431,7 +414,6 @@ export default class KindeClient {
   /**
    * Given a permission value, returns if it is granted or not (checks if permission key exists in the permissions claim array)
    * And relevant org code (checking against claim org_code) e.g
-   *
    * @return {Object} The response includes orgCode and isGranted.
    */
   getPermission(permission) {
@@ -445,7 +427,6 @@ export default class KindeClient {
 
   /**
    * Gets the org code (and later other org info) (checking against claim org_code)
-   *
    * @return {Object} The response is a orgCode.
    */
   getOrganization() {
@@ -456,7 +437,6 @@ export default class KindeClient {
 
   /**
    * Gets all org code
-   *
    * @return {Object} The response is a orgCodes.
    */
   getUserOrganizations() {
