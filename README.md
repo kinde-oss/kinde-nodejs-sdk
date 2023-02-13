@@ -243,13 +243,7 @@ To have a new organization created within your application, you will need to run
 
 ```javascript
 ...
-app.get('/createOrg', client.createOrg(),(req, res) => {
-  // do something in next step 
-  console.log("kindeAccessToken", req.session.kindeAccessToken)
-  return res.status(200).json({
-    accessToken: req.session.kindeAccessToken
-  })
-});
+app.get('/createOrg', client.createOrg());
 ...
 ```
 You can also pass org_name as your create organization url
@@ -329,15 +323,15 @@ client.getUserOrganizations();
 | login                | Constructs redirect url and sends user to Kinde to sign in                                        | org\_code?: string, state?: string               |                                                                      |                                                                                                       |
 | register             | Constructs redirect url and sends user to Kinde to sign up                                        | org\_code?: string, state?: string               |                                                                     |                                                                                                       |
 | logout               | Logs the user out of Kinde                                                                        |                                  |                                                              |                                                                                                       |
-| callback             | Returns the raw access token from URL after logged from Kinde                                     |                                  |                                                                  | eyJhbGciOiJIUzI1...                                                                                   |
-| createOrg            | Constructs redirect url and sends user to Kinde to sign up and create a new org for your business | org\_name?: string               |            | redirect to url createOrg                                                                                             |
+| callback             | Returns the raw access token from URL after logged from Kinde                                     |                                  |                                                                  |                                                                                   |
+| createOrg            | Constructs redirect url and sends user to Kinde to sign up and create a new org for your business | org\_name?: string               |                                |                                                                                                 |
 | isAuthenticated              | Get a boolean value to check if a user is logged in by verifying that the access token is still valid                                                           |  | client.isAuthenticated();                                          | true    
 | getClaim             | Gets a claim from an access or id token                                                           | keyName: string, tokenKey?: string | client.getClaim('given\_name', 'id\_token');                                          | David                                                                                                |
 | getPermission        | Returns the state of a given permission                                                           | key: string                      | client.getPermission('read:todos');                                                   | \{'orgCode' : 'org\_1234', 'isGranted' : true\}                                                    |
 | getPermissions       | Returns all permissions for the current user for the organization they are logged into            |                                  | client.getPermissions();                                                              | \{'orgCode' : 'org\_1234', permissions : \['create:todos', 'update:todos', 'read:todos'\]\}       |
 | getOrganization      | Get details for the organization your user is logged into                                         |                                  | client.getOrganization();                                                             | \{'orgCode' : 'org\_1234'\}                                                                          |
 | getUserDetails       | Returns the profile for the current user                                                          |                                  | client.getUserDetails();                                                              | {'given\_name': 'Dave', 'id': 'abcdef', 'family\_name' : 'Smith', 'email' : 'dave@smith.com'\} |
-| getUserOrganizations | Gets an array of all organizations the user has access to                                         |                                   |  client.getUserOrganizations();                                                                                        |                                                                                                       |
+| getUserOrganizations | Gets an array of all organizations the user has access to                                         |                                   |  client.getUserOrganizations();                                                        |    \{ 'orgCodes: ['org_7052552de68', 'org_5a5c29381327'] \}   | 
 
 If you need help connecting to Kinde, please contact us at [support@kinde.com](mailto:support@kinde.com).
 
