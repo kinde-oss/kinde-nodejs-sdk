@@ -1,4 +1,4 @@
-import { pkceChallengeFromVerifier, randomString } from '../utils/Utils'
+import { pkceChallengeFromVerifier, randomString } from '../utils/Utils';
 
 export default class PKCE {
   /**
@@ -15,7 +15,7 @@ export default class PKCE {
    * @property {String} codeVerifier - Code verifier for Proof Key for Code Exchange (PKCE)
    * @property {String} url - The authorization URL to redirect the user to
    */
-  async generateAuthorizationURL (client, options) {
+  async generateAuthorizationURL(client, options) {
     const {
       start_page,
       state,
@@ -43,8 +43,8 @@ export default class PKCE {
     return {
       state,
       codeVerifier,
-      url: `${client.authorizationEndpoint}?${new URLSearchParams(searchParams).toString()}`
-    }
+      url: `${client.authorizationEndpoint}?${new URLSearchParams(searchParams).toString()}`,
+    };
   }
 
   /**
@@ -54,7 +54,7 @@ export default class PKCE {
    * @param {String} codeVerifier - Code verifier generated during authorization request
    * @returns {Object} JSON object with token information like access_token, refresh_token, expires_in etc.
    */
-  async getToken (client, code, codeVerifier) {
+  async getToken(client, code, codeVerifier) {
     const searchParams = {
       grant_type: 'authorization_code',
       client_id: client.clientId,
@@ -67,10 +67,10 @@ export default class PKCE {
     const res = await fetch(client.tokenEndpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams(searchParams),
-    })
+    });
     const token = await res.json();
     return token;
   }
