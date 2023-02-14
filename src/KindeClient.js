@@ -71,8 +71,6 @@ export default class KindeClient {
     this.tokenEndpoint = `${domain}/oauth2/token`;
     this.logoutEndpoint = `${domain}/logout`;
     this.authorizationEndpoint = `${domain}/oauth2/auth`;
-
-    this.store = createStore();
   }
 
   /**
@@ -86,6 +84,10 @@ export default class KindeClient {
     return async (req, res, next) => {
       if (!req.session) {
         return next(new Error('OAuth 2.0 authentication requires session support when using state. Did you forget to use express-session middleware?'));
+      }
+
+      if(req.session.kindeAccessToken){
+        return next();
       }
 
       const {
@@ -140,6 +142,10 @@ export default class KindeClient {
         return next(new Error('OAuth 2.0 authentication requires session support when using state. Did you forget to use express-session middleware?'));
       }
 
+      if(req.session.kindeAccessToken){
+        return next();
+      }
+
       const {
         state = randomString(),
         org_code,
@@ -183,6 +189,10 @@ export default class KindeClient {
   callback() {
     return async (req, res, next) => {
       try {
+        if(req.session.kindeAccessToken){
+          return next();
+        }
+
         const {
           code, state, error, error_description
         } = req.query;
@@ -252,6 +262,10 @@ export default class KindeClient {
         return next(new Error('OAuth 2.0 authentication requires session support when using state. Did you forget to use express-session middleware?'));
       }
 
+      if(req.session.kindeAccessToken){
+        return next();
+      }
+      
       const {
         state = randomString(),
         is_create_org = true,
@@ -307,16 +321,10 @@ export default class KindeClient {
   /**
    * saveToken - saves the tokens and user information to the store and req.session.
    * @param  {Object} request - Request object
-   * @param  {Object} token - Token object containing access_token, id_token, expires_in
+   * @param  {Object} token - Token object containing access_token, id_token, expires_in, etc ...
    */
   saveToken(request, token) {
-    const kindeLoginTimeStamp = Date.now();
-    this.store.setItem('kindeLoginTimeStamp', kindeLoginTimeStamp);
-    this.store.setItem('kindeAccessToken', token.access_token || '');
-    this.store.setItem('kindeIdToken', token.id_token || '');
-    this.store.setItem('kindeExpiresIn', token.expires_in || 0);
-
-    request.session.kindeLoginTimeStamp = kindeLoginTimeStamp;
+    request.session.kindeLoginTimeStamp = Date.now();
     request.session.kindeAccessToken = token.access_token || '';
     request.session.kindeIdToken = token.id_token || '';
     request.session.kindeExpiresIn = token.expires_in || 0;
@@ -329,7 +337,6 @@ export default class KindeClient {
         email: payload.email || '',
       }
       request.session.kindeUser = user;
-      this.store.setItem('kindeUser', user);
     }
   }
 
@@ -339,47 +346,42 @@ export default class KindeClient {
    */
   cleanSession(request) {
     request?.session && request?.session?.destroy();
-
-    this.store.removeItem('kindeAccessToken');
-    this.store.removeItem('kindeIdToken');
-    this.store.removeItem('kindeOauthState');
-    this.store.removeItem('kindeOauthCodeVerifier');
-    this.store.removeItem('kindeLoginTimeStamp');
-    this.store.removeItem('kindeExpireIn');
-    this.store.removeItem('kindeUser');
   }
 
   /**
    * Check if the user is authenticated.
+   * @param {Object} request - Request object
    * @returns {Boolean} true if the user is authenticated, otherwise false.
    */
-  isAuthenticated() {
-    if (!this.store.getItem('kindeLoginTimeStamp') || !this.store.getItem('kindeExpiresIn')) {
+  isAuthenticated(request) {
+    if (!request.session.kindeLoginTimeStamp || !request.session.kindeExpiresIn) {
       return false;
     }
-    return Date.now() / 1000 - this.store.getItem('kindeLoginTimeStamp') < this.store.getItem('kindeExpiresIn');
+    return Date.now() / 1000 - request.session.kindeLoginTimeStamp < request.session.kindeExpiresIn;
   }
 
   /**
    * It returns user's information after successful authentication
+   * @param {Object} request - Request object
    * @return {Object} The response is a object containing id, given_name, family_name and email.
    */
-  getUserDetails() {
-    return this.store.getItem('kindeUser');
+  getUserDetails(request) {
+    return request.session.kindeUser;
   }
 
   /**
    * Accept a key for a token and returns the claim value.
    * Optional argument to define which token to check - defaults to Access token  - e.g.
+   * @param {Object} request - Request object
    * @param {String} tokenType Optional argument to define which token to check.
    * @return any The response is a data in token.
    */
-  getClaims(tokenType = 'access_token') {
+  getClaims(request, tokenType = 'access_token') {
     if (!['access_token', 'id_token'].includes(tokenType)) {
       throw new Error('Please provide valid token (access_token or id_token) to get claim');
     }
     const tokenTypeParse = tokenType === 'access_token' ? 'AccessToken' : 'IdToken';
-    const token = this.store.getItem(`kinde${tokenTypeParse}`) || '';
+    const token = request.session[`kinde${tokenTypeParse}`] || '';
     if (!token) {
       throw new Error('Request is missing required authentication credential');
     }
@@ -389,22 +391,24 @@ export default class KindeClient {
   /**
    * Accept a key for a token and returns the claim value.
    * Optional argument to define which token to check - defaults to Access token  - e.g.
+   * @param {Object} request - Request object
    * @param {String} keyName - Accept a key for a token.
    * @param {String} tokenType - Optional argument to define which token to check.
    * @return any The response is a data in token.
    */
-  getClaim(keyName, tokenType = 'access_token') {
-    const data = this.getClaims(tokenType);
+  getClaim(request, keyName, tokenType = 'access_token') {
+    const data = this.getClaims(request, tokenType);
     return data[keyName];
   }
 
   /**
    * Get an array of permissions (from the permissions claim in access token)
    * And also the relevant org code (org_code claim in access token). e.g
+   * @param {Object} request - Request object
    * @return {Object} The response includes orgCode and permissions.
    */
-  getPermissions() {
-    const claims = this.getClaims();
+  getPermissions(request) {
+    const claims = this.getClaims(request);
     return {
       orgCode: claims.org_code,
       permissions: claims.permissions,
@@ -414,10 +418,11 @@ export default class KindeClient {
   /**
    * Given a permission value, returns if it is granted or not (checks if permission key exists in the permissions claim array)
    * And relevant org code (checking against claim org_code) e.g
+   * @param {Object} request - Request object
    * @return {Object} The response includes orgCode and isGranted.
    */
-  getPermission(permission) {
-    const allClaims = this.getClaims();
+  getPermission(request, permission) {
+    const allClaims = this.getClaims(request);
     const { permissions } = allClaims;
     return {
       orgCode: allClaims.org_code,
@@ -427,21 +432,23 @@ export default class KindeClient {
 
   /**
    * Gets the org code (and later other org info) (checking against claim org_code)
+   * @param {Object} request - Request object
    * @return {Object} The response is a orgCode.
    */
-  getOrganization() {
+  getOrganization(request) {
     return {
-      orgCode: this.getClaim('org_code')
+      orgCode: this.getClaim(request, 'org_code')
     }
   }
 
   /**
    * Gets all org code
+   * @param {Object} request - Request object
    * @return {Object} The response is a orgCodes.
    */
-  getUserOrganizations() {
+  getUserOrganizations(request) {
     return {
-      orgCodes: this.getClaim('org_codes', 'id_token')
+      orgCodes: this.getClaim(request, 'org_codes', 'id_token')
     }
   }
 }

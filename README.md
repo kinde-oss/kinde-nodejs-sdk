@@ -95,18 +95,12 @@ The Kinde client provides methods for easy to implement login / registration by 
 ...
 app.get('/login', client.login(),(req, res) => {
   // do something in next step
-  console.log("kindeAccessToken", req.session.kindeAccessToken)
-  return res.status(200).json({
-    accessToken: req.session.kindeAccessToken
-  })
+  return res.redirect('/');
 });
 
 app.get('/register', client.register(),(req, res) => {
   // do something in next step 
-  console.log("kindeAccessToken", req.session.kindeAccessToken)
-  return res.status(200).json({
-    accessToken: req.session.kindeAccessToken
-  })
+  return res.redirect('/');
 });
 ...
 ```
@@ -116,20 +110,23 @@ When the user is redirected back to your site from Kinde, this will call your ca
 
 ```javascript
 ...
-app.get('/login', client.login());
-app.get('/register', client.register());
+app.get('/login', client.login(),(req, res) => {
+  // do something in next step 
+  return res.redirect('/');
+});
+app.get('/register', client.register(),(req, res) => {
+  // do something in next step 
+  return res.redirect('/');
+});
 app.get('/callback', client.callback(), (req, res) => {
   // do something in next step
-  console.log("kindeAccessToken", req.session.kindeAccessToken)
-  return res.status(200).json({
-    accessToken: req.session.kindeAccessToken
-  })
+  return res.redirect('/');
 });
 ...
 ```
 ### View users in Kinde
-
 Go to the **Users** page in Kinde to see who has registered.
+
 ## Logout
 
 The Kinde client comes with a logout method.
@@ -137,6 +134,13 @@ The Kinde client comes with a logout method.
 ```javascript
 app.get('/logout', client.logout());
 ```
+## Check isAuthenticated              
+We have provided a helper to get a boolean value to check if a user is logged in by verifying that the access token is still
+
+```javascript
+client.isAuthenticated(req);
+// true
+``` 
 
 ## Get user information
 
@@ -175,7 +179,7 @@ if (client.getPermission("create:todos")['isGranted']) {
     // create new a todo
 }
 ```
-### Audience
+## Audience
 
 An `audience` is the intended recipient of an access token - for example the API for your application. The audience argument can be passed to the Kinde client to request an audience be added to the provided token.
 
@@ -197,7 +201,7 @@ const client = new KindeClient(options);
 
 For details on how to connect, see [Register an API](https://kinde.com/docs/developer-tools/register-an-api/)
 
-### Overriding scope
+## Overriding scope
 
 By default the KindeSDK SDK requests the following scopes:
 
@@ -223,34 +227,37 @@ const options = {
 const client = new KindeClient(options);
 ```
 
-### Getting claims
+## Getting claims
 
 We have provided a helper to grab any claim from your id or access tokens. The helper defaults to access tokens:
 
 ```javascript
-client.getClaim('aud');
+client.getClaim(req, 'aud');
 // ['api.yourapp.com']
 
-client.getClaim('given_name', 'id_token');
+client.getClaim(req, 'given_name', 'id_token');
 // 'David'
 ```
 
-### Organizations Control
+## Organizations Control
 
-#### Create an organization
+### Create an organization
 
 To have a new organization created within your application, you will need to run a similar function to below:
 
 ```javascript
 ...
-app.get('/createOrg', client.createOrg());
+app.get('/createOrg', client.createOrg(), (req, res) => {
+  // do something in next step
+  return res.redirect('/');
+});
 ...
 ```
 You can also pass org_name as your create organization url
 
 `http://localhost:3000/createOrg?org_name=<org_name>`
 
-#### Sign up and sign in to organizations
+### Sign up and sign in to organizations
 
 Kinde has a unique code for every organization. You’ll have to pass this code through when you register a new user. Example function below:
 
@@ -258,7 +265,7 @@ Kinde has a unique code for every organization. You’ll have to pass this code 
 
 You can also pass state as your register url
 
-`http://localhost:3000/register?org_code=<org_code>&state=<state>`
+`http://localhost:3000/register?state=<state>`
 
 If you want a user to sign into a particular organization, pass this code along with the sign in method.
 
@@ -266,7 +273,7 @@ If you want a user to sign into a particular organization, pass this code along 
 
 You can also pass state as your login url
 
-`http://localhost:3000/login?org_code=<org_code>&state=<state>`
+`http://localhost:3000/login?state=<state>`
 
 
 Following authentication, Kinde provides a json web token (jwt) to your application. Along with the standard information we also include the org_code and the permissions for that organization (this is important as a user can belong to multiple organizations and have different permissions for each). Example of a returned token:
@@ -296,10 +303,10 @@ The id_token will also contain an array of organization that a user belongs to -
 There are two helper functions you can use to extract information:
 
 ```javascript
-client.getOrganization();
+client.getOrganization(req);
 // ['orgCode' => 'org_1234']
 
-client.getUserOrganizations();
+client.getUserOrganizations(req);
 // ['orgCodes' => ['org_1234', 'org_abcd']]
 ```
 
@@ -325,13 +332,13 @@ client.getUserOrganizations();
 | logout               | Logs the user out of Kinde                                                                        |                                  |                                                              |                                                                                                       |
 | callback             | Returns the raw access token from URL after logged from Kinde                                     |                                  |                                                                  |                                                                                   |
 | createOrg            | Constructs redirect url and sends user to Kinde to sign up and create a new org for your business | org\_name?: string               |                                |                                                                                                 |
-| isAuthenticated              | Get a boolean value to check if a user is logged in by verifying that the access token is still valid                                                           |  | client.isAuthenticated();                                          | true    
-| getClaim             | Gets a claim from an access or id token                                                           | keyName: string, tokenKey?: string | client.getClaim('given\_name', 'id\_token');                                          | David                                                                                                |
-| getPermission        | Returns the state of a given permission                                                           | key: string                      | client.getPermission('read:todos');                                                   | \{'orgCode' : 'org\_1234', 'isGranted' : true\}                                                    |
-| getPermissions       | Returns all permissions for the current user for the organization they are logged into            |                                  | client.getPermissions();                                                              | \{'orgCode' : 'org\_1234', permissions : \['create:todos', 'update:todos', 'read:todos'\]\}       |
-| getOrganization      | Get details for the organization your user is logged into                                         |                                  | client.getOrganization();                                                             | \{'orgCode' : 'org\_1234'\}                                                                          |
-| getUserDetails       | Returns the profile for the current user                                                          |                                  | client.getUserDetails();                                                              | {'given\_name': 'Dave', 'id': 'abcdef', 'family\_name' : 'Smith', 'email' : 'dave@smith.com'\} |
-| getUserOrganizations | Gets an array of all organizations the user has access to                                         |                                   |  client.getUserOrganizations();                                                        |    \{ 'orgCodes: ['org_7052552de68', 'org_5a5c29381327'] \}   | 
+| isAuthenticated              | Get a boolean value to check if a user is logged in by verifying that the access token is still valid                                                           |  | client.isAuthenticated(req);                                          | true    
+| getClaim             | Gets a claim from an access or id token                                                           | keyName: string, tokenKey?: string | client.getClaim(req, 'given\_name', 'id\_token');                                          | David                                                                                                |
+| getPermission        | Returns the state of a given permission                                                           | key: string                      | client.getPermission(req, 'read:todos');                                                   | \{'orgCode' : 'org\_1234', 'isGranted' : true\}                                                    |
+| getPermissions       | Returns all permissions for the current user for the organization they are logged into            |                                  | client.getPermissions(req);                                                              | \{'orgCode' : 'org\_1234', permissions : \['create:todos', 'update:todos', 'read:todos'\]\}       |
+| getOrganization      | Get details for the organization your user is logged into                                         |                                  | client.getOrganization(req);                                                             | \{'orgCode' : 'org\_1234'\}                                                                          |
+| getUserDetails       | Returns the profile for the current user                                                          |                                  | client.getUserDetails(req);                                                              | {'given\_name': 'Dave', 'id': 'abcdef', 'family\_name' : 'Smith', 'email' : 'dave@smith.com'\} |
+| getUserOrganizations | Gets an array of all organizations the user has access to                                         |                                   |  client.getUserOrganizations(req);                                                        |    \{ 'orgCodes: ['org_7052552de68', 'org_5a5c29381327'] \}   | 
 
 If you need help connecting to Kinde, please contact us at [support@kinde.com](mailto:support@kinde.com).
 
