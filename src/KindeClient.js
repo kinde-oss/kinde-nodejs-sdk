@@ -265,7 +265,7 @@ export default class KindeClient {
       if(req.session.kindeAccessToken){
         return next();
       }
-      
+
       const {
         state = randomString(),
         is_create_org = true,
@@ -366,6 +366,9 @@ export default class KindeClient {
    * @return {Object} The response is a object containing id, given_name, family_name and email.
    */
   getUserDetails(request) {
+    if (!this.isAuthenticated(request)){
+      throw new Error('Request is missing required authentication credential');
+    }
     return request.session.kindeUser;
   }
 
@@ -397,6 +400,9 @@ export default class KindeClient {
    * @return any The response is a data in token.
    */
   getClaim(request, keyName, tokenType = 'access_token') {
+    if (!this.isAuthenticated(request)){
+      throw new Error('Request is missing required authentication credential');
+    }
     const data = this.getClaims(request, tokenType);
     return data[keyName];
   }
@@ -408,6 +414,9 @@ export default class KindeClient {
    * @return {Object} The response includes orgCode and permissions.
    */
   getPermissions(request) {
+    if (!this.isAuthenticated(request)){
+      throw new Error('Request is missing required authentication credential');
+    }
     const claims = this.getClaims(request);
     return {
       orgCode: claims.org_code,
@@ -422,6 +431,9 @@ export default class KindeClient {
    * @return {Object} The response includes orgCode and isGranted.
    */
   getPermission(request, permission) {
+    if (!this.isAuthenticated(request)){
+      throw new Error('Request is missing required authentication credential');
+    }
     const allClaims = this.getClaims(request);
     const { permissions } = allClaims;
     return {
@@ -436,6 +448,9 @@ export default class KindeClient {
    * @return {Object} The response is a orgCode.
    */
   getOrganization(request) {
+    if (!this.isAuthenticated(request)){
+      throw new Error('Request is missing required authentication credential');
+    }
     return {
       orgCode: this.getClaim(request, 'org_code')
     }
@@ -447,6 +462,9 @@ export default class KindeClient {
    * @return {Object} The response is a orgCodes.
    */
   getUserOrganizations(request) {
+    if (!this.isAuthenticated(request)){
+      throw new Error('Request is missing required authentication credential');
+    }
     return {
       orgCodes: this.getClaim(request, 'org_codes', 'id_token')
     }
