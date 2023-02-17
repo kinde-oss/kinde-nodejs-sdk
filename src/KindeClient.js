@@ -1,7 +1,7 @@
 import GrantType from "./sdk/constant/grantType";
 import AuthorizationCode from "./sdk/oauth2/AuthorizationCode";
 import ClientCredentials from "./sdk/oauth2/ClientCredentials";
-import PKCE from "./sdk/oauth2/PCKE";
+import PKCE from "./sdk/oauth2/PKCE";
 import { parseJWT, randomString } from "./sdk/utils/Utils";
 
 /**
