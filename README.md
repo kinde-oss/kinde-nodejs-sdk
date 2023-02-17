@@ -165,17 +165,17 @@ After a user signs in and they are verified, the token return includes permissio
 We provide helper functions to more easily access permissions:
 
 ```javascript
-client.getPermission('create:todos');
+client.getPermission(req, 'create:todos');
 // { orgCode: 'org_1234', isGranted: true }
 
-client.getPermissions();
+client.getPermissions(req);
 // { orgCode: 'org_1234', permissions: ['create:todos', 'update:todos', 'read:todos'] }
 ```
 
 A practical example in code might look something like:
 
 ```javascript
-if (client.getPermission("create:todos")['isGranted']) {
+if (client.getPermission(req, 'create:todos')['isGranted']) {
     // create new a todo
 }
 ```
