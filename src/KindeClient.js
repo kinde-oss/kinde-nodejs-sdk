@@ -74,12 +74,12 @@ export default class KindeClient {
   }
 
   /**
-    * Login middleware function to handle OAuth 2.0 authentication.
-    * @returns {Function} Middleware function for handling the authorization response
-    * @property {Object} request - Request object
-    * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
-    * @property {String} request.query.org_code - Organization code
-    */
+   * Login middleware function to handle OAuth 2.0 authentication.
+   * @returns {Function} Middleware function for handling the authorization response
+   * @property {Object} request - Request object
+   * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
+   * @property {String} request.query.org_code - Organization code
+   */
   login() {
     return async (req, res, next) => {
       if (!req.session) {
@@ -130,12 +130,12 @@ export default class KindeClient {
   }
 
   /**
-    * Register middleware function to handle OAuth 2.0 authentication.
-    * @returns {Function} Middleware function for handling the authorization response
-    * @property {Object} request - Request object
-    * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
-    * @property {String} request.query.org_code - Organization code
-    */
+   * Register middleware function to handle OAuth 2.0 authentication.
+   * @returns {Function} Middleware function for handling the authorization response
+   * @property {Object} request - Request object
+   * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
+   * @property {String} request.query.org_code - Organization code
+   */
   register() {
     return async (req, res, next) => {
       if (!req.session) {
@@ -304,9 +304,9 @@ export default class KindeClient {
   }
 
   /**
-    * It destroy the token from the req.session and redirects the user to the logout endpoint
-    * @returns {Response} HTTP response with redirect logout URL
-    */
+   * It destroy the token from the req.session and redirects the user to the logout endpoint
+   * @returns {Response} HTTP response with redirect logout URL
+   */
   logout() {
     return (req, res) => {
       try {
