@@ -311,7 +311,7 @@ export default class KindeClient {
     return (req, res) => {
       try {
         this.cleanSession(req);
-        return res.redirect(`${this.logoutEndpoint}?redirect_uri=${this.logoutRedirectUri}`);
+        return res.redirect(`${this.logoutEndpoint}?redirect=${this.logoutRedirectUri}`);
       } catch (e) {
         return res.status(500).json({ error: e.message });
       }
