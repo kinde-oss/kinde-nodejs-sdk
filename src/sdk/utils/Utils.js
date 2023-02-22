@@ -14,9 +14,9 @@ export function randomString() {
  * @return {Promise} A Promise that returns the generated hash.
  */
 function sha256(plain) {
-  const hash = crypto.createHash('sha256');
-  hash.update(plain);
-  return hash.digest('hex');
+  const encoder = new TextEncoder();
+  const data = encoder.encode(plain);
+  return crypto.createHash('sha256').update(data).digest();
 }
 
 /**
@@ -27,7 +27,7 @@ function sha256(plain) {
  * @returns {string} The base64 URL encoded string
  */
 function base64UrlEncode(str) {
-  return btoa(String.fromCharCode.apply(null, new Uint8Array(str)))
+  return Buffer.from(str).toString('base64')
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=+$/, '');
@@ -40,8 +40,8 @@ function base64UrlEncode(str) {
  * @param {string} codeVerifier - The verifier used to generate the PKCE challenge
  * @returns {string} A base64 URL encoded SHA-256 hash of the verifier
  */
-export async function pkceChallengeFromVerifier(codeVerifier) {
-  const hashed = await sha256(codeVerifier);
+export function pkceChallengeFromVerifier(codeVerifier) {
+  const hashed = sha256(codeVerifier);
   return base64UrlEncode(hashed);
 }
 /**
@@ -52,7 +52,7 @@ export async function pkceChallengeFromVerifier(codeVerifier) {
  */
 export function parseJWT(token) {
   try {
-    return JSON.parse(atob(token.split('.')[1]));
+    return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString('utf8'));
   } catch (e) {
     return null;
   }

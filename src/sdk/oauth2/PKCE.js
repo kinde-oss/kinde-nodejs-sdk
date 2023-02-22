@@ -15,7 +15,7 @@ export default class PKCE {
    * @property {String} codeVerifier - Code verifier for Proof Key for Code Exchange (PKCE)
    * @property {String} url - The authorization URL to redirect the user to
    */
-  async generateAuthorizationURL(client, options) {
+  generateAuthorizationURL(client, options) {
     const {
       start_page,
       state,
@@ -24,7 +24,7 @@ export default class PKCE {
       org_name,
     } = options;
     const codeVerifier = randomString();
-    const codeChallenge = await pkceChallengeFromVerifier(codeVerifier);
+    const codeChallenge = pkceChallengeFromVerifier(codeVerifier);
 
     const searchParams = {
       client_id: client.clientId,

@@ -99,8 +99,12 @@ export default class KindeClient {
         let auth;
         if (this.grantType === GrantType.CLIENT_CREDENTIALS) {
           auth = new ClientCredentials();
-          const token = await auth.getToken(this);
-          this.saveToken(req, token);
+          const resGetToken = await auth.getToken(this);
+          if (resGetToken?.error) {
+            const msg = resGetToken?.error_description || resGetToken?.error;
+            return next(new Error(msg));
+          }
+          this.saveToken(req, resGetToken);
           return next();
         } if (this.grantType === GrantType.AUTHORIZATION_CODE) {
           auth = new AuthorizationCode();
@@ -113,7 +117,7 @@ export default class KindeClient {
           return res.redirect(authCodeResponse.url);
         } if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
-          const pkceResponse = await auth.generateAuthorizationURL(this, {
+          const pkceResponse = auth.generateAuthorizationURL(this, {
             state,
             org_code,
             start_page: 'login',
@@ -137,7 +141,7 @@ export default class KindeClient {
    * @property {String} request.query.org_code - Organization code
    */
   register() {
-    return async (req, res, next) => {
+    return (req, res, next) => {
       if (!req.session) {
         return next(new Error('OAuth 2.0 authentication requires session support when using state. Did you forget to use express-session middleware?'));
       }
@@ -164,7 +168,7 @@ export default class KindeClient {
           return res.redirect(authCodeResponse.url);
         } if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
-          const pkceResponse = await auth.generateAuthorizationURL(this, {
+          const pkceResponse = auth.generateAuthorizationURL(this, {
             state,
             org_code,
             start_page: 'registration',
@@ -257,7 +261,7 @@ export default class KindeClient {
    * @property {String} request.query.org_name - Organization name
    */
   createOrg() {
-    return async (req, res, next) => {
+    return (req, res, next) => {
       if (!req.session) {
         return next(new Error('OAuth 2.0 authentication requires session support when using state. Did you forget to use express-session middleware?'));
       }
@@ -286,7 +290,7 @@ export default class KindeClient {
           return res.redirect(authCodeResponse.url);
         } if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
-          const pkceResponse = await auth.generateAuthorizationURL(this, {
+          const pkceResponse = auth.generateAuthorizationURL(this, {
             state,
             is_create_org,
             org_name,
