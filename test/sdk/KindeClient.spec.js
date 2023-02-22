@@ -20,37 +20,38 @@
     factory(require('expect.js'), require(process.cwd()+'/src/index'));
   } else {
     // Browser globals (root is window)
-    factory(root.expect, root.KindeClient);
+    factory(root.expect, root.KindeManagementApi);
   }
-}(this, function(expect, KindeClient) {
+}(this, function(expect, KindeManagementApi) {
   'use strict';
 
-  var client;
+  var instance;
+  
   const options = {
     domain: "test_domain",
     clientId: "test_client_id",
     clientSecret: "test_client_secret",
     redirectUri: "test_redirect_uri",
     logoutRedirectUri: "test_logout_redirect_uri",
-    grantType: GrantType.AUTHORIZATION_CODE,
+    grantType: 'pkce',
   };
 
   beforeEach(function() {
-    client = new KindeClient(options);
+    instance = new KindeManagementApi.KindeClient(options);
   });
 
   describe('KindeClient', function() {
     describe('constructor', function() {
       it('should initialize all properties', function(done) {
         //uncomment below and update the code to test constructor
-        //expect(client.domain).to.equal(options.domain);
+        //expect(instance.domain).to.equal(options.domain);
         done();
       });
     });
     describe('login', function() {
       it('should call login successfully', function(done) {
         //uncomment below and update the code to test login
-        //client.login();
+        //instance.login();
         //expect().to.be();
         done();
       });
@@ -58,7 +59,7 @@
     describe('register', function() {
       it('should call register successfully', function(done) {
         //uncomment below and update the code to test register
-        //client.register();
+        //instance.register();
         //expect().to.be();
         done();
       });
@@ -66,7 +67,7 @@
     describe('callback', function() {
       it('should call callback successfully', function(done) {
         //uncomment below and update the code to test callback
-        //client.callback();
+        //instance.callback();
         //expect().to.be();
         done();
       });
@@ -74,7 +75,7 @@
     describe('createOrg', function() {
       it('should call createOrg successfully', function(done) {
         //uncomment below and update the code to test createOrg
-        //client.createOrg();
+        //instance.createOrg();
         //expect().to.be();
         done();
       });
@@ -82,7 +83,7 @@
     describe('logout', function() {
       it('should call logout successfully', function(done) {
         //uncomment below and update the code to test logout
-        //client.logout();
+        //instance.logout();
         //expect().to.be();
         done();
       });
@@ -90,7 +91,7 @@
     describe('saveToken', function() {
       it('should call saveToken successfully', function(done) {
         //uncomment below and update the code to test saveToken
-        //client.saveToken(req, token);
+        //instance.saveToken(req, token);
         //expect().to.be();
         done();
       });
@@ -98,7 +99,7 @@
     describe('cleanSession', function() {
       it('should call cleanSession successfully', function(done) {
         //uncomment below and update the code to test cleanSession
-        //client.cleanSession(req);
+        //instance.cleanSession(req);
         //expect().to.be();
         done();
       });
@@ -106,7 +107,7 @@
     describe('isAuthenticated', function() {
       it('should call isAuthenticated successfully', function(done) {
         //uncomment below and update the code to test isAuthenticated
-        //client.isAuthenticated(req);
+        //instance.isAuthenticated(req);
         //expect().to.be();
         done();
       });
@@ -114,7 +115,7 @@
     describe('getUserDetails', function() {
       it('should call getUserDetails successfully', function(done) {
         //uncomment below and update the code to test getUserDetails
-        //client.getUserDetails(req);
+        //instance.getUserDetails(req);
         //expect().to.be();
         done();
       });
@@ -122,7 +123,7 @@
     describe('getClaims', function() {
       it('should call getClaims successfully', function(done) {
         //uncomment below and update the code to test getClaims
-        //client.getClaims(req);
+        //instance.getClaims(req);
         //expect().to.be();
         done();
       });
@@ -130,7 +131,7 @@
     describe('getClaim', function() {
       it('should call getClaim successfully', function(done) {
         //uncomment below and update the code to test getClaim
-        //client.getClaim(req, 'given_name', 'id_token');
+        //instance.getClaim(req, 'given_name', 'id_token');
         //expect().to.be();
         done();
       });
@@ -138,7 +139,7 @@
     describe('getPermissions', function() {
       it('should call getPermissions successfully', function(done) {
         //uncomment below and update the code to test getPermissions
-        //client.getPermissions(req);
+        //instance.getPermissions(req);
         //expect().to.be();
         done();
       });
@@ -146,7 +147,7 @@
     describe('getPermission', function() {
       it('should call getPermission successfully', function(done) {
         //uncomment below and update the code to test getPermission
-        //client.getPermission(req, 'create:todos');
+        //instance.getPermission(req, 'create:todos');
         //expect().to.be();
         done();
       });
@@ -154,7 +155,7 @@
     describe('getOrganization', function() {
       it('should call getOrganization successfully', function(done) {
         //uncomment below and update the code to test getOrganization
-        //client.getOrganization(req);
+        //instance.getOrganization(req);
         //expect().to.be();
         done();
       });
@@ -162,7 +163,7 @@
     describe('getUserOrganizations', function() {
       it('should call getUserOrganizations successfully', function(done) {
         //uncomment below and update the code to test getUserOrganizations
-        //client.getUserOrganizations(req);
+        //instance.getUserOrganizations(req);
         //expect().to.be();
         done();
       });

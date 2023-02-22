@@ -15,6 +15,8 @@
 import ApiClient from './ApiClient';
 import AddOrganizationUsers200Response from './model/AddOrganizationUsers200Response';
 import AddOrganizationUsersRequest from './model/AddOrganizationUsersRequest';
+import AuthorizationCode from './sdk/oauth2/AuthorizationCode';
+import ClientCredentials from './sdk/oauth2/ClientCredentials';
 import CreateOrganizationRequest from './model/CreateOrganizationRequest';
 import CreateUser200Response from './model/CreateUser200Response';
 import CreateUserRequest from './model/CreateUserRequest';
@@ -25,6 +27,7 @@ import GrantType from './sdk/constant/GrantType';
 import KindeClient from './KindeClient';
 import Organization from './model/Organization';
 import OrganizationUser from './model/OrganizationUser';
+import PKCE from './sdk/oauth2/PKCE';
 import RemoveOrganizationUsers200Response from './model/RemoveOrganizationUsers200Response';
 import RemoveOrganizationUsersRequest from './model/RemoveOrganizationUsersRequest';
 import User from './model/User';
@@ -86,6 +89,24 @@ export {
      * @property {const:GrantType}
      */
     GrantType,
+
+    /**
+     * The ClientCredentials class.
+     * @property {class:ClientCredentials}
+     */
+    ClientCredentials,
+
+    /**
+     * The AuthorizationCode class.
+     * @property {class:AuthorizationCode}
+     */
+    AuthorizationCode,
+
+    /**
+     * The PKCE class.
+     * @property {class:PKCE}
+     */
+    PKCE,
 
     /**
      * The AddOrganizationUsers200Response model constructor.

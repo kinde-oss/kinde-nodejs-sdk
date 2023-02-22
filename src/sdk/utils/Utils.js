@@ -14,9 +14,9 @@ export function randomString() {
  * @return {Promise} A Promise that returns the generated hash.
  */
 function sha256(plain) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(plain);
-  return crypto.subtle.digest('SHA-256', data);
+  const hash = crypto.createHash('sha256');
+  hash.update(plain);
+  return hash.digest('hex');
 }
 
 /**

@@ -20,20 +20,22 @@
       factory(require('expect.js'), require(process.cwd()+'/src/index'));
     } else {
       // Browser globals (root is window)
-      factory(root.expect, root.authorizationCode);
+      factory(root.expect, root.KindeManagementApi);
     }
-  }(this, function(expect, PKCE) {
+  }(this, function(expect, KindeManagementApi) {
     'use strict';
 
+    var instance;
+
     beforeEach(function() {
-      pkce = new PKCE();
+      instance = new KindeManagementApi.PKCE();
     });
   
     describe('PKCE', function() {
       describe('generateAuthorizationURL', function() {
         it('should call generateAuthorizationURL successfully', function(done) {
           //uncomment below and update the code to test generateAuthorizationURL
-          //pkce.generateAuthorizationURL(client, options);
+          //instance.generateAuthorizationURL(client, options);
           //expect().to.be();
           done();
         });
@@ -41,7 +43,7 @@
       describe('getToken', function() {
         it('should call getToken successfully', function(done) {
           //uncomment below and update the code to test getToken
-          //pkce.getToken(client, code, codeVerifier);
+          //instance.getToken(client, code, codeVerifier);
           //expect().to.be();
           done();
         });

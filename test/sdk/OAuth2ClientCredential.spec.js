@@ -20,22 +20,22 @@
     factory(require('expect.js'), require(process.cwd()+'/src/index'));
   } else {
     // Browser globals (root is window)
-    factory(root.expect, root.authorizationCode);
+    factory(root.expect, root.KindeManagementApi);
   }
-}(this, function(expect, ClientCredentials) {
+}(this, function(expect, KindeManagementApi) {
   'use strict';
   
-  let clientCredentials;
+  var instance;
 
   beforeEach(function() {
-    clientCredentials = new ClientCredentials();
+    instance = new KindeManagementApi.ClientCredentials();
   });
 
   describe('ClientCredentials', function() {
     describe('getToken', function() {
       it('should call getToken successfully', function(done) {
         //uncomment below and update the code to test getToken
-        //clientCredentials.getToken(client);
+        //instance.getToken(client);
         //expect().to.be();
         done();
       });
