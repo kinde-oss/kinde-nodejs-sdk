@@ -11,7 +11,7 @@ export function randomString() {
 /**
  * Generates SHA-256 hash of the input string.
  * @param {string} plain - The input string to be hashed.
- * @return {Promise} A Promise that returns the generated hash.
+ * @return {Buffer} - The generated hash as a buffer object.
  */
 function sha256(plain) {
   const encoder = new TextEncoder();
