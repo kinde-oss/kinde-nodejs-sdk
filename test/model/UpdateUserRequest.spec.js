@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.UserProfileV2();
+    instance = new KindeManagementApi.UpdateUserRequest();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,52 +47,22 @@
       object[property] = value;
   }
 
-  describe('UserProfileV2', function() {
-    it('should create an instance of UserProfileV2', function() {
-      // uncomment below and update the code to test UserProfileV2
-      //var instance = new KindeManagementApi.UserProfileV2();
-      //expect(instance).to.be.a(KindeManagementApi.UserProfileV2);
-    });
-
-    it('should have the property id (base name: "id")', function() {
-      // uncomment below and update the code to test the property id
-      //var instance = new KindeManagementApi.UserProfileV2();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property providedId (base name: "provided_id")', function() {
-      // uncomment below and update the code to test the property providedId
-      //var instance = new KindeManagementApi.UserProfileV2();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property name (base name: "name")', function() {
-      // uncomment below and update the code to test the property name
-      //var instance = new KindeManagementApi.UserProfileV2();
-      //expect(instance).to.be();
+  describe('UpdateUserRequest', function() {
+    it('should create an instance of UpdateUserRequest', function() {
+      // uncomment below and update the code to test UpdateUserRequest
+      //var instance = new KindeManagementApi.UpdateUserRequest();
+      //expect(instance).to.be.a(KindeManagementApi.UpdateUserRequest);
     });
 
     it('should have the property givenName (base name: "given_name")', function() {
       // uncomment below and update the code to test the property givenName
-      //var instance = new KindeManagementApi.UserProfileV2();
+      //var instance = new KindeManagementApi.UpdateUserRequest();
       //expect(instance).to.be();
     });
 
     it('should have the property familyName (base name: "family_name")', function() {
       // uncomment below and update the code to test the property familyName
-      //var instance = new KindeManagementApi.UserProfileV2();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property updatedAt (base name: "updated_at")', function() {
-      // uncomment below and update the code to test the property updatedAt
-      //var instance = new KindeManagementApi.UserProfileV2();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property email (base name: "email")', function() {
-      // uncomment below and update the code to test the property email
-      //var instance = new KindeManagementApi.UserProfileV2();
+      //var instance = new KindeManagementApi.UpdateUserRequest();
       //expect(instance).to.be();
     });
 

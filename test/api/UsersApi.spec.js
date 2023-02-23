@@ -68,10 +68,30 @@
         done();
       });
     });
+    describe('deleteuser', function() {
+      it('should call deleteuser successfully', function(done) {
+        //uncomment below and update the code to test deleteuser
+        //instance.deleteuser(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
     describe('getOrganizationUsers', function() {
       it('should call getOrganizationUsers successfully', function(done) {
         //uncomment below and update the code to test getOrganizationUsers
         //instance.getOrganizationUsers(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
+    describe('getUserData', function() {
+      it('should call getUserData successfully', function(done) {
+        //uncomment below and update the code to test getUserData
+        //instance.getUserData(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});
@@ -92,6 +112,16 @@
       it('should call removeOrganizationUsers successfully', function(done) {
         //uncomment below and update the code to test removeOrganizationUsers
         //instance.removeOrganizationUsers(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
+    describe('updateUser', function() {
+      it('should call updateUser successfully', function(done) {
+        //uncomment below and update the code to test updateUser
+        //instance.updateUser(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});

@@ -15,8 +15,11 @@
 import ApiClient from './ApiClient';
 import AddOrganizationUsers200Response from './model/AddOrganizationUsers200Response';
 import AddOrganizationUsersRequest from './model/AddOrganizationUsersRequest';
+import ApiResult from './model/ApiResult';
 import AuthorizationCode from './sdk/oauth2/AuthorizationCode';
 import ClientCredentials from './sdk/oauth2/ClientCredentials';
+import ConnectedAppsAccessToken from './model/ConnectedAppsAccessToken';
+import ConnectedAppsAuthUrl from './model/ConnectedAppsAuthUrl';
 import CreateOrganizationRequest from './model/CreateOrganizationRequest';
 import CreateUser200Response from './model/CreateUser200Response';
 import CreateUserRequest from './model/CreateUserRequest';
@@ -30,15 +33,16 @@ import OrganizationUser from './model/OrganizationUser';
 import PKCE from './sdk/oauth2/PKCE';
 import RemoveOrganizationUsers200Response from './model/RemoveOrganizationUsers200Response';
 import RemoveOrganizationUsersRequest from './model/RemoveOrganizationUsersRequest';
+import UpdateUserRequest from './model/UpdateUserRequest';
 import User from './model/User';
 import UserIdentity from './model/UserIdentity';
 import UserIdentityResult from './model/UserIdentityResult';
 import UserProfile from './model/UserProfile';
 import UserProfileV2 from './model/UserProfileV2';
+import ConnectedAppsApi from './api/ConnectedAppsApi';
 import OAuthApi from './api/OAuthApi';
 import OrganizationsApi from './api/OrganizationsApi';
 import UsersApi from './api/UsersApi';
-
 
 
 /**
@@ -78,6 +82,7 @@ export {
      * @property {module:ApiClient}
      */
     ApiClient,
+
     /**
      * The KindeClient class.
      * @property {class:KindeClient}
@@ -119,6 +124,24 @@ export {
      * @property {module:model/AddOrganizationUsersRequest}
      */
     AddOrganizationUsersRequest,
+
+    /**
+     * The ApiResult model constructor.
+     * @property {module:model/ApiResult}
+     */
+    ApiResult,
+
+    /**
+     * The ConnectedAppsAccessToken model constructor.
+     * @property {module:model/ConnectedAppsAccessToken}
+     */
+    ConnectedAppsAccessToken,
+
+    /**
+     * The ConnectedAppsAuthUrl model constructor.
+     * @property {module:model/ConnectedAppsAuthUrl}
+     */
+    ConnectedAppsAuthUrl,
 
     /**
      * The CreateOrganizationRequest model constructor.
@@ -181,6 +204,12 @@ export {
     RemoveOrganizationUsersRequest,
 
     /**
+     * The UpdateUserRequest model constructor.
+     * @property {module:model/UpdateUserRequest}
+     */
+    UpdateUserRequest,
+
+    /**
      * The User model constructor.
      * @property {module:model/User}
      */
@@ -209,6 +238,12 @@ export {
      * @property {module:model/UserProfileV2}
      */
     UserProfileV2,
+
+    /**
+    * The ConnectedAppsApi service constructor.
+    * @property {module:api/ConnectedAppsApi}
+    */
+    ConnectedAppsApi,
 
     /**
     * The OAuthApi service constructor.

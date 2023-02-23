@@ -308,7 +308,7 @@ export default class KindeClient {
   }
 
   /**
-   * It destroy the token from the req.session and redirects the user to the logout endpoint
+   * It destroy the token from the req.session and redirects the user to the logout redirect uri
    * @returns {Response} HTTP response with redirect logout URL
    */
   logout() {

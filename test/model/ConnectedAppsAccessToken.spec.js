@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.User();
+    instance = new KindeManagementApi.ConnectedAppsAccessToken();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,40 +47,22 @@
       object[property] = value;
   }
 
-  describe('User', function() {
-    it('should create an instance of User', function() {
-      // uncomment below and update the code to test User
-      //var instance = new KindeManagementApi.User();
-      //expect(instance).to.be.a(KindeManagementApi.User);
+  describe('ConnectedAppsAccessToken', function() {
+    it('should create an instance of ConnectedAppsAccessToken', function() {
+      // uncomment below and update the code to test ConnectedAppsAccessToken
+      //var instance = new KindeManagementApi.ConnectedAppsAccessToken();
+      //expect(instance).to.be.a(KindeManagementApi.ConnectedAppsAccessToken);
     });
 
-    it('should have the property id (base name: "id")', function() {
-      // uncomment below and update the code to test the property id
-      //var instance = new KindeManagementApi.User();
+    it('should have the property accessToken (base name: "access_token")', function() {
+      // uncomment below and update the code to test the property accessToken
+      //var instance = new KindeManagementApi.ConnectedAppsAccessToken();
       //expect(instance).to.be();
     });
 
-    it('should have the property email (base name: "email")', function() {
-      // uncomment below and update the code to test the property email
-      //var instance = new KindeManagementApi.User();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property lastName (base name: "last_name")', function() {
-      // uncomment below and update the code to test the property lastName
-      //var instance = new KindeManagementApi.User();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property firstName (base name: "first_name")', function() {
-      // uncomment below and update the code to test the property firstName
-      //var instance = new KindeManagementApi.User();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property isSuspended (base name: "is_suspended")', function() {
-      // uncomment below and update the code to test the property isSuspended
-      //var instance = new KindeManagementApi.User();
+    it('should have the property accessTokenExpiry (base name: "access_token_expiry")', function() {
+      // uncomment below and update the code to test the property accessTokenExpiry
+      //var instance = new KindeManagementApi.ConnectedAppsAccessToken();
       //expect(instance).to.be();
     });
 
