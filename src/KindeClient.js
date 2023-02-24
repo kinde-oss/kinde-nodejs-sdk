@@ -2,7 +2,7 @@ import GrantType from "./sdk/constant/grantType";
 import AuthorizationCode from "./sdk/oauth2/AuthorizationCode";
 import ClientCredentials from "./sdk/oauth2/ClientCredentials";
 import PKCE from "./sdk/oauth2/PKCE";
-import { parseJWT, pkceChallengeFromVerifier, randomString,  } from "./sdk/utils/Utils";
+import { parseJWT, pkceChallengeFromVerifier, randomString } from "./sdk/utils/Utils";
 
 /**
  * KindeClient class for OAuth 2.0 authentication.
