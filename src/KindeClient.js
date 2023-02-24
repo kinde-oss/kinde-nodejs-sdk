@@ -2,7 +2,7 @@ import GrantType from "./sdk/constant/grantType";
 import AuthorizationCode from "./sdk/oauth2/AuthorizationCode";
 import ClientCredentials from "./sdk/oauth2/ClientCredentials";
 import PKCE from "./sdk/oauth2/PKCE";
-import { parseJWT, randomString } from "./sdk/utils/Utils";
+import { parseJWT, pkceChallengeFromVerifier, randomString,  } from "./sdk/utils/Utils";
 
 /**
  * KindeClient class for OAuth 2.0 authentication.
@@ -108,23 +108,25 @@ export default class KindeClient {
           return next();
         } if (this.grantType === GrantType.AUTHORIZATION_CODE) {
           auth = new AuthorizationCode();
-          const authCodeResponse = auth.generateAuthorizationURL(this, {
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             org_code,
             start_page: 'login',
           });
-          req.session.kindeOauthState = authCodeResponse.state;
-          return res.redirect(authCodeResponse.url);
+          req.session.kindeOauthState = state;
+          return res.redirect(authorizationURL);
         } if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
-          const pkceResponse = auth.generateAuthorizationURL(this, {
+          const codeVerifier = randomString();
+          const codeChallenge = pkceChallengeFromVerifier(codeVerifier);
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             org_code,
             start_page: 'login',
-          });
-          req.session.kindeOauthState = pkceResponse?.state;
-          req.session.kindeOauthCodeVerifier = pkceResponse?.codeVerifier;
-          return res.redirect(pkceResponse?.url);
+          }, codeChallenge);
+          req.session.kindeOauthState = state;
+          req.session.kindeOauthCodeVerifier = codeVerifier;
+          return res.redirect(authorizationURL);
         }
         return next(new Error('Please provide correct grantType'));
       } catch (err) {
@@ -159,23 +161,25 @@ export default class KindeClient {
         let auth;
         if (this.grantType === GrantType.AUTHORIZATION_CODE) {
           auth = new AuthorizationCode();
-          const authCodeResponse = auth.generateAuthorizationURL(this, {
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             org_code,
             start_page: 'registration',
           });
-          req.session.kindeOauthState = authCodeResponse.state;
-          return res.redirect(authCodeResponse.url);
+          req.session.kindeOauthState = state;
+          return res.redirect(authorizationURL);
         } if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
-          const pkceResponse = auth.generateAuthorizationURL(this, {
+          const codeVerifier = randomString();
+          const codeChallenge = pkceChallengeFromVerifier(codeVerifier);
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             org_code,
             start_page: 'registration',
-          })
-          req.session.kindeOauthState = pkceResponse?.state;
-          req.session.kindeOauthCodeVerifier = pkceResponse?.codeVerifier;
-          return res.redirect(pkceResponse?.url);
+          }, codeChallenge)
+          req.session.kindeOauthState = state;
+          req.session.kindeOauthCodeVerifier = codeVerifier;
+          return res.redirect(authorizationURL);
         }
         return next(new Error('Please provide correct grantType'));
       } catch (err) {
@@ -280,25 +284,27 @@ export default class KindeClient {
         let auth
         if (this.grantType === GrantType.AUTHORIZATION_CODE) {
           auth = new AuthorizationCode();
-          const authCodeResponse = auth.generateAuthorizationURL(this, {
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             is_create_org,
             org_name,
             start_page: 'registration',
           })
-          req.session.kindeOauthState = authCodeResponse.state;
-          return res.redirect(authCodeResponse.url);
+          req.session.kindeOauthState = state;
+          return res.redirect(authorizationURL);
         } if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
-          const pkceResponse = auth.generateAuthorizationURL(this, {
+          const codeVerifier = randomString();
+          const codeChallenge = pkceChallengeFromVerifier(codeVerifier);
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             is_create_org,
             org_name,
             start_page: 'registration',
-          })
-          req.session.kindeOauthState = pkceResponse?.state;
-          req.session.kindeOauthCodeVerifier = pkceResponse?.codeVerifier;
-          return res.redirect(pkceResponse?.url);
+          }, codeChallenge)
+          req.session.kindeOauthState = state;
+          req.session.kindeOauthCodeVerifier = codeVerifier;
+          return res.redirect(authorizationURL);
         }
         return next(new Error('Please provide correct grantType'));
       } catch (err) {

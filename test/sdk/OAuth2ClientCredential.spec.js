@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  *
  */
+import sinon from 'sinon';
 
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -24,21 +25,48 @@
   }
 }(this, function(expect, KindeManagementApi) {
   'use strict';
-  
-  var instance;
 
+  var instance;
   beforeEach(function() {
     instance = new KindeManagementApi.ClientCredentials();
   });
 
   describe('ClientCredentials', function() {
-    describe('getToken', function() {
-      it('should call getToken successfully', function(done) {
-        //uncomment below and update the code to test getToken
-        //instance.getToken(client);
-        //expect().to.be();
-        done();
+    describe('getToken', async function() {
+      let fetchStub;
+      beforeEach(() => {
+        fetchStub = sinon.stub(global, 'fetch');
       });
+    
+      afterEach(() => {
+        fetchStub.restore();
+      });
+
+      it('should call getToken successfully', async () => {
+        const client = {
+          clientId: 'abc123',
+          clientSecret: 'secret',
+          redirectUri: 'https://example.com/redirect',
+          tokenEndpoint: 'https://example.com/token',
+          scope: 'scope',
+          grantType: 'client_credentials',
+        };
+        const expectedSearchParams = new URLSearchParams({
+          grant_type: 'client_credentials',
+          client_id: client.clientId,
+          client_secret: client.clientSecret,
+          scope: client.scope,
+        });
+        const fakeToken = { access_token: '123456' };
+        fetchStub.resolves({ json: sinon.stub().resolves(fakeToken) });
+        const token = await instance.getToken(client);
+        expect(fetchStub.calledOnce).to.be(true);
+        expect(fetchStub.args[0][0]).to.be(client.tokenEndpoint);
+        expect(fetchStub.args[0][1].method).to.be('POST');
+        expect(fetchStub.args[0][1].headers['Content-Type']).to.be('application/x-www-form-urlencoded');
+        expect(fetchStub.args[0][1].body.toString()).to.be(expectedSearchParams.toString());
+        expect(token).to.eql(fakeToken);
+      })
     });
   });
 }));

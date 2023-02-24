@@ -233,7 +233,7 @@ We have provided a helper to grab any claim from your id or access tokens. The h
 
 ```javascript
 client.getClaim(req, 'aud');
-// 'api.yourapp.com'
+// ['api.yourapp.com']
 
 client.getClaim(req, 'given_name', 'id_token');
 // 'David'
