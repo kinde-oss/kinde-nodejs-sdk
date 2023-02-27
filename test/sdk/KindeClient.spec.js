@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  *
  */
+import sinon from 'sinon';
 
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -20,153 +21,526 @@
     factory(require('expect.js'), require(process.cwd()+'/src/index'));
   } else {
     // Browser globals (root is window)
-    factory(root.expect, root.KindeClient);
+    factory(root.expect, root.KindeManagementApi);
   }
-}(this, function(expect, KindeClient) {
+}(this, function(expect, KindeManagementApi) {
   'use strict';
 
-  var client;
+  var instance;
   const options = {
-    domain: "test_domain",
+    domain: "https://example.com",
     clientId: "test_client_id",
     clientSecret: "test_client_secret",
     redirectUri: "test_redirect_uri",
-    logoutRedirectUri: "test_logout_redirect_uri",
-    grantType: GrantType.AUTHORIZATION_CODE,
+    logoutRedirectUri: "https://example.com/logout",
+    grantType: 'authorization_code',
   };
 
   beforeEach(function() {
-    client = new KindeClient(options);
+    instance = new KindeManagementApi.KindeClient(options);
   });
 
   describe('KindeClient', function() {
     describe('constructor', function() {
-      it('should initialize all properties', function(done) {
-        //uncomment below and update the code to test constructor
-        //expect(client.domain).to.equal(options.domain);
-        done();
+      it('should create an instance of KindeClient', function() {
+        expect(instance.domain).to.equal(options.domain);
+        expect(instance.clientId).to.equal(options.clientId);
+        expect(instance.clientSecret).to.equal(options.clientSecret);
+        expect(instance.redirectUri).to.equal(options.redirectUri);
+        expect(instance.logoutRedirectUri).to.equal(options.logoutRedirectUri);
+        expect(instance.grantType).to.equal(options.grantType);
       });
     });
+
     describe('login', function() {
-      it('should call login successfully', function(done) {
-        //uncomment below and update the code to test login
-        //client.login();
-        //expect().to.be();
-        done();
+      let sandbox;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
       });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call login successfully', async () => {
+        const kindeClient = new KindeManagementApi.KindeClient({
+          domain: 'https://example.com',
+          clientId: 'client_id',
+          clientSecret: 'client_secret',
+          redirectUri: 'https://example.com/callback',
+          logoutRedirectUri: 'https://example.com/logout',
+          grantType: 'authorization_code',
+        });
+        const next = sinon.spy();
+        sandbox.stub(KindeManagementApi.AuthorizationCode.prototype, 'generateAuthorizationURL').returns('https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=login');
+        const req = {
+          query: {
+            state: 'random_state',
+            org_code: 'org_code',
+          },
+          session: {},
+        };
+        const res = {
+          redirect: sinon.stub(),
+        };
+
+        await kindeClient.login()(req, res, next);
+
+        expect(res.redirect.calledOnce).to.be(true);
+        expect(res.redirect.getCall(0).args[0]).to.be(`https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=login`);
+        expect(req.session.kindeOauthState).to.be('random_state');
+      });
+
+      it('should call login throw an error', async () => {
+        const next = sinon.spy();
+        await instance.login()({}, {}, next);
+        expect(next.calledOnce).to.be(true);
+        expect(next.firstCall.args[0]).to.be.an(Error);
+      });
+
     });
+
     describe('register', function() {
-      it('should call register successfully', function(done) {
-        //uncomment below and update the code to test register
-        //client.register();
-        //expect().to.be();
-        done();
+      let sandbox;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call register successfully', async () => {
+        const kindeClient = new KindeManagementApi.KindeClient({
+          domain: 'https://example.com',
+          clientId: 'client_id',
+          clientSecret: 'client_secret',
+          redirectUri: 'https://example.com/callback',
+          logoutRedirectUri: 'https://example.com/logout',
+          grantType: 'authorization_code',
+        });
+        const req = {
+          query: {
+            state: 'random_state',
+            org_code: 'org_code',
+          },
+          session: {},
+        };
+        const res = {
+          redirect: sinon.stub(),
+        };
+        const next = sinon.spy();
+        sandbox.stub(KindeManagementApi.AuthorizationCode.prototype, 'generateAuthorizationURL').returns('https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=registration');
+        await kindeClient.register()(req, res, next);
+        expect(res.redirect.calledOnce).to.be(true);
+        expect(res.redirect.getCall(0).args[0]).to.be(`https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=registration`);
+        expect(req.session.kindeOauthState).to.be('random_state');
+      });
+
+      it('should call register throw an error', async () => {
+        const next = sinon.spy();
+        await instance.register()({}, {}, next);
+        expect(next.calledOnce).to.be(true);
+        expect(next.firstCall.args[0]).to.be.an(Error);
       });
     });
+
     describe('callback', function() {
-      it('should call callback successfully', function(done) {
-        //uncomment below and update the code to test callback
-        //client.callback();
-        //expect().to.be();
-        done();
+      let client;
+      let req;
+      let res;
+      let next;
+
+      beforeEach(() => {
+        const options = {
+          domain: 'https://example.com',
+          clientId: '12345',
+          clientSecret: 'secret',
+          redirectUri: 'https://example.com/callback',
+          logoutRedirectUri: 'https://example.com/logout',
+          grantType: 'authorization_code',
+        };
+        client = new KindeManagementApi.KindeClient(options);
+        req = {
+          session: {},
+          query: {},
+        };
+        res = {};
+        next = sinon.spy();
+      });
+
+      it('should call callback throws an error', async () => {
+        await client.callback()(req, res, next);
+        expect(next.calledOnce).to.be(true);
+        expect(next.calledWithExactly(sinon.match.instanceOf(Error))).to.be(true);
+      });
+
+      it('should call callback successfully', async () => {
+        const req = {
+          session: {
+            kindeOauthState: 'state',
+          },
+          query: {
+            code: 'abc',
+            state: 'state',
+          }
+        };
+        const res = {};
+        const next = sinon.spy();
+        const getTokenStub = sinon.stub(KindeManagementApi.AuthorizationCode.prototype, 'getToken').resolves({});
+        const saveTokenStub = sinon.stub(client, 'saveToken');
+        await client.callback()(req, res, next);
+        expect(next.calledOnce).to.be(true);
+        expect(getTokenStub.calledOnce).to.be(true);
+        expect(saveTokenStub.calledOnce).to.be(true);
+        getTokenStub.restore();
+        saveTokenStub.restore();
       });
     });
+
     describe('createOrg', function() {
-      it('should call createOrg successfully', function(done) {
-        //uncomment below and update the code to test createOrg
-        //client.createOrg();
-        //expect().to.be();
-        done();
+      let sandbox;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call createOrg successfully', async () => {
+        const kindeClient = new KindeManagementApi.KindeClient({
+          domain: 'https://example.com',
+          clientId: 'client_id',
+          clientSecret: 'client_secret',
+          redirectUri: 'https://example.com/callback',
+          logoutRedirectUri: 'https://example.com/logout',
+          grantType: 'authorization_code',
+        });
+        const req = {
+          query: {
+            state: 'random_state',
+            org_code: 'org_code',
+          },
+          session: {},
+        };
+        const res = {
+          redirect: sinon.stub(),
+        };
+        const next = sinon.spy();
+        sandbox.stub(KindeManagementApi.AuthorizationCode.prototype, 'generateAuthorizationURL').returns('https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&start_page=registration&is_create_org=true&org_name=org_name');
+        await kindeClient.createOrg()(req, res, next);  
+        expect(res.redirect.calledOnce).to.be(true);
+        expect(res.redirect.getCall(0).args[0]).to.be(`https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&start_page=registration&is_create_org=true&org_name=org_name`);
+        expect(req.session.kindeOauthState).to.be('random_state');
+      });
+
+      it('should call createOrg throws an error', async () => {
+        const next = sinon.spy();
+        await instance.createOrg()({}, {}, next);
+        expect(next.calledOnce).to.be(true);
+        expect(next.firstCall.args[0]).to.be.an(Error);
       });
     });
+
     describe('logout', function() {
-      it('should call logout successfully', function(done) {
-        //uncomment below and update the code to test logout
-        //client.logout();
-        //expect().to.be();
-        done();
+      let sandbox;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+      
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call logout successfully', () => {
+        const req = {};
+        const res = {
+          redirect: sinon.spy(),
+        };
+        sandbox.stub(instance, 'cleanSession');
+        instance.logout()(req, res);
+        expect(res.redirect.calledWith('https://example.com/logout?redirect=https://example.com/logout')).to.be(true);
+      });
+
+      it('should call logout throws an error', () => {
+        const req = {};
+        const res = {
+          status: sinon.stub().returnsThis(),
+          json: sinon.spy(),
+        };
+        const errorMessage = 'An error occurred while cleaning session';
+        sandbox.stub(instance, 'cleanSession').throws(new Error(errorMessage));
+        instance.logout()(req, res);
+        expect(res.status.calledWith(500)).to.be(true);
+        expect(res.json.calledWith({ error: errorMessage })).to.be(true);
       });
     });
+
     describe('saveToken', function() {
-      it('should call saveToken successfully', function(done) {
-        //uncomment below and update the code to test saveToken
-        //client.saveToken(req, token);
-        //expect().to.be();
-        done();
+      it('should call saveToken successfully', function() {
+        const request = {
+          session: {}
+        };
+        const token = {
+          access_token: 'token',
+          id_token: 'id_token',
+          expires_in: 3600,
+        };
+        instance.saveToken(request, token);        
+        expect(request.session.kindeAccessToken).to.be('token');
+        expect(request.session.kindeIdToken).to.be('id_token');
+        expect(request.session.kindeExpiresIn).to.be(3600);
       });
     });
+
     describe('cleanSession', function() {
-      it('should call cleanSession successfully', function(done) {
-        //uncomment below and update the code to test cleanSession
-        //client.cleanSession(req);
-        //expect().to.be();
-        done();
+      it('should call cleanSession successfully', function() {
+        const request = { session: { destroy: sinon.stub() } };
+        instance.cleanSession(request);
+        expect(request.session.destroy.calledOnce).to.be.true;
       });
     });
+
     describe('isAuthenticated', function() {
-      it('should call isAuthenticated successfully', function(done) {
-        //uncomment below and update the code to test isAuthenticated
-        //client.isAuthenticated(req);
-        //expect().to.be();
-        done();
+      it('should call isAuthenticated return true', () => {
+        const request = {
+          session: {
+            kindeLoginTimeStamp: Date.now(),
+            kindeExpiresIn: 10,
+          }
+        };
+        const isAuthenticated = instance.isAuthenticated(request);
+        expect(isAuthenticated).to.be(true);
+      });
+
+      it('should call isAuthenticated return false', () => {
+        const request = {
+          session: {}
+        };
+        const isAuthenticated = instance.isAuthenticated(request);
+        expect(isAuthenticated).to.be(false);
       });
     });
+
     describe('getUserDetails', function() {
-      it('should call getUserDetails successfully', function(done) {
-        //uncomment below and update the code to test getUserDetails
-        //client.getUserDetails(req);
-        //expect().to.be();
-        done();
+      it('should call getUserDetails successfully', function() {
+        const request = {
+          session: {
+            kindeLoginTimeStamp: Date.now() / 1000,
+            kindeExpiresIn: 3600,
+            kindeUser: {
+              name: 'John Doe',
+              email: 'johndoe@example.com',
+            }
+          }
+        };
+        const isAuthenticatedStub = sinon.stub(instance, 'isAuthenticated').returns(true);  
+        const userDetails = instance.getUserDetails(request);  
+        expect(userDetails).to.eql({
+          name: 'John Doe',
+          email: 'johndoe@example.com',
+        });
+        isAuthenticatedStub.restore();
+      });
+
+      it('should call getUserDetails throw an error', function() {
+        const request = {
+          session: {}
+        };
+        const isAuthenticatedStub = sinon.stub(instance, 'isAuthenticated').returns(false);  
+        expect(function() {
+          instance.getUserDetails(request);
+        }).to.throwError('Request is missing required authentication credential');
+        isAuthenticatedStub.restore();
       });
     });
+
     describe('getClaims', function() {
-      it('should call getClaims successfully', function(done) {
-        //uncomment below and update the code to test getClaims
-        //client.getClaims(req);
-        //expect().to.be();
-        done();
+      let request;
+      let token;
+
+      beforeEach(() => {
+        request = {
+          session: {},
+        };
+        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+      });
+
+      it('should call getClaims successfully', () => {
+        request.session.kindeIdToken = token;
+        const claims = instance.getClaims(request, 'id_token');
+        expect(claims).to.be.an('object');
+        expect(claims.sub).to.equal('1234567890');
+        expect(claims.name).to.equal('John Doe');
+        expect(claims.iat).to.equal(1516239022);
+      });
+
+      it('should call getClaims throw an error', () => {
+        const fn = () => instance.getClaims(request, 'id_token');
+        expect(fn).to.throwError(`Request is missing required authentication credential`);
       });
     });
+
     describe('getClaim', function() {
-      it('should call getClaim successfully', function(done) {
-        //uncomment below and update the code to test getClaim
-        //client.getClaim(req, 'given_name', 'id_token');
-        //expect().to.be();
-        done();
+      let sandbox;
+      const request = {
+        session: {
+          kindeAccessToken: 'fakeAccessToken',
+          kindeIdToken: 'fakeIdToken',
+        }
+      };
+
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call getClaim successfully', () => {
+        const fakeTokenData = {
+          sub: '12345',
+          email: 'johndoe@example.com',
+        };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        sandbox.stub(instance, 'getClaims').returns(fakeTokenData);
+        const claimValue = instance.getClaim(request, 'email', 'access_token');
+        expect(claimValue).to.equal('johndoe@example.com');
+      });
+
+      it('should call getClaim throw an error', () => {
+        sandbox.stub(instance, 'isAuthenticated').returns(false);
+        expect(() => {
+          instance.getClaim(request, 'email', 'access_token');
+        }).to.throwError('Request is missing required authentication credential');
       });
     });
+
     describe('getPermissions', function() {
-      it('should call getPermissions successfully', function(done) {
-        //uncomment below and update the code to test getPermissions
-        //client.getPermissions(req);
-        //expect().to.be();
-        done();
+      it('should call getPermissions throw an error', () => {
+        const request = {
+          session: {},
+        };
+        expect(() => instance.getPermissions(request)).to.throwException((exception) => {
+          expect(exception.message).to.be('Request is missing required authentication credential');
+        });
+      });
+
+      it('should call getPermissions successfully', () => { 
+        const orgCode = 'org123';
+        const permissions = ['view', 'edit'];
+        const claims = {
+          org_code: orgCode,
+          permissions: permissions,
+        };
+        const sandbox = sinon.createSandbox();
+        sandbox.stub(KindeManagementApi.KindeClient.prototype, 'isAuthenticated').returns(true);
+        sandbox.stub(KindeManagementApi.KindeClient.prototype, 'getClaims').returns(claims);  
+        const request = {
+          session: {
+            kindeAccessToken: 'access-token',
+          },
+        };
+        const expectedPermissions = {
+          orgCode: orgCode,
+          permissions: permissions,
+        };
+        expect(instance.getPermissions(request)).to.eql(expectedPermissions);
+        sandbox.restore();
       });
     });
+
     describe('getPermission', function() {
-      it('should call getPermission successfully', function(done) {
-        //uncomment below and update the code to test getPermission
-        //client.getPermission(req, 'create:todos');
-        //expect().to.be();
-        done();
+      let sandbox;
+      const sampleRequest = {
+        session: {
+          kindeAccessToken: 'Bearer sampleToken'
+        }
+      };
+      const sampleClaims = {
+        org_code: 'sampleOrgCode',
+        permissions: ['permission1', 'permission2'],
+      };
+
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call getPermission successfully', () => {
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        sandbox.stub(instance, 'getClaims').returns(sampleClaims);
+        const result = instance.getPermission(sampleRequest, 'permission1');
+        expect(result).to.be.an('object');
+        expect(result.orgCode).to.eql('sampleOrgCode');
+        expect(result.isGranted).to.be(true);
+      });
+
+      it('should call getPermission throw an error', () => {
+        sandbox.stub(instance, 'isAuthenticated').returns(false);
+        expect(() => {
+          instance.getPermission(sampleRequest, 'permission1');
+        }).to.throwError('Request is missing required authentication credential');
       });
     });
+
     describe('getOrganization', function() {
-      it('should call getOrganization successfully', function(done) {
-        //uncomment below and update the code to test getOrganization
-        //client.getOrganization(req);
-        //expect().to.be();
-        done();
+      let sandbox;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call getOrganization successfully ', () => {
+        const request = {};
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        sandbox.stub(instance, 'getClaim').withArgs(request, 'org_code').returns('org-123');  
+        const result = instance.getOrganization(request);
+        expect(result).to.eql({ orgCode: 'org-123' });
+      });
+
+      it('should call getOrganization throw an error', () => {
+        const request = {};
+        sandbox.stub(KindeManagementApi.KindeClient.prototype,'isAuthenticated').returns(false);  
+        expect(() => instance.getOrganization(request)).to.throwError('Request is missing required authentication credential');
       });
     });
+
     describe('getUserOrganizations', function() {
-      it('should call getUserOrganizations successfully', function(done) {
-        //uncomment below and update the code to test getUserOrganizations
-        //client.getUserOrganizations(req);
-        //expect().to.be();
-        done();
+      let sandbox;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+      
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call getUserOrganizations successfully', function() {  
+        sandbox.stub(instance, 'getClaims').returns({
+          org_codes: ['org1', 'org2']
+        });  
+        sandbox.stub(instance, 'isAuthenticated').returns(true);  
+        const request = { session: { kindeIdToken: '123' } };  
+        const result = instance.getUserOrganizations(request);  
+        expect(result).to.eql({
+          orgCodes: ['org1', 'org2'],
+        });
+      });
+  
+      it('should call getUserOrganizations throw an error', function() { 
+        sandbox.stub(instance, 'isAuthenticated').returns(false);  
+        const request = { session: { kindeIdToken: '123' } };  
+        expect(() => instance.getUserOrganizations(request)).to.throwError('Request is missing required authentication credential');
       });
     });
   });
-
 }));

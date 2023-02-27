@@ -1,21 +1,17 @@
-import { pkceChallengeFromVerifier, randomString } from '../utils/Utils';
-
 export default class PKCE {
   /**
-   * Function to get the authorization URL and state, codeVerifier to save in req.session
+   * Function to get the authorization URL
    * @param {Object} client - Kinde client instance
    * @param {Object} options - Object containing options to include in the authorization URL
-   * @param {String} options.start_page - Start page for authorization
-   * @param {String} options.state - Optional parameter used to pass a value to the authorization server
-   * @param {Boolean} options.is_create_org - Flag to indicate if the user wants to create an organization
-   * @param {String} options.org_code - Organization code
-   * @param {String} options.org_name - Organization code
-   * @returns {Object} Object with state, codeVerifier, and url properties
-   * @property {String} state - The value of the state parameter
-   * @property {String} codeVerifier - Code verifier for Proof Key for Code Exchange (PKCE)
-   * @property {String} url - The authorization URL to redirect the user to
+   * @property {String} options.start_page - Start page for authorization
+   * @property {String} options.state - Optional parameter used to pass a value to the authorization server
+   * @property {Boolean} options.is_create_org - Flag to indicate if the user wants to create an organization
+   * @property {String} options.org_code - Organization code
+   * @property {String} options.org_name - Organization name
+   * @param {String} codeChallenge - Code challenge used in the PKCE flow.
+   * @returns {String} url - The authorization URL to redirect the user to
    */
-  async generateAuthorizationURL(client, options) {
+  generateAuthorizationURL(client, options, codeChallenge) {
     const {
       start_page,
       state,
@@ -23,8 +19,6 @@ export default class PKCE {
       org_code,
       org_name,
     } = options;
-    const codeVerifier = randomString();
-    const codeChallenge = await pkceChallengeFromVerifier(codeVerifier);
 
     const searchParams = {
       client_id: client.clientId,
@@ -40,11 +34,7 @@ export default class PKCE {
       ...(!!org_code && { org_code }),
     };
 
-    return {
-      state,
-      codeVerifier,
-      url: `${client.authorizationEndpoint}?${new URLSearchParams(searchParams).toString()}`,
-    };
+    return `${client.authorizationEndpoint}?${new URLSearchParams(searchParams).toString()}`;
   }
 
   /**

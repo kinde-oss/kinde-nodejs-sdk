@@ -53,9 +53,6 @@ class User {
             if (data.hasOwnProperty('email')) {
                 obj['email'] = ApiClient.convertToType(data['email'], 'String');
             }
-            if (data.hasOwnProperty('full_name')) {
-                obj['full_name'] = ApiClient.convertToType(data['full_name'], 'String');
-            }
             if (data.hasOwnProperty('last_name')) {
                 obj['last_name'] = ApiClient.convertToType(data['last_name'], 'String');
             }
@@ -78,10 +75,6 @@ class User {
         // ensure the json data is a string
         if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
             throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
-        }
-        // ensure the json data is a string
-        if (data['full_name'] && !(typeof data['full_name'] === 'string' || data['full_name'] instanceof String)) {
-            throw new Error("Expected the field `full_name` to be a primitive type in the JSON string but got " + data['full_name']);
         }
         // ensure the json data is a string
         if (data['last_name'] && !(typeof data['last_name'] === 'string' || data['last_name'] instanceof String)) {
@@ -111,12 +104,6 @@ User.prototype['id'] = undefined;
  * @member {String} email
  */
 User.prototype['email'] = undefined;
-
-/**
- * Users's first and last name separated by a space
- * @member {String} full_name
- */
-User.prototype['full_name'] = undefined;
 
 /**
  * User's last name

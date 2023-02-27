@@ -63,7 +63,10 @@ class UserProfileV2 {
                 obj['family_name'] = ApiClient.convertToType(data['family_name'], 'String');
             }
             if (data.hasOwnProperty('updated_at')) {
-                obj['updated_at'] = ApiClient.convertToType(data['updated_at'], 'String');
+                obj['updated_at'] = ApiClient.convertToType(data['updated_at'], 'Number');
+            }
+            if (data.hasOwnProperty('email')) {
+                obj['email'] = ApiClient.convertToType(data['email'], 'String');
             }
         }
         return obj;
@@ -96,8 +99,8 @@ class UserProfileV2 {
             throw new Error("Expected the field `family_name` to be a primitive type in the JSON string but got " + data['family_name']);
         }
         // ensure the json data is a string
-        if (data['updated_at'] && !(typeof data['updated_at'] === 'string' || data['updated_at'] instanceof String)) {
-            throw new Error("Expected the field `updated_at` to be a primitive type in the JSON string but got " + data['updated_at']);
+        if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
+            throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
         }
 
         return true;
@@ -139,10 +142,16 @@ UserProfileV2.prototype['given_name'] = undefined;
 UserProfileV2.prototype['family_name'] = undefined;
 
 /**
- * Date the user was last updated at
- * @member {String} updated_at
+ * Date the user was last updated at (In Unix time)
+ * @member {Number} updated_at
  */
 UserProfileV2.prototype['updated_at'] = undefined;
+
+/**
+ * User's email address if available
+ * @member {String} email
+ */
+UserProfileV2.prototype['email'] = undefined;
 
 
 

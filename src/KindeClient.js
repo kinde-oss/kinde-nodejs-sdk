@@ -2,7 +2,7 @@ import GrantType from "./sdk/constant/grantType";
 import AuthorizationCode from "./sdk/oauth2/AuthorizationCode";
 import ClientCredentials from "./sdk/oauth2/ClientCredentials";
 import PKCE from "./sdk/oauth2/PKCE";
-import { parseJWT, randomString } from "./sdk/utils/Utils";
+import { parseJWT, pkceChallengeFromVerifier, randomString } from "./sdk/utils/Utils";
 
 /**
  * KindeClient class for OAuth 2.0 authentication.
@@ -99,28 +99,34 @@ export default class KindeClient {
         let auth;
         if (this.grantType === GrantType.CLIENT_CREDENTIALS) {
           auth = new ClientCredentials();
-          const token = await auth.getToken(this);
-          this.saveToken(req, token);
+          const resGetToken = await auth.getToken(this);
+          if (resGetToken?.error) {
+            const msg = resGetToken?.error_description || resGetToken?.error;
+            return next(new Error(msg));
+          }
+          this.saveToken(req, resGetToken);
           return next();
         } if (this.grantType === GrantType.AUTHORIZATION_CODE) {
           auth = new AuthorizationCode();
-          const authCodeResponse = auth.generateAuthorizationURL(this, {
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             org_code,
             start_page: 'login',
           });
-          req.session.kindeOauthState = authCodeResponse.state;
-          return res.redirect(authCodeResponse.url);
+          req.session.kindeOauthState = state;
+          return res.redirect(authorizationURL);
         } if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
-          const pkceResponse = await auth.generateAuthorizationURL(this, {
+          const codeVerifier = randomString();
+          const codeChallenge = pkceChallengeFromVerifier(codeVerifier);
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             org_code,
             start_page: 'login',
-          });
-          req.session.kindeOauthState = pkceResponse?.state;
-          req.session.kindeOauthCodeVerifier = pkceResponse?.codeVerifier;
-          return res.redirect(pkceResponse?.url);
+          }, codeChallenge);
+          req.session.kindeOauthState = state;
+          req.session.kindeOauthCodeVerifier = codeVerifier;
+          return res.redirect(authorizationURL);
         }
         return next(new Error('Please provide correct grantType'));
       } catch (err) {
@@ -137,7 +143,7 @@ export default class KindeClient {
    * @property {String} request.query.org_code - Organization code
    */
   register() {
-    return async (req, res, next) => {
+    return (req, res, next) => {
       if (!req.session) {
         return next(new Error('OAuth 2.0 authentication requires session support when using state. Did you forget to use express-session middleware?'));
       }
@@ -155,23 +161,25 @@ export default class KindeClient {
         let auth;
         if (this.grantType === GrantType.AUTHORIZATION_CODE) {
           auth = new AuthorizationCode();
-          const authCodeResponse = auth.generateAuthorizationURL(this, {
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             org_code,
             start_page: 'registration',
           });
-          req.session.kindeOauthState = authCodeResponse.state;
-          return res.redirect(authCodeResponse.url);
+          req.session.kindeOauthState = state;
+          return res.redirect(authorizationURL);
         } if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
-          const pkceResponse = await auth.generateAuthorizationURL(this, {
+          const codeVerifier = randomString();
+          const codeChallenge = pkceChallengeFromVerifier(codeVerifier);
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             org_code,
             start_page: 'registration',
-          })
-          req.session.kindeOauthState = pkceResponse?.state;
-          req.session.kindeOauthCodeVerifier = pkceResponse?.codeVerifier;
-          return res.redirect(pkceResponse?.url);
+          }, codeChallenge)
+          req.session.kindeOauthState = state;
+          req.session.kindeOauthCodeVerifier = codeVerifier;
+          return res.redirect(authorizationURL);
         }
         return next(new Error('Please provide correct grantType'));
       } catch (err) {
@@ -257,7 +265,7 @@ export default class KindeClient {
    * @property {String} request.query.org_name - Organization name
    */
   createOrg() {
-    return async (req, res, next) => {
+    return (req, res, next) => {
       if (!req.session) {
         return next(new Error('OAuth 2.0 authentication requires session support when using state. Did you forget to use express-session middleware?'));
       }
@@ -276,25 +284,27 @@ export default class KindeClient {
         let auth
         if (this.grantType === GrantType.AUTHORIZATION_CODE) {
           auth = new AuthorizationCode();
-          const authCodeResponse = auth.generateAuthorizationURL(this, {
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             is_create_org,
             org_name,
             start_page: 'registration',
           })
-          req.session.kindeOauthState = authCodeResponse.state;
-          return res.redirect(authCodeResponse.url);
+          req.session.kindeOauthState = state;
+          return res.redirect(authorizationURL);
         } if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
-          const pkceResponse = await auth.generateAuthorizationURL(this, {
+          const codeVerifier = randomString();
+          const codeChallenge = pkceChallengeFromVerifier(codeVerifier);
+          const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
             is_create_org,
             org_name,
             start_page: 'registration',
-          })
-          req.session.kindeOauthState = pkceResponse?.state;
-          req.session.kindeOauthCodeVerifier = pkceResponse?.codeVerifier;
-          return res.redirect(pkceResponse?.url);
+          }, codeChallenge)
+          req.session.kindeOauthState = state;
+          req.session.kindeOauthCodeVerifier = codeVerifier;
+          return res.redirect(authorizationURL);
         }
         return next(new Error('Please provide correct grantType'));
       } catch (err) {
@@ -304,7 +314,7 @@ export default class KindeClient {
   }
 
   /**
-   * It destroy the token from the req.session and redirects the user to the logout endpoint
+   * It destroy the token from the req.session and redirects the user to the logout redirect uri
    * @returns {Response} HTTP response with redirect logout URL
    */
   logout() {

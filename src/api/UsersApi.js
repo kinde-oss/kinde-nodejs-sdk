@@ -20,6 +20,7 @@ import CreateUserRequest from '../model/CreateUserRequest';
 import OrganizationUser from '../model/OrganizationUser';
 import RemoveOrganizationUsers200Response from '../model/RemoveOrganizationUsers200Response';
 import RemoveOrganizationUsersRequest from '../model/RemoveOrganizationUsersRequest';
+import UpdateUserRequest from '../model/UpdateUserRequest';
 import User from '../model/User';
 
 /**
@@ -124,6 +125,46 @@ export default class UsersApi {
     }
 
     /**
+     * Callback function to receive the result of the deleteuser operation.
+     * @callback module:api/UsersApi~deleteuserCallback
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete User
+     * Delete a user record 
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.id The user's id.
+     * @param {module:api/UsersApi~deleteuserCallback} callback The callback function, accepting three arguments: error, data, response
+     */
+    deleteuser(opts, callback) {
+      opts = opts || {};
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+        'id': opts['id']
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['kindeBearerAuth'];
+      let contentTypes = [];
+      let accepts = [];
+      let returnType = null;
+      return this.apiClient.callApi(
+        '/api/v1/user', 'DELETE',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
      * Callback function to receive the result of the getOrganizationUsers operation.
      * @callback module:api/UsersApi~getOrganizationUsersCallback
      * @param {String} error Error message, if any.
@@ -165,6 +206,47 @@ export default class UsersApi {
       let returnType = OrganizationUser;
       return this.apiClient.callApi(
         '/api/v1/organization/users', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the getUserData operation.
+     * @callback module:api/UsersApi~getUserDataCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/User} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get User
+     * Retrieve a user record 
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.id The user's id.
+     * @param {module:api/UsersApi~getUserDataCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/User}
+     */
+    getUserData(opts, callback) {
+      opts = opts || {};
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+        'id': opts['id']
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['kindeBearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = User;
+      return this.apiClient.callApi(
+        '/api/v1/user', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -254,6 +336,52 @@ export default class UsersApi {
       let returnType = RemoveOrganizationUsers200Response;
       return this.apiClient.callApi(
         '/api/v1/organization/users', 'PATCH',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the updateUser operation.
+     * @callback module:api/UsersApi~updateUserCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/User} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update User
+     * Update a user record 
+     * @param {module:model/UpdateUserRequest} updateUserRequest The user to update.
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.id The user's id.
+     * @param {module:api/UsersApi~updateUserCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/User}
+     */
+    updateUser(updateUserRequest, opts, callback) {
+      opts = opts || {};
+      let postBody = updateUserRequest;
+      // verify the required parameter 'updateUserRequest' is set
+      if (updateUserRequest === undefined || updateUserRequest === null) {
+        throw new Error("Missing the required parameter 'updateUserRequest' when calling updateUser");
+      }
+
+      let pathParams = {
+      };
+      let queryParams = {
+        'id': opts['id']
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['kindeBearerAuth'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = User;
+      return this.apiClient.callApi(
+        '/api/v1/user', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

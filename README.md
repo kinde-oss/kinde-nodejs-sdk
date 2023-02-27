@@ -312,16 +312,15 @@ client.getUserOrganizations(req);
 
 ## SDK API Reference
 
-| Property                        | Type   | Is required | Default                      | Description                                                                         |
-| ------------------------------- | ------ | ----------- | ---------------------------- | ----------------------------------------------------------------------------------- |
-| domain                            | string | Yes         |                              | Either your Kinde instance url or your custom domain. e.g https://yourapp.kinde.com |
-| redirectUri                     | string | Yes         |   http://{backend_uri}/callback                           | The redirection URI registered in the authorization server
-| clientId                        | string | Yes         |                              | The id of your application - get this from the Kinde admin area                     |
-| clientSecret                    | string | Yes         |                              | The id secret of your application - get this from the Kinde admin area              |
-| logoutRedirectUri               | string | Yes         |                              | Where your user will be redirected upon logout
-| audience                         | string | No          |                             | The API Identifier for the target API                                        |
-| scope                           | string | No          | openid profile email offline | The scopes to be requested from Kinde                                               |
-
+| Property                        | Type   | Is required | Default                       | Description                                                                         |
+| ------------------------------- | ------ | ----------- | ----------------------------- | ----------------------------------------------------------------------------------- |
+| domain                          | string | Yes         |                               | Either your Kinde instance url or your custom domain. e.g https://yourapp.kinde.com |
+| redirectUri                     | string | Yes         | http://{backend_uri}/callback | The redirection URI registered in the authorization server                          |
+| clientId                        | string | Yes         |                               | The id of your application - get this from the Kinde admin area                     |
+| clientSecret                    | string | Yes         |                               | The id secret of your application - get this from the Kinde admin area              |
+| logoutRedirectUri               | string | Yes         |                               | Where your user will be redirected upon logout                                      |
+| audience                        | string | No          |                               | The API Identifier for the target API                                               |
+| scope                           | string | No          | openid profile email offline  | The scopes to be requested from Kinde                                               |
 
 ## KindeSDK methods
 

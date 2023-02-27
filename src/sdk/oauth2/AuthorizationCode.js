@@ -8,9 +8,7 @@ export default class AuthorizationCode {
    * @property {Boolean} options.is_create_org - Flag indicating if the user is creating a new organization
    * @property {String} options.org_code - Organization code
    * @property {String} options.org_name - Organization name
-   * @returns {Object} Object containing the authorization URL and state
-   * @property {String} state - The value of the state parameter
-   * @property {String} url - The authorization URL to redirect the user to
+   * @returns {String} The authorization URL to redirect the user to
    */
   generateAuthorizationURL(client, options) {
     const {
@@ -33,10 +31,7 @@ export default class AuthorizationCode {
       ...(!!org_code && { org_code }),
     };
 
-    return {
-      state,
-      url: `${client.authorizationEndpoint}?${new URLSearchParams(searchParams).toString()}`,
-    };
+    return `${client.authorizationEndpoint}?${new URLSearchParams(searchParams).toString()}`;
   }
 
   /**

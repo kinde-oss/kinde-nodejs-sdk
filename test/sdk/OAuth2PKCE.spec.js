@@ -10,41 +10,96 @@
  * Do not edit the class manually.
  *
  */
+import sinon from 'sinon';
 
 (function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
-      // AMD.
-      define(['expect.js', process.cwd()+'/src/index'], factory);
-    } else if (typeof module === 'object' && module.exports) {
-      // CommonJS-like environments that support module.exports, like Node.
-      factory(require('expect.js'), require(process.cwd()+'/src/index'));
-    } else {
-      // Browser globals (root is window)
-      factory(root.expect, root.authorizationCode);
-    }
-  }(this, function(expect, PKCE) {
-    'use strict';
+  if (typeof define === 'function' && define.amd) {
+    // AMD.
+    define(['expect.js', process.cwd()+'/src/index'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    factory(require('expect.js'), require(process.cwd()+'/src/index'));
+  } else {
+    // Browser globals (root is window)
+    factory(root.expect, root.KindeManagementApi);
+  }
+}(this, function(expect, KindeManagementApi) {
+  'use strict';
 
-    beforeEach(function() {
-      pkce = new PKCE();
-    });
-  
-    describe('PKCE', function() {
-      describe('generateAuthorizationURL', function() {
-        it('should call generateAuthorizationURL successfully', function(done) {
-          //uncomment below and update the code to test generateAuthorizationURL
-          //pkce.generateAuthorizationURL(client, options);
-          //expect().to.be();
-          done();
+  var instance;
+
+  beforeEach(function() {
+    instance = new KindeManagementApi.PKCE();
+  });
+
+  describe('PKCE', function() {
+    describe('generateAuthorizationURL', function() {
+      it('should call generateAuthorizationURL successfully', function() {
+        const client = {
+          clientId: 'client-id',
+          scope: 'openid email profile',
+          redirectUri: 'https://yourdomain.com/callback',
+          authorizationEndpoint: 'https://yourdomain.com/authorize',
+        };
+        const options = {
+          start_page: 'login',
+          state: 'random-state',
+          org_code: 'org123',
+        };
+        const codeChallenge = 'codechallenge';      
+        const expectedSearchParams = new URLSearchParams({
+          client_id: client.clientId,
+          response_type: 'code',
+          scope: client.scope,
+          state: options.state,
+          start_page: options.start_page,
+          redirect_uri: client.redirectUri,
+          code_challenge: codeChallenge,
+          code_challenge_method: 'S256',
+          org_code: 'org123',
         });
-      });
-      describe('getToken', function() {
-        it('should call getToken successfully', function(done) {
-          //uncomment below and update the code to test getToken
-          //pkce.getToken(client, code, codeVerifier);
-          //expect().to.be();
-          done();
-        });
+        const result = instance.generateAuthorizationURL(client, options, codeChallenge);      
+        expect(result).to.be(`${client.authorizationEndpoint}?${new URLSearchParams(expectedSearchParams).toString()}`);
       });
     });
-  }));
+
+    describe('getToken', function() {
+      let fetchStub;        
+      beforeEach(() => {
+        fetchStub = sinon.stub(global, 'fetch');
+      });
+
+      afterEach(() => {
+        fetchStub.restore();
+      });
+
+      it('should call getToken successfully', async () => {
+        const client = {
+          clientId: 'abc123',
+          clientSecret: 'secret',
+          redirectUri: 'https://example.com/redirect',
+          tokenEndpoint: 'https://example.com/token',
+        };
+        const code = 'def456';
+        const codeVerifier = 'ghi789';
+        const expectedSearchParams = new URLSearchParams({
+          grant_type: 'authorization_code',
+          client_id: client.clientId,
+          client_secret: client.clientSecret,
+          redirect_uri: client.redirectUri,
+          code,
+          code_verifier: codeVerifier,
+        });
+        const fakeToken = { access_token: '123456' };
+        fetchStub.resolves({ json: sinon.stub().resolves(fakeToken) });
+        const token = await instance.getToken(client, code, codeVerifier);
+        expect(fetchStub.calledOnce).to.be(true);
+        expect(fetchStub.args[0][0]).to.be(client.tokenEndpoint);
+        expect(fetchStub.args[0][1].method).to.be('POST');
+        expect(fetchStub.args[0][1].headers['Content-Type']).to.be('application/x-www-form-urlencoded');
+        expect(fetchStub.args[0][1].body.toString()).to.be(expectedSearchParams.toString());
+        expect(token).to.eql(fakeToken);
+      });
+    });
+  });
+}));
