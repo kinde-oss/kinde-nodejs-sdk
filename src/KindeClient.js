@@ -106,7 +106,9 @@ export default class KindeClient {
           }
           this.saveToken(req, resGetToken);
           return next();
-        } if (this.grantType === GrantType.AUTHORIZATION_CODE) {
+        }
+
+        if (this.grantType === GrantType.AUTHORIZATION_CODE) {
           auth = new AuthorizationCode();
           const authorizationURL = auth.generateAuthorizationURL(this, {
             state,
@@ -115,7 +117,9 @@ export default class KindeClient {
           });
           req.session.kindeOauthState = state;
           return res.redirect(authorizationURL);
-        } if (this.grantType === GrantType.PKCE) {
+        } 
+
+        if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
           const codeVerifier = randomString();
           const codeChallenge = pkceChallengeFromVerifier(codeVerifier);
@@ -168,7 +172,9 @@ export default class KindeClient {
           });
           req.session.kindeOauthState = state;
           return res.redirect(authorizationURL);
-        } if (this.grantType === GrantType.PKCE) {
+        } 
+        
+        if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
           const codeVerifier = randomString();
           const codeChallenge = pkceChallengeFromVerifier(codeVerifier);
@@ -292,7 +298,9 @@ export default class KindeClient {
           })
           req.session.kindeOauthState = state;
           return res.redirect(authorizationURL);
-        } if (this.grantType === GrantType.PKCE) {
+        } 
+        
+        if (this.grantType === GrantType.PKCE) {
           auth = new PKCE();
           const codeVerifier = randomString();
           const codeChallenge = pkceChallengeFromVerifier(codeVerifier);
@@ -480,4 +488,3 @@ export default class KindeClient {
     }
   }
 }
-
