@@ -16,6 +16,18 @@ If you prefer yarn, use this command instead:
 ```
 yarn add @kinde-oss/kinde-nodejs-sdk
 ```
+> Important! Currently, the `@kinde-oss/kinde-nodejs-sdk` node_module has not yet been published on the npm repository. So if you want to use it with a simple existing project, please add this line to your package.json
+``` 
+{
+  ...
+  "dependencies": {
+    ...
+    "@kinde-oss/kinde-nodejs-sdk": "git+https://nguyendevsts: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@github.com/kinde-oss/kinde-nodejs-sdk#v1.0.0"
+  },
+  ...
+}
+``` 
+ and then run `npm i`.
 
 ## How to use
 
