@@ -2,7 +2,7 @@
   "name": "@kinde-oss/kinde-nodejs-sdk",
   "version": "1.0.0",
   "description": "Provides endpoints to manage your Kinde Businesses",
-  "license": "Unlicense",
+  "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src -d dist",
@@ -40,7 +40,17 @@
     "mocha": "^8.0.1",
     "sinon": "^7.2.0"
   },
+  "keywords": [
+    "Kinde",
+    "login",
+    "Authorization Code Grant Flow",
+    "PKCE",
+    "Single Page Application authentication",
+    "SPA authentication",
+    "NodeJs"
+  ],
   "files": [
-    "dist"
+    "dist",
+    "LICENSE"
   ]
 }
