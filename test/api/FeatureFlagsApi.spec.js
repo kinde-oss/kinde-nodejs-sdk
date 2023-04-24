@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.RemoveOrganizationUsers200Response();
+    instance = new KindeManagementApi.FeatureFlagsApi();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,25 +47,37 @@
       object[property] = value;
   }
 
-  describe('RemoveOrganizationUsers200Response', function() {
-    it('should create an instance of RemoveOrganizationUsers200Response', function() {
-      // uncomment below and update the code to test RemoveOrganizationUsers200Response
-      //var instance = new KindeManagementApi.RemoveOrganizationUsers200Response();
-      //expect(instance).to.be.a(KindeManagementApi.RemoveOrganizationUsers200Response);
+  describe('FeatureFlagsApi', function() {
+    describe('createFeatureFlag', function() {
+      it('should call createFeatureFlag successfully', function(done) {
+        //uncomment below and update the code to test createFeatureFlag
+        //instance.createFeatureFlag(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
     });
-
-    it('should have the property message (base name: "message")', function() {
-      // uncomment below and update the code to test the property message
-      //var instance = new KindeManagementApi.RemoveOrganizationUsers200Response();
-      //expect(instance).to.be();
+    describe('deleteFeatureFlag', function() {
+      it('should call deleteFeatureFlag successfully', function(done) {
+        //uncomment below and update the code to test deleteFeatureFlag
+        //instance.deleteFeatureFlag(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
     });
-
-    it('should have the property usersAdded (base name: "users_added")', function() {
-      // uncomment below and update the code to test the property usersAdded
-      //var instance = new KindeManagementApi.RemoveOrganizationUsers200Response();
-      //expect(instance).to.be();
+    describe('updateFeatureFlag', function() {
+      it('should call updateFeatureFlag successfully', function(done) {
+        //uncomment below and update the code to test updateFeatureFlag
+        //instance.updateFeatureFlag(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
     });
-
   });
 
 }));

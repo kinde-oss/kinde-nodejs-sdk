@@ -48,7 +48,7 @@ class User {
             obj = obj || new User();
 
             if (data.hasOwnProperty('id')) {
-                obj['id'] = ApiClient.convertToType(data['id'], 'Number');
+                obj['id'] = ApiClient.convertToType(data['id'], 'String');
             }
             if (data.hasOwnProperty('email')) {
                 obj['email'] = ApiClient.convertToType(data['email'], 'String');
@@ -62,6 +62,9 @@ class User {
             if (data.hasOwnProperty('is_suspended')) {
                 obj['is_suspended'] = ApiClient.convertToType(data['is_suspended'], 'Boolean');
             }
+            if (data.hasOwnProperty('picture')) {
+                obj['picture'] = ApiClient.convertToType(data['picture'], 'String');
+            }
         }
         return obj;
     }
@@ -72,6 +75,10 @@ class User {
      * @return {boolean} to indicate whether the JSON data is valid with respect to <code>User</code>.
      */
     static validateJSON(data) {
+        // ensure the json data is a string
+        if (data['id'] && !(typeof data['id'] === 'string' || data['id'] instanceof String)) {
+            throw new Error("Expected the field `id` to be a primitive type in the JSON string but got " + data['id']);
+        }
         // ensure the json data is a string
         if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
             throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
@@ -84,6 +91,10 @@ class User {
         if (data['first_name'] && !(typeof data['first_name'] === 'string' || data['first_name'] instanceof String)) {
             throw new Error("Expected the field `first_name` to be a primitive type in the JSON string but got " + data['first_name']);
         }
+        // ensure the json data is a string
+        if (data['picture'] && !(typeof data['picture'] === 'string' || data['picture'] instanceof String)) {
+            throw new Error("Expected the field `picture` to be a primitive type in the JSON string but got " + data['picture']);
+        }
 
         return true;
     }
@@ -94,34 +105,40 @@ class User {
 
 
 /**
- * Unique id of the user in Kinde
- * @member {Number} id
+ * Unique id of the user in Kinde.
+ * @member {String} id
  */
 User.prototype['id'] = undefined;
 
 /**
- * Default email address of the user in Kinde
+ * Default email address of the user in Kinde.
  * @member {String} email
  */
 User.prototype['email'] = undefined;
 
 /**
- * User's last name
+ * User's last name.
  * @member {String} last_name
  */
 User.prototype['last_name'] = undefined;
 
 /**
- * User's first name
+ * User's first name.
  * @member {String} first_name
  */
 User.prototype['first_name'] = undefined;
 
 /**
- * Whether the user is currently suspended or not
+ * Whether the user is currently suspended or not.
  * @member {Boolean} is_suspended
  */
 User.prototype['is_suspended'] = undefined;
+
+/**
+ * User's profile picture URL.
+ * @member {String} picture
+ */
+User.prototype['picture'] = undefined;
 
 
 

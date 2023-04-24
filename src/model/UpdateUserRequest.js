@@ -53,6 +53,9 @@ class UpdateUserRequest {
             if (data.hasOwnProperty('family_name')) {
                 obj['family_name'] = ApiClient.convertToType(data['family_name'], 'String');
             }
+            if (data.hasOwnProperty('is_suspended')) {
+                obj['is_suspended'] = ApiClient.convertToType(data['is_suspended'], 'Boolean');
+            }
         }
         return obj;
     }
@@ -81,16 +84,22 @@ class UpdateUserRequest {
 
 
 /**
- * User's first name
+ * User's first name.
  * @member {String} given_name
  */
 UpdateUserRequest.prototype['given_name'] = undefined;
 
 /**
- * User's last name
+ * User's last name.
  * @member {String} family_name
  */
 UpdateUserRequest.prototype['family_name'] = undefined;
+
+/**
+ * Whether the user is currently suspended or not.
+ * @member {Boolean} is_suspended
+ */
+UpdateUserRequest.prototype['is_suspended'] = undefined;
 
 
 

@@ -277,20 +277,311 @@ import sinon from 'sinon';
       });
     });
 
-    describe('saveToken', function() {
-      it('should call saveToken successfully', function() {
+    describe('getToken', () => {
+      let sandbox;
+    
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+    
+      afterEach(() => {
+        sandbox.restore();
+      });
+       
+      it('should call getToken successfully', async () => {
         const request = {
-          session: {}
+          session: {
+            kindeAccessToken: 'my.access-token.example',
+            kindeRefreshToken: 'my.refresh-token.example',
+            kindeLoginTimeStamp: Date.now() / 1000,
+            kindeExpiresIn: 3600,
+          },
         };
-        const token = {
-          access_token: 'token',
-          id_token: 'id_token',
-          expires_in: 3600,
+    
+        sandbox.stub(instance, 'isTokenExpired').returns(false);     
+        const result = await instance.getToken(request);
+        expect(result).to.be('my.access-token.example');
+      });    
+    });
+
+    describe('saveToken', () => {
+      let request = null;
+      const payloadAccessToken = {
+        aud: [],
+        azp: '09b4aec1c8b14c11a83ed94d458d605f',
+        exp: Date.now(),
+        feature_flags: {
+          competitions_limit: { t: 'i', v: 5 },
+          is_dark_mode: { t: 'b', v: true },
+          pink: { t: 's', v: 'pink' },
+          test: { t: 'b', v: false },
+          test1: { t: 'i', v: 5 },
+          theme: { t: 's', v: 'pink1' }
+        },
+        iat: 1681978619,
+        iss: 'https://nguyenstsdev-dev.au.kinde.com',
+        jti: '2accb1dc-b9da-4f63-8b0f-a3dfae721f40',
+        org_code: 'org_7052552de68',
+        permissions: [ 'update:todos', 'create:todos' ],
+        scp: [ 'openid', 'profile', 'email', 'offline' ],
+        sub: 'kp:0094bbe7230c42f3be027b52e4e179a5'
+      }; 
+      const base64Payload = Buffer.from(JSON.stringify(payloadAccessToken)).toString('base64');
+      const validToken = `header.${base64Payload}.signature`;
+      const token = {
+        access_token: validToken,
+        id_token: validToken,
+        expires_in: 3600,
+        refresh_token: 'my.refresh-token.example',
+      };
+    
+      beforeEach(() => {
+        request = {
+          session: {},
         };
-        instance.saveToken(request, token);        
-        expect(request.session.kindeAccessToken).to.be('token');
-        expect(request.session.kindeIdToken).to.be('id_token');
-        expect(request.session.kindeExpiresIn).to.be(3600);
+      });
+    
+      it('should call saveToken successfully', () => {
+        instance.saveToken(request, token);
+    
+        expect(request.session.kindeLoginTimeStamp).to.be.a('number');
+        expect(request.session.kindeAccessToken).to.be.equal(validToken);
+        expect(request.session.kindeIdToken).to.be.equal(validToken);
+        expect(request.session.kindeExpiresIn).to.be.equal(3600);
+        expect(request.session.kindeRefreshToken).to.be.equal('my.refresh-token.example');
+      });
+    });
+
+    describe('isTokenExpired', () => {
+      it('should call isTokenExpired return true if it is expired', () => {
+        const request = {
+          session: {
+            kindeLoginTimeStamp: Date.now() / 1000 - 4000,
+            kindeExpiresIn: 3600 // 1 hour
+          }
+        };
+        const result = instance.isTokenExpired(request);
+        expect(result).to.be(true);
+      });
+  
+      it('should call isTokenExpired return false if it is not expired', () => {
+        const request = {
+          session: {
+            kindeLoginTimeStamp: Date.now() / 1000 - 1000,
+            kindeExpiresIn: 3600 // 1 hour
+          }
+        };
+        const result = instance.isTokenExpired(request);
+        expect(result).to.be(false);
+      });
+    });
+
+    describe('getFlag', () => {
+      let sandbox;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call getFlag return the flag value if it is found', () => {
+        const request = {
+          session: {
+            kindeFeatureFlags: {
+              'my-flag': { t: 'i', v: 123 }
+            }
+          }
+        };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        const result = instance.getFlag(request, 'my-flag');
+        expect(result.code).to.equal('my-flag');
+        expect(result.type).to.equal('integer');
+        expect(result.value).to.equal(123);
+        expect(result.is_default).to.equal(false);
+      });
+
+      it('should call getFlag return the default value if the flag is not found', () => {
+        const request = { session: { kindeFeatureFlags: {} } };
+        const defaultValue = true;
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        const result = instance.getFlag(request, 'my-flag', defaultValue, 'b');
+        expect(result.code).to.equal('my-flag');
+        expect(result.type).to.equal('boolean');
+        expect(result.value).to.equal(true);
+        expect(result.is_default).to.equal(true);
+      });
+  
+      it('should call getFlag throw error if the flag is not found and no default provided', () => {
+        const request = { session: { kindeFeatureFlags: {} } };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        expect(() => {
+          instance.getFlag(request, 'my-flag');
+        }).to.throwError('Flag my-flag does not exist, and no default value has been provided');
+      });
+
+      it('should call getFlag throw error if the flag is of type not boolean', () => {
+        const request = { session: { kindeFeatureFlags: {
+          'my-flag': { t: 's', v: 'a' }
+        } } };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        expect(() => {
+          instance.getFlag(request, 'my-flag', 123, 'i');
+        }).to.throwError('Flag my-flag is of type string - requested type integer');
+      });
+
+    });
+
+    describe('getBooleanFlag', () => {
+      let sandbox;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call getBooleanFlag return the flag value if it is found', () => {
+        const request = {
+          session: {
+            kindeFeatureFlags: {
+              'my-flag': { t: 'b', v: false }
+            }
+          }
+        };
+        const defaultValue = true;
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        const result = instance.getBooleanFlag(request, 'my-flag', defaultValue);
+        expect(result).to.be(false);
+      });
+
+      it('should call getBooleanFlag return the default value if the flag is not found', () => {
+        const request = { session: { kindeFeatureFlags: {} } };
+        const defaultValue = true;
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        const result = instance.getBooleanFlag(request, 'my-flag', defaultValue);
+        expect(result).to.be(defaultValue);
+      });
+  
+      it('should call getBooleanFlag throw error if the flag is not found and no default provided', () => {
+        const request = { session: { kindeFeatureFlags: {} } };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        expect(() => {
+          instance.getBooleanFlag(request, 'my-flag');
+        }).to.throwError('Flag my-flag does not exist, and no default value has been provided');
+      });
+
+      it('should call getBooleanFlag throw error if the flag is of type not boolean', () => {
+        const request = { session: { kindeFeatureFlags: {
+          'my-flag': { t: 's', v: 'a' }
+        } } };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        expect(() => {
+          instance.getBooleanFlag(request, 'my-flag', false);
+        }).to.throwError('Flag my-flag is of type string - requested type boolean');
+      });
+
+    });
+  
+    describe('getStringFlag', () => {
+      let sandbox;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call getStringFlag return the flag value if it is found', () => {
+        const request = {
+          session: {
+            kindeFeatureFlags: {
+              'my-flag': { t: 's', v: 'flag-value' }
+            }
+          }
+        };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        const result = instance.getStringFlag(request, 'my-flag');
+        expect(result).to.be('flag-value');
+      });
+  
+      it('should call getStringFlag return the default value if the flag is not found', () => {
+        const request = { session: { kindeFeatureFlags: {} } };
+        const defaultValue = 'default-value';
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        const result = instance.getStringFlag(request, 'my-flag', defaultValue);
+        expect(result).to.be(defaultValue);
+      });
+
+      it('should call getStringFlag throw error if the flag is not found and no default provided', () => {
+        const request = { session: { kindeFeatureFlags: {} } };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        expect(() => {
+          instance.getStringFlag(request, 'my-flag');
+        }).to.throwError('Flag my-flag does not exist, and no default value has been provided');
+      });
+
+      it('should call getStringFlag throw error if the flag is of type not boolean', () => {
+        const request = { session: { kindeFeatureFlags: {
+          'my-flag': { t: 'b', v: true }
+        } } };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        expect(() => {
+          instance.getStringFlag(request, 'my-flag', false);
+        }).to.throwError('Flag my-flag is of type string - requested type boolean');
+      });
+    });
+  
+    describe('getIntegerFlag', () => {
+      let sandbox;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call getIntegerFlag return the flag value if it is found', () => {
+        const request = {
+          session: {
+            kindeFeatureFlags: {
+              'my-flag': { t: 'i', v: 123 }
+            }
+          }
+        };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        const result = instance.getIntegerFlag(request, 'my-flag');
+        expect(result).to.be(123);
+      });
+
+      it('should call getIntegerFlag return the default value if the flag is not found', () => {
+        const request = { session: { kindeFeatureFlags: {} } };
+        const defaultValue = 42;
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        const result = instance.getIntegerFlag(request, 'my-flag', defaultValue);
+        expect(result).to.be(defaultValue);
+      });
+
+      it('should call getIntegerFlag throw error if the flag is not found and no default provided', () => {
+        const request = { session: { kindeFeatureFlags: {} } };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        expect(() => {
+          instance.getIntegerFlag(request, 'my-flag');
+        }).to.throwError('Flag my-flag does not exist, and no default value has been provided');
+      });
+
+      it('should call getIntegerFlag throw error if the flag is of type not boolean', () => {
+        const request = { session: { kindeFeatureFlags: {
+          'my-flag': { t: 'b', v: true }
+        } } };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        expect(() => {
+          instance.getIntegerFlag(request, 'my-flag', false);
+        }).to.throwError('Flag my-flag is of type integer - requested type boolean');
       });
     });
 
@@ -378,7 +669,7 @@ import sinon from 'sinon';
 
       it('should call getClaims throw an error', () => {
         const fn = () => instance.getClaims(request, 'id_token');
-        expect(fn).to.throwError(`Request is missing required authentication credential`);
+        expect(fn).to.throwError('Request is missing required authentication credential');
       });
     });
 
@@ -407,7 +698,8 @@ import sinon from 'sinon';
         sandbox.stub(instance, 'isAuthenticated').returns(true);
         sandbox.stub(instance, 'getClaims').returns(fakeTokenData);
         const claimValue = instance.getClaim(request, 'email', 'access_token');
-        expect(claimValue).to.equal('johndoe@example.com');
+        expect(claimValue.name).to.equal('email');
+        expect(claimValue.value).to.equal('johndoe@example.com');
       });
 
       it('should call getClaim throw an error', () => {
@@ -502,7 +794,9 @@ import sinon from 'sinon';
       it('should call getOrganization successfully ', () => {
         const request = {};
         sandbox.stub(instance, 'isAuthenticated').returns(true);
-        sandbox.stub(instance, 'getClaim').withArgs(request, 'org_code').returns('org-123');  
+        sandbox.stub(instance, 'getClaims').withArgs(request).returns({
+          org_code: 'org-123'
+        });    
         const result = instance.getOrganization(request);
         expect(result).to.eql({ orgCode: 'org-123' });
       });
@@ -524,15 +818,15 @@ import sinon from 'sinon';
         sandbox.restore();
       });
 
-      it('should call getUserOrganizations successfully', function() {  
-        sandbox.stub(instance, 'getClaims').returns({
+      it('should call getUserOrganizations successfully', function() {
+        const request = { session: { kindeIdToken: '123'} };
+        sandbox.stub(instance, 'isAuthenticated').returns(true);
+        sandbox.stub(instance, 'getClaims').withArgs(request, 'id_token').returns({
           org_codes: ['org1', 'org2']
-        });  
-        sandbox.stub(instance, 'isAuthenticated').returns(true);  
-        const request = { session: { kindeIdToken: '123' } };  
+        });
         const result = instance.getUserOrganizations(request);  
-        expect(result).to.eql({
-          orgCodes: ['org1', 'org2'],
+        expect(result).to.eql({ 
+          orgCodes: ['org1', 'org2'] 
         });
       });
   

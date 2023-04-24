@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.UpdateUserRequest();
+    instance = new KindeManagementApi.CreateUserResponse();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,28 +47,28 @@
       object[property] = value;
   }
 
-  describe('UpdateUserRequest', function() {
-    it('should create an instance of UpdateUserRequest', function() {
-      // uncomment below and update the code to test UpdateUserRequest
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be.a(KindeManagementApi.UpdateUserRequest);
+  describe('CreateUserResponse', function() {
+    it('should create an instance of CreateUserResponse', function() {
+      // uncomment below and update the code to test CreateUserResponse
+      //var instance = new KindeManagementApi.CreateUserResponse();
+      //expect(instance).to.be.a(KindeManagementApi.CreateUserResponse);
     });
 
-    it('should have the property givenName (base name: "given_name")', function() {
-      // uncomment below and update the code to test the property givenName
-      //var instance = new KindeManagementApi.UpdateUserRequest();
+    it('should have the property id (base name: "id")', function() {
+      // uncomment below and update the code to test the property id
+      //var instance = new KindeManagementApi.CreateUserResponse();
       //expect(instance).to.be();
     });
 
-    it('should have the property familyName (base name: "family_name")', function() {
-      // uncomment below and update the code to test the property familyName
-      //var instance = new KindeManagementApi.UpdateUserRequest();
+    it('should have the property created (base name: "created")', function() {
+      // uncomment below and update the code to test the property created
+      //var instance = new KindeManagementApi.CreateUserResponse();
       //expect(instance).to.be();
     });
 
-    it('should have the property isSuspended (base name: "is_suspended")', function() {
-      // uncomment below and update the code to test the property isSuspended
-      //var instance = new KindeManagementApi.UpdateUserRequest();
+    it('should have the property identities (base name: "identities")', function() {
+      // uncomment below and update the code to test the property identities
+      //var instance = new KindeManagementApi.CreateUserResponse();
       //expect(instance).to.be();
     });
 

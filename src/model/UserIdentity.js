@@ -82,7 +82,7 @@ class UserIdentity {
 
 
 /**
- * The type of identity object created
+ * The type of identity object created.
  * @member {String} type
  */
 UserIdentity.prototype['type'] = undefined;

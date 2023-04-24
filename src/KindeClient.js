@@ -1,4 +1,6 @@
-import GrantType from "./sdk/constant/grantType";
+import FlagDataTypeMap from "./sdk/constant/FlagDataTypeMap";
+import RefreshToken from "./sdk/oauth2/RefreshToken";
+import { GrantType } from "./index";
 import AuthorizationCode from "./sdk/oauth2/AuthorizationCode";
 import ClientCredentials from "./sdk/oauth2/ClientCredentials";
 import PKCE from "./sdk/oauth2/PKCE";
@@ -16,6 +18,8 @@ import { parseJWT, pkceChallengeFromVerifier, randomString } from "./sdk/utils/U
  * @property {String} options.grantType - Grant type for the authentication process (client_credentials, authorization_code or pkce)
  * @property {String} options.audience - API Identifier for the target API (Optional)
  * @property {String} options.scope - List of scopes requested by the application (default: 'openid profile email offline')
+ * @property {String} options.languageOrFramework - Language or framework name (default: 'Javascript')
+ * @property {String} options.languageOrFrameworkVersion - Language or framework version (default: '3.0.9')
  */
 export default class KindeClient {
   constructor(options) {
@@ -28,6 +32,8 @@ export default class KindeClient {
       grantType,
       audience = '',
       scope = 'openid profile email offline',
+      languageOrFramework = 'JavaScript',
+      languageOrFrameworkVersion = '3.0.9',
     } = options
 
     if (!domain || typeof domain !== 'string') {
@@ -66,6 +72,8 @@ export default class KindeClient {
 
     this.audience = audience;
     this.scope = scope;
+    this.languageOrFramework = languageOrFramework;
+    this.languageOrFrameworkVersion = languageOrFrameworkVersion;
 
     // other endpoint
     this.tokenEndpoint = `${domain}/oauth2/token`;
@@ -338,25 +346,134 @@ export default class KindeClient {
 
   /**
    * saveToken - saves the tokens and user information to the store and req.session.
-   * @param  {Object} request - Request object
-   * @param  {Object} token - Token object containing access_token, id_token, expires_in, etc ...
+   * @param {Object} request - Request object
+   * @param {Object} token - Token object containing access_token, id_token, expires_in, etc ...
    */
   saveToken(request, token) {
     request.session.kindeLoginTimeStamp = Date.now();
-    request.session.kindeAccessToken = token.access_token || '';
-    request.session.kindeIdToken = token.id_token || '';
+    request.session.kindeAccessToken = token.access_token;
+    request.session.kindeIdToken = token.id_token;
     request.session.kindeExpiresIn = token.expires_in || 0;
-    const payload = parseJWT(token.id_token || '');
-    if (payload) {
+    request.session.kindeRefreshToken = token.refresh_token;
+    const payloadIdToken = parseJWT(token.id_token);
+    if (payloadIdToken) {
       const user = {
-        id: payload.sub || '',
-        given_name: payload.given_name || '',
-        family_name: payload.family_name || '',
-        email: payload.email || '',
+        id: payloadIdToken.sub,
+        given_name: payloadIdToken.given_name,
+        family_name: payloadIdToken.family_name,
+        email: payloadIdToken.email,
+        picture: payloadIdToken.picture,
       }
       request.session.kindeUser = user;
     }
+    const payloadAccessToken = parseJWT(token.access_token);
+    if (payloadAccessToken) {
+      const { feature_flags } = payloadAccessToken;
+      request.session.kindeFeatureFlags = feature_flags;
+    }
   }
+
+  /**
+   * Function return an access token from memory
+   * @param {Object} request - Request object
+   * @returns {String} - Returns the access token
+   */
+  async getToken(request) {
+    const { kindAccessToken, kindeRefreshToken } = request.session ?? {};
+    if (kindAccessToken && !this.isTokenExpired(request)) {
+      return kindAccessToken;
+    }
+    const auth = new RefreshToken();
+    const resGetToken = await auth.getToken(this, kindeRefreshToken);
+    if (resGetToken?.error) {
+      throw new Error('Refresh token are invalid or expired.');
+    }
+    this.saveToken(request, resGetToken);
+    return resGetToken.access_token;
+  }
+
+  /**
+   * Checks if the access token has expired
+   * @param {Object} request - Request object
+   * @return {Boolean} True if the access token is not expired, false otherwise
+   */
+  isTokenExpired(request) {
+    if (!request.session) {
+      throw new Error('OAuth 2.0 authentication requires session support when using state. Did you forget to use express-session middleware?');
+    }
+    const currentTime = Date.now() / 1000;
+    const tokenExpiration = request.session.kindeLoginTimeStamp + request.session.kindeExpiresIn;
+    return currentTime > tokenExpiration;
+  }
+
+  /**
+   * Get a flag from the feature_flags claim of the access_token.
+   * @param {Object} request - Request object
+   * @param {String} code - The name of the flag.
+   * @param {obj} [defaultValue] - A fallback value if the flag isn't found.
+   * @param {'s'|'b'|'i'|undefined} [flagType] - The data type of the flag (integer / boolean / string).
+   * @return {Object} Flag details.
+   */
+  getFlag(request, code, defaultValue, flagType) {
+    if (!this.isAuthenticated(request)) {
+      throw new Error('Request is missing required authentication credential');
+    }
+    const flags = request.session.kindeFeatureFlags;
+    const flag = flags && flags[code] ? flags[code] : {};
+    if (flag.v === undefined && defaultValue === undefined) {
+      throw new Error(
+        `Flag ${code} does not exist, and no default value has been provided`
+      );
+    }
+
+    if (flagType && flag.t && flagType !== flag.t) {
+      throw new Error(
+        `Flag ${code} is of type ${FlagDataTypeMap[flag.t]} - requested type ${FlagDataTypeMap[flagType]}`
+      );
+    }
+    return {
+      code,
+      type: FlagDataTypeMap[flag.t || flagType],
+      value: flag.v == null ? defaultValue : flag.v,
+      is_default: flag.v == null
+    };
+  };
+
+  /**
+   * Get a boolean flag from the feature_flags claim of the access_token.
+   * @param {Object} request - Request object
+   * @param {String} code - The name of the flag.
+   * @param {Boolean} [defaultValue] - A fallback value if the flag isn't found.
+   * @return {Boolean}
+   */
+  getBooleanFlag(request, code, defaultValue) {
+    const flag = this.getFlag(request, code, defaultValue, 'b');
+    return flag.value;
+  };
+
+  /**
+   * Get a string flag from the feature_flags claim of the access_token.
+   * @param {Object} request - Request object
+   * @param {String} code - The name of the flag.
+   * @param {String} [defaultValue] - A fallback value if the flag isn't found.
+   * @return {String}
+   */
+  getStringFlag(request, code, defaultValue) {
+    const flag = this.getFlag(request, code, defaultValue, 's');
+    return flag.value;
+  };
+
+  /**
+   * Get an integer flag from the feature_flags claim of the access_token.
+   * @param {Object} request - Request object
+   * @param {String} code - The name of the flag.
+   * @param {Integer} [defaultValue] - A fallback value if the flag isn't found.
+   * @return {Integer}
+   */
+  getIntegerFlag(request, code, defaultValue) {
+    const flag = this.getFlag(request, code, defaultValue, 'i');
+    return flag.value;
+  };
 
   /**
    * cleanSession - Function is used to destroy the current session and remove related data from store.
@@ -372,10 +489,10 @@ export default class KindeClient {
    * @returns {Boolean} true if the user is authenticated, otherwise false.
    */
   isAuthenticated(request) {
-    if (!request.session.kindeLoginTimeStamp || !request.session.kindeExpiresIn) {
+    if (!request.session.kindeLoginTimeStamp || !request.session.kindeExpiresIn || this.isTokenExpired(request)) {
       return false;
     }
-    return Date.now() / 1000 - request.session.kindeLoginTimeStamp < request.session.kindeExpiresIn;
+    return true;
   }
 
   /**
@@ -384,7 +501,7 @@ export default class KindeClient {
    * @return {Object} The response is a object containing id, given_name, family_name and email.
    */
   getUserDetails(request) {
-    if (!this.isAuthenticated(request)){
+    if (!this.isAuthenticated(request)) {
       throw new Error('Request is missing required authentication credential');
     }
     return request.session.kindeUser;
@@ -410,19 +527,21 @@ export default class KindeClient {
   }
 
   /**
-   * Accept a key for a token and returns the claim value.
-   * Optional argument to define which token to check - defaults to Access token  - e.g.
+   * Get a claim from a token.
    * @param {Object} request - Request object
-   * @param {String} keyName - Accept a key for a token.
-   * @param {String} tokenType - Optional argument to define which token to check.
+   * @param {string} claim - The name of the claim.
+   * @param {String} {'access_token' | 'id_token'} [tokenType='access_token'] - The token to check
    * @return any The response is a data in token.
    */
-  getClaim(request, keyName, tokenType = 'access_token') {
-    if (!this.isAuthenticated(request)){
+  getClaim(request, claim, tokenType = 'access_token') {
+    if (!this.isAuthenticated(request)) {
       throw new Error('Request is missing required authentication credential');
     }
     const data = this.getClaims(request, tokenType);
-    return data[keyName];
+    return {
+      name: claim,
+      value: data[claim]
+    }
   }
 
   /**
@@ -432,7 +551,7 @@ export default class KindeClient {
    * @return {Object} The response includes orgCode and permissions.
    */
   getPermissions(request) {
-    if (!this.isAuthenticated(request)){
+    if (!this.isAuthenticated(request)) {
       throw new Error('Request is missing required authentication credential');
     }
     const claims = this.getClaims(request);
@@ -449,7 +568,7 @@ export default class KindeClient {
    * @return {Object} The response includes orgCode and isGranted.
    */
   getPermission(request, permission) {
-    if (!this.isAuthenticated(request)){
+    if (!this.isAuthenticated(request)) {
       throw new Error('Request is missing required authentication credential');
     }
     const allClaims = this.getClaims(request);
@@ -466,11 +585,13 @@ export default class KindeClient {
    * @return {Object} The response is a orgCode.
    */
   getOrganization(request) {
-    if (!this.isAuthenticated(request)){
+    if (!this.isAuthenticated(request)) {
       throw new Error('Request is missing required authentication credential');
     }
+    const allClaims = this.getClaims(request);
+    const { org_code } = allClaims;
     return {
-      orgCode: this.getClaim(request, 'org_code')
+      orgCode: org_code
     }
   }
 
@@ -480,11 +601,13 @@ export default class KindeClient {
    * @return {Object} The response is a orgCodes.
    */
   getUserOrganizations(request) {
-    if (!this.isAuthenticated(request)){
+    if (!this.isAuthenticated(request)) {
       throw new Error('Request is missing required authentication credential');
     }
+    const allClaims = this.getClaims(request, 'id_token');
+    const { org_codes } = allClaims;
     return {
-      orgCodes: this.getClaim(request, 'org_codes', 'id_token')
+      orgCodes: org_codes
     }
   }
 }

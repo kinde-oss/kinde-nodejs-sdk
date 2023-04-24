@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.CreateUser200Response();
+    instance = new KindeManagementApi.UsersResponse();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,28 +47,34 @@
       object[property] = value;
   }
 
-  describe('CreateUser200Response', function() {
-    it('should create an instance of CreateUser200Response', function() {
-      // uncomment below and update the code to test CreateUser200Response
-      //var instance = new KindeManagementApi.CreateUser200Response();
-      //expect(instance).to.be.a(KindeManagementApi.CreateUser200Response);
+  describe('UsersResponse', function() {
+    it('should create an instance of UsersResponse', function() {
+      // uncomment below and update the code to test UsersResponse
+      //var instance = new KindeManagementApi.UsersResponse();
+      //expect(instance).to.be.a(KindeManagementApi.UsersResponse);
     });
 
-    it('should have the property id (base name: "id")', function() {
-      // uncomment below and update the code to test the property id
-      //var instance = new KindeManagementApi.CreateUser200Response();
+    it('should have the property code (base name: "code")', function() {
+      // uncomment below and update the code to test the property code
+      //var instance = new KindeManagementApi.UsersResponse();
       //expect(instance).to.be();
     });
 
-    it('should have the property created (base name: "created")', function() {
-      // uncomment below and update the code to test the property created
-      //var instance = new KindeManagementApi.CreateUser200Response();
+    it('should have the property message (base name: "message")', function() {
+      // uncomment below and update the code to test the property message
+      //var instance = new KindeManagementApi.UsersResponse();
       //expect(instance).to.be();
     });
 
-    it('should have the property identities (base name: "identities")', function() {
-      // uncomment below and update the code to test the property identities
-      //var instance = new KindeManagementApi.CreateUser200Response();
+    it('should have the property users (base name: "users")', function() {
+      // uncomment below and update the code to test the property users
+      //var instance = new KindeManagementApi.UsersResponse();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property nextToken (base name: "next_token")', function() {
+      // uncomment below and update the code to test the property nextToken
+      //var instance = new KindeManagementApi.UsersResponse();
       //expect(instance).to.be();
     });
 

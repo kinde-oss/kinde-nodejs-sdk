@@ -22,7 +22,7 @@ import CreateUserRequestIdentitiesInnerDetails from './CreateUserRequestIdentiti
 class CreateUserRequestIdentitiesInner {
     /**
      * Constructs a new <code>CreateUserRequestIdentitiesInner</code>.
-     * The result of the user creation operation
+     * The result of the user creation operation.
      * @alias module:model/CreateUserRequestIdentitiesInner
      */
     constructor() { 
@@ -83,7 +83,7 @@ class CreateUserRequestIdentitiesInner {
 
 
 /**
- * The type of identity to create, for e.g. email
+ * The type of identity to create, for e.g. email.
  * @member {String} type
  */
 CreateUserRequestIdentitiesInner.prototype['type'] = undefined;

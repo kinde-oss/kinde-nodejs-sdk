@@ -81,13 +81,13 @@ class ConnectedAppsAuthUrl {
 
 
 /**
- * A URL that is used to authenticate an end-user against a connected app
+ * A URL that is used to authenticate an end-user against a connected app.
  * @member {String} url
  */
 ConnectedAppsAuthUrl.prototype['url'] = undefined;
 
 /**
- * A unique identifier for the login session
+ * A unique identifier for the login session.
  * @member {String} session_id
  */
 ConnectedAppsAuthUrl.prototype['session_id'] = undefined;

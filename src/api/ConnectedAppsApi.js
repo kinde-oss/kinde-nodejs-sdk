@@ -13,9 +13,10 @@
 
 
 import ApiClient from "../ApiClient";
-import ApiResult from '../model/ApiResult';
 import ConnectedAppsAccessToken from '../model/ConnectedAppsAccessToken';
 import ConnectedAppsAuthUrl from '../model/ConnectedAppsAuthUrl';
+import ErrorResponse from '../model/ErrorResponse';
+import SuccessResponse from '../model/SuccessResponse';
 
 /**
 * ConnectedApps service.
@@ -46,9 +47,9 @@ export default class ConnectedAppsApi {
 
     /**
      * Get Connected App URL
-     * Get a URL that authenticates and authorizes a user to a third-party connected app
+     * Get a URL that authenticates and authorizes a user to a third-party connected app.
      * @param {String} keyCodeRef The unique key code reference of the connected app to authenticate against.
-     * @param {Number} userId The id of the user that needs to authenticate to the third-party connected app.
+     * @param {String} userId The id of the user that needs to authenticate to the third-party connected app.
      * @param {module:api/ConnectedAppsApi~getConnectedAppAuthUrlCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/ConnectedAppsAuthUrl}
      */
@@ -76,7 +77,7 @@ export default class ConnectedAppsApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = [];
-      let accepts = ['application/json'];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
       let returnType = ConnectedAppsAuthUrl;
       return this.apiClient.callApi(
         '/api/v1/connected_apps/auth_url', 'GET',
@@ -95,7 +96,7 @@ export default class ConnectedAppsApi {
 
     /**
      * Get Connected App Token
-     * Get an access token that can be used to call the third-party provider linked to the connected app
+     * Get an access token that can be used to call the third-party provider linked to the connected app.
      * @param {String} sessionId The unique sesssion id reprensenting the login session of a user.
      * @param {module:api/ConnectedAppsApi~getConnectedAppTokenCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/ConnectedAppsAccessToken}
@@ -119,7 +120,7 @@ export default class ConnectedAppsApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = [];
-      let accepts = ['application/json'];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
       let returnType = ConnectedAppsAccessToken;
       return this.apiClient.callApi(
         '/api/v1/connected_apps/token', 'GET',
@@ -132,16 +133,16 @@ export default class ConnectedAppsApi {
      * Callback function to receive the result of the revokeConnectedAppToken operation.
      * @callback module:api/ConnectedAppsApi~revokeConnectedAppTokenCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/ApiResult} data The data returned by the service call.
+     * @param {module:model/SuccessResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
     /**
      * Revoke Connected App Token
-     * Revoke the tokens linked to the connected app session
+     * Revoke the tokens linked to the connected app session.
      * @param {String} sessionId The unique sesssion id reprensenting the login session of a user.
      * @param {module:api/ConnectedAppsApi~revokeConnectedAppTokenCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/ApiResult}
+     * data is of type: {@link module:model/SuccessResponse}
      */
     revokeConnectedAppToken(sessionId, callback) {
       let postBody = null;
@@ -162,8 +163,8 @@ export default class ConnectedAppsApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = ApiResult;
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = SuccessResponse;
       return this.apiClient.callApi(
         '/api/v1/connected_apps/revoke', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,

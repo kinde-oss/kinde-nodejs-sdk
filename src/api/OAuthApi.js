@@ -45,7 +45,7 @@ export default class OAuthApi {
 
     /**
      * Returns the details of the currently logged in user
-     * Contains the id, names and email of the currently logged in user 
+     * Contains the id, names and email of the currently logged in user. 
      * @param {module:api/OAuthApi~getUserCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/UserProfile}
      */
@@ -82,7 +82,7 @@ export default class OAuthApi {
 
     /**
      * Returns the details of the currently logged in user
-     * Contains the id, names and email of the currently logged in user 
+     * Contains the id, names, profile picture URL and email of the currently logged in user. 
      * @param {module:api/OAuthApi~getUserProfileV2Callback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/UserProfileV2}
      */

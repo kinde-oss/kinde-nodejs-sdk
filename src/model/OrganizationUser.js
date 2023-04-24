@@ -47,8 +47,8 @@ class OrganizationUser {
         if (data) {
             obj = obj || new OrganizationUser();
 
-            if (data.hasOwnProperty('user_id')) {
-                obj['user_id'] = ApiClient.convertToType(data['user_id'], 'Number');
+            if (data.hasOwnProperty('id')) {
+                obj['id'] = ApiClient.convertToType(data['id'], 'String');
             }
             if (data.hasOwnProperty('email')) {
                 obj['email'] = ApiClient.convertToType(data['email'], 'String');
@@ -72,6 +72,10 @@ class OrganizationUser {
      * @return {boolean} to indicate whether the JSON data is valid with respect to <code>OrganizationUser</code>.
      */
     static validateJSON(data) {
+        // ensure the json data is a string
+        if (data['id'] && !(typeof data['id'] === 'string' || data['id'] instanceof String)) {
+            throw new Error("Expected the field `id` to be a primitive type in the JSON string but got " + data['id']);
+        }
         // ensure the json data is a string
         if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
             throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
@@ -98,9 +102,9 @@ class OrganizationUser {
 
 
 /**
- * @member {Number} user_id
+ * @member {String} id
  */
-OrganizationUser.prototype['user_id'] = undefined;
+OrganizationUser.prototype['id'] = undefined;
 
 /**
  * @member {String} email

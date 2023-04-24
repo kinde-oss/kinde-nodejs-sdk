@@ -47,9 +47,19 @@ export function pkceChallengeFromVerifier(codeVerifier) {
  * @returns {Object|null} - the JSON object represented by the token or null if the parsing fails
  */
 export function parseJWT(token) {
+  if (typeof token !== 'string') {
+    throw new Error('Token must be a string');
+  }
+
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    throw new Error('Invalid token format');
+  }
+
+  const base64Payload = parts[1];
   try {
-    return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString('utf8'));
-  } catch (e) {
+    return JSON.parse(Buffer.from(base64Payload, 'base64').toString('utf8'));
+  } catch (error) {
     return null;
   }
 }

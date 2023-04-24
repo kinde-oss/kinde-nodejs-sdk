@@ -13,13 +13,16 @@
 
 
 import ApiClient from "../ApiClient";
-import AddOrganizationUsers200Response from '../model/AddOrganizationUsers200Response';
 import AddOrganizationUsersRequest from '../model/AddOrganizationUsersRequest';
+import AddOrganizationUsersResponse from '../model/AddOrganizationUsersResponse';
 import CreateOrganizationRequest from '../model/CreateOrganizationRequest';
+import ErrorResponse from '../model/ErrorResponse';
+import GetOrganizationsResponse from '../model/GetOrganizationsResponse';
+import GetOrganizationsUsersResponse from '../model/GetOrganizationsUsersResponse';
 import Organization from '../model/Organization';
-import OrganizationUser from '../model/OrganizationUser';
-import RemoveOrganizationUsers200Response from '../model/RemoveOrganizationUsers200Response';
 import RemoveOrganizationUsersRequest from '../model/RemoveOrganizationUsersRequest';
+import RemoveOrganizationUsersResponse from '../model/RemoveOrganizationUsersResponse';
+import SuccessResponse from '../model/SuccessResponse';
 
 /**
 * Organizations service.
@@ -44,7 +47,7 @@ export default class OrganizationsApi {
      * Callback function to receive the result of the addOrganizationUsers operation.
      * @callback module:api/OrganizationsApi~addOrganizationUsersCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/AddOrganizationUsers200Response} data The data returned by the service call.
+     * @param {module:model/AddOrganizationUsersResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -55,7 +58,7 @@ export default class OrganizationsApi {
      * @param {String} opts.code The organization's code.
      * @param {module:model/AddOrganizationUsersRequest} opts.addOrganizationUsersRequest 
      * @param {module:api/OrganizationsApi~addOrganizationUsersCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/AddOrganizationUsers200Response}
+     * data is of type: {@link module:model/AddOrganizationUsersResponse}
      */
     addOrganizationUsers(opts, callback) {
       opts = opts || {};
@@ -73,8 +76,8 @@ export default class OrganizationsApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = ['application/json'];
-      let accepts = ['application/json'];
-      let returnType = AddOrganizationUsers200Response;
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = AddOrganizationUsersResponse;
       return this.apiClient.callApi(
         '/api/v1/organization/users', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -112,7 +115,7 @@ export default class OrganizationsApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = ['application/json'];
-      let accepts = [];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
       let returnType = null;
       return this.apiClient.callApi(
         '/api/v1/organization', 'POST',
@@ -122,33 +125,37 @@ export default class OrganizationsApi {
     }
 
     /**
-     * Callback function to receive the result of the getOrgainzations operation.
-     * @callback module:api/OrganizationsApi~getOrgainzationsCallback
+     * Callback function to receive the result of the deleteOrganizationFeatureFlagOverride operation.
+     * @callback module:api/OrganizationsApi~deleteOrganizationFeatureFlagOverrideCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/Organization>} data The data returned by the service call.
+     * @param {module:model/SuccessResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
     /**
-     * List Organizations
-     * Get a list of organizations. 
-     * @param {Object} opts Optional parameters
-     * @param {module:model/String} opts.sort Field and order to sort the result by.
-     * @param {Number} opts.pageSize Number of results per page. Defaults to 10 if parameter not sent.
-     * @param {String} opts.nextToken A string to get the next page of results if there are more results.
-     * @param {module:api/OrganizationsApi~getOrgainzationsCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/Organization>}
+     * Delete organization feature flag override
+     * Delete organization feature flag override.
+     * @param {String} orgCode The identifier for the organization.
+     * @param {String} featureFlagKey The identifier for the feature flag.
+     * @param {module:api/OrganizationsApi~deleteOrganizationFeatureFlagOverrideCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/SuccessResponse}
      */
-    getOrgainzations(opts, callback) {
-      opts = opts || {};
+    deleteOrganizationFeatureFlagOverride(orgCode, featureFlagKey, callback) {
       let postBody = null;
+      // verify the required parameter 'orgCode' is set
+      if (orgCode === undefined || orgCode === null) {
+        throw new Error("Missing the required parameter 'orgCode' when calling deleteOrganizationFeatureFlagOverride");
+      }
+      // verify the required parameter 'featureFlagKey' is set
+      if (featureFlagKey === undefined || featureFlagKey === null) {
+        throw new Error("Missing the required parameter 'featureFlagKey' when calling deleteOrganizationFeatureFlagOverride");
+      }
 
       let pathParams = {
+        'org_code': orgCode,
+        'feature_flag_key': featureFlagKey
       };
       let queryParams = {
-        'sort': opts['sort'],
-        'page_size': opts['pageSize'],
-        'next_token': opts['nextToken']
       };
       let headerParams = {
       };
@@ -157,10 +164,53 @@ export default class OrganizationsApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = [Organization];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = SuccessResponse;
       return this.apiClient.callApi(
-        '/api/v1/organizations', 'GET',
+        '/api/v1/organizations/{org_code}/feature_flags/{feature_flag_key}', 'DELETE',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the deleteOrganizationFeatureFlagOverrides operation.
+     * @callback module:api/OrganizationsApi~deleteOrganizationFeatureFlagOverridesCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/SuccessResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete all organization feature flag overrides
+     * Delete all organization feature flag overrides.
+     * @param {String} orgCode The identifier for the organization.
+     * @param {module:api/OrganizationsApi~deleteOrganizationFeatureFlagOverridesCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/SuccessResponse}
+     */
+    deleteOrganizationFeatureFlagOverrides(orgCode, callback) {
+      let postBody = null;
+      // verify the required parameter 'orgCode' is set
+      if (orgCode === undefined || orgCode === null) {
+        throw new Error("Missing the required parameter 'orgCode' when calling deleteOrganizationFeatureFlagOverrides");
+      }
+
+      let pathParams = {
+        'org_code': orgCode
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['kindeBearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = SuccessResponse;
+      return this.apiClient.callApi(
+        '/api/v1/organizations/{org_code}/feature_flags', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -198,7 +248,7 @@ export default class OrganizationsApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = [];
-      let accepts = ['application/json'];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
       let returnType = Organization;
       return this.apiClient.callApi(
         '/api/v1/organization', 'GET',
@@ -211,20 +261,21 @@ export default class OrganizationsApi {
      * Callback function to receive the result of the getOrganizationUsers operation.
      * @callback module:api/OrganizationsApi~getOrganizationUsersCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/OrganizationUser} data The data returned by the service call.
+     * @param {module:model/GetOrganizationsUsersResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
     /**
      * List Organization Users
-     * Get users in an organizaiton.
+     * Get users in an organization.
      * @param {Object} opts Optional parameters
      * @param {module:model/String} opts.sort Field and order to sort the result by.
      * @param {Number} opts.pageSize Number of results per page. Defaults to 10 if parameter not sent.
      * @param {String} opts.nextToken A string to get the next page of results if there are more results.
      * @param {String} opts.code The organization's code.
+     * @param {String} opts.permissions Filter by user permissions
      * @param {module:api/OrganizationsApi~getOrganizationUsersCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/OrganizationUser}
+     * data is of type: {@link module:model/GetOrganizationsUsersResponse}
      */
     getOrganizationUsers(opts, callback) {
       opts = opts || {};
@@ -236,7 +287,8 @@ export default class OrganizationsApi {
         'sort': opts['sort'],
         'page_size': opts['pageSize'],
         'next_token': opts['nextToken'],
-        'code': opts['code']
+        'code': opts['code'],
+        'permissions': opts['permissions']
       };
       let headerParams = {
       };
@@ -245,10 +297,55 @@ export default class OrganizationsApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = OrganizationUser;
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = GetOrganizationsUsersResponse;
       return this.apiClient.callApi(
         '/api/v1/organization/users', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the getOrganizations operation.
+     * @callback module:api/OrganizationsApi~getOrganizationsCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/GetOrganizationsResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Organizations
+     * Get a list of organizations. 
+     * @param {Object} opts Optional parameters
+     * @param {module:model/String} opts.sort Field and order to sort the result by.
+     * @param {Number} opts.pageSize Number of results per page. Defaults to 10 if parameter not sent.
+     * @param {String} opts.nextToken A string to get the next page of results if there are more results.
+     * @param {module:api/OrganizationsApi~getOrganizationsCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/GetOrganizationsResponse}
+     */
+    getOrganizations(opts, callback) {
+      opts = opts || {};
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+        'sort': opts['sort'],
+        'page_size': opts['pageSize'],
+        'next_token': opts['nextToken']
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['kindeBearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = GetOrganizationsResponse;
+      return this.apiClient.callApi(
+        '/api/v1/organizations', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -258,7 +355,7 @@ export default class OrganizationsApi {
      * Callback function to receive the result of the removeOrganizationUsers operation.
      * @callback module:api/OrganizationsApi~removeOrganizationUsersCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/RemoveOrganizationUsers200Response} data The data returned by the service call.
+     * @param {module:model/RemoveOrganizationUsersResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -269,7 +366,7 @@ export default class OrganizationsApi {
      * @param {String} opts.code The organization's code.
      * @param {module:model/RemoveOrganizationUsersRequest} opts.removeOrganizationUsersRequest 
      * @param {module:api/OrganizationsApi~removeOrganizationUsersCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/RemoveOrganizationUsers200Response}
+     * data is of type: {@link module:model/RemoveOrganizationUsersResponse}
      */
     removeOrganizationUsers(opts, callback) {
       opts = opts || {};
@@ -287,10 +384,65 @@ export default class OrganizationsApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = ['application/json'];
-      let accepts = ['application/json'];
-      let returnType = RemoveOrganizationUsers200Response;
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = RemoveOrganizationUsersResponse;
       return this.apiClient.callApi(
         '/api/v1/organization/users', 'PATCH',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the updateOrganizationFeatureFlagOverride operation.
+     * @callback module:api/OrganizationsApi~updateOrganizationFeatureFlagOverrideCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/SuccessResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update organization feature flag override
+     * Update organization feature flag override.
+     * @param {String} orgCode The identifier for the organization
+     * @param {String} featureFlagKey The identifier for the feature flag
+     * @param {String} value Override value
+     * @param {module:api/OrganizationsApi~updateOrganizationFeatureFlagOverrideCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/SuccessResponse}
+     */
+    updateOrganizationFeatureFlagOverride(orgCode, featureFlagKey, value, callback) {
+      let postBody = null;
+      // verify the required parameter 'orgCode' is set
+      if (orgCode === undefined || orgCode === null) {
+        throw new Error("Missing the required parameter 'orgCode' when calling updateOrganizationFeatureFlagOverride");
+      }
+      // verify the required parameter 'featureFlagKey' is set
+      if (featureFlagKey === undefined || featureFlagKey === null) {
+        throw new Error("Missing the required parameter 'featureFlagKey' when calling updateOrganizationFeatureFlagOverride");
+      }
+      // verify the required parameter 'value' is set
+      if (value === undefined || value === null) {
+        throw new Error("Missing the required parameter 'value' when calling updateOrganizationFeatureFlagOverride");
+      }
+
+      let pathParams = {
+        'org_code': orgCode,
+        'feature_flag_key': featureFlagKey
+      };
+      let queryParams = {
+        'value': value
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['kindeBearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = SuccessResponse;
+      return this.apiClient.callApi(
+        '/api/v1/organizations/{org_code}/feature_flags/{feature_flag_key}', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

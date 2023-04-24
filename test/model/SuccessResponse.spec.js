@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.UpdateUserRequest();
+    instance = new KindeManagementApi.SuccessResponse();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,28 +47,22 @@
       object[property] = value;
   }
 
-  describe('UpdateUserRequest', function() {
-    it('should create an instance of UpdateUserRequest', function() {
-      // uncomment below and update the code to test UpdateUserRequest
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be.a(KindeManagementApi.UpdateUserRequest);
+  describe('SuccessResponse', function() {
+    it('should create an instance of SuccessResponse', function() {
+      // uncomment below and update the code to test SuccessResponse
+      //var instance = new KindeManagementApi.SuccessResponse();
+      //expect(instance).to.be.a(KindeManagementApi.SuccessResponse);
     });
 
-    it('should have the property givenName (base name: "given_name")', function() {
-      // uncomment below and update the code to test the property givenName
-      //var instance = new KindeManagementApi.UpdateUserRequest();
+    it('should have the property message (base name: "message")', function() {
+      // uncomment below and update the code to test the property message
+      //var instance = new KindeManagementApi.SuccessResponse();
       //expect(instance).to.be();
     });
 
-    it('should have the property familyName (base name: "family_name")', function() {
-      // uncomment below and update the code to test the property familyName
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property isSuspended (base name: "is_suspended")', function() {
-      // uncomment below and update the code to test the property isSuspended
-      //var instance = new KindeManagementApi.UpdateUserRequest();
+    it('should have the property code (base name: "code")', function() {
+      // uncomment below and update the code to test the property code
+      //var instance = new KindeManagementApi.SuccessResponse();
       //expect(instance).to.be();
     });
 

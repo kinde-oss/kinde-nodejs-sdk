@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.UpdateUserRequest();
+    instance = new KindeManagementApi.EnvironmentsApi();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,31 +47,37 @@
       object[property] = value;
   }
 
-  describe('UpdateUserRequest', function() {
-    it('should create an instance of UpdateUserRequest', function() {
-      // uncomment below and update the code to test UpdateUserRequest
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be.a(KindeManagementApi.UpdateUserRequest);
+  describe('EnvironmentsApi', function() {
+    describe('deleteEnvironementFeatureFlagOverride', function() {
+      it('should call deleteEnvironementFeatureFlagOverride successfully', function(done) {
+        //uncomment below and update the code to test deleteEnvironementFeatureFlagOverride
+        //instance.deleteEnvironementFeatureFlagOverride(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
     });
-
-    it('should have the property givenName (base name: "given_name")', function() {
-      // uncomment below and update the code to test the property givenName
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be();
+    describe('deleteEnvironementFeatureFlagOverrides', function() {
+      it('should call deleteEnvironementFeatureFlagOverrides successfully', function(done) {
+        //uncomment below and update the code to test deleteEnvironementFeatureFlagOverrides
+        //instance.deleteEnvironementFeatureFlagOverrides(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
     });
-
-    it('should have the property familyName (base name: "family_name")', function() {
-      // uncomment below and update the code to test the property familyName
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be();
+    describe('updateEnvironementFeatureFlagOverride', function() {
+      it('should call updateEnvironementFeatureFlagOverride successfully', function(done) {
+        //uncomment below and update the code to test updateEnvironementFeatureFlagOverride
+        //instance.updateEnvironementFeatureFlagOverride(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
     });
-
-    it('should have the property isSuspended (base name: "is_suspended")', function() {
-      // uncomment below and update the code to test the property isSuspended
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be();
-    });
-
   });
 
 }));

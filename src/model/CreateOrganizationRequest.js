@@ -50,6 +50,9 @@ class CreateOrganizationRequest {
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
+            if (data.hasOwnProperty('feature_flags')) {
+                obj['feature_flags'] = ApiClient.convertToType(data['feature_flags'], {'String': 'String'});
+            }
         }
         return obj;
     }
@@ -79,8 +82,41 @@ class CreateOrganizationRequest {
  */
 CreateOrganizationRequest.prototype['name'] = undefined;
 
+/**
+ * The organization's feature flag settings.
+ * @member {Object.<String, module:model/CreateOrganizationRequest.InnerEnum>} feature_flags
+ */
+CreateOrganizationRequest.prototype['feature_flags'] = undefined;
 
 
+
+
+
+/**
+ * Allowed values for the <code>inner</code> property.
+ * @enum {String}
+ * @readonly
+ */
+CreateOrganizationRequest['InnerEnum'] = {
+
+    /**
+     * value: "str"
+     * @const
+     */
+    "str": "str",
+
+    /**
+     * value: "int"
+     * @const
+     */
+    "int": "int",
+
+    /**
+     * value: "bool"
+     * @const
+     */
+    "bool": "bool"
+};
 
 
 

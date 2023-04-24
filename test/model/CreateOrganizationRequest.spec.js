@@ -60,6 +60,12 @@
       //expect(instance).to.be();
     });
 
+    it('should have the property featureFlags (base name: "feature_flags")', function() {
+      // uncomment below and update the code to test the property featureFlags
+      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //expect(instance).to.be();
+    });
+
   });
 
 }));

@@ -1,16 +1,16 @@
-export default class ClientCredentials {
+export default class RefreshToken {
   /**
    * getToken function to obtain an access token from the authorization server.
    * @param {Object} client - Kinde client instance
+   * @param {String} refreshToken - Refresh token
    * @returns {Object} JSON object with token information like access_token, refresh_token, expires_in etc.
    */
-  async getToken(client) {
+  async getToken(client, refreshToken) {
     const searchParams = {
-      grant_type: client.grantType,
+      grant_type: 'refresh_token',
       client_id: client.clientId,
-      client_secret: client.clientSecret,
-      scope: client.scope,
-      ...(!!client.audience && { audience: client.audience }),
+      client_secret: client.clientSecret,     
+      refresh_token: refreshToken,
     };
 
     const res = await fetch(client.tokenEndpoint, {

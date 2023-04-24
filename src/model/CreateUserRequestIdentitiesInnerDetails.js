@@ -21,7 +21,7 @@ import ApiClient from '../ApiClient';
 class CreateUserRequestIdentitiesInnerDetails {
     /**
      * Constructs a new <code>CreateUserRequestIdentitiesInnerDetails</code>.
-     * Additional details required to create the user
+     * Additional details required to create the user.
      * @alias module:model/CreateUserRequestIdentitiesInnerDetails
      */
     constructor() { 
@@ -75,7 +75,7 @@ class CreateUserRequestIdentitiesInnerDetails {
 
 
 /**
- * The email address of the user
+ * The email address of the user.
  * @member {String} email
  */
 CreateUserRequestIdentitiesInnerDetails.prototype['email'] = undefined;

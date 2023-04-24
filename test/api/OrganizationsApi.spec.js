@@ -68,10 +68,20 @@
         done();
       });
     });
-    describe('getOrgainzations', function() {
-      it('should call getOrgainzations successfully', function(done) {
-        //uncomment below and update the code to test getOrgainzations
-        //instance.getOrgainzations(function(error) {
+    describe('deleteOrganizationFeatureFlagOverride', function() {
+      it('should call deleteOrganizationFeatureFlagOverride successfully', function(done) {
+        //uncomment below and update the code to test deleteOrganizationFeatureFlagOverride
+        //instance.deleteOrganizationFeatureFlagOverride(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
+    describe('deleteOrganizationFeatureFlagOverrides', function() {
+      it('should call deleteOrganizationFeatureFlagOverrides successfully', function(done) {
+        //uncomment below and update the code to test deleteOrganizationFeatureFlagOverrides
+        //instance.deleteOrganizationFeatureFlagOverrides(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});
@@ -98,10 +108,30 @@
         done();
       });
     });
+    describe('getOrganizations', function() {
+      it('should call getOrganizations successfully', function(done) {
+        //uncomment below and update the code to test getOrganizations
+        //instance.getOrganizations(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
     describe('removeOrganizationUsers', function() {
       it('should call removeOrganizationUsers successfully', function(done) {
         //uncomment below and update the code to test removeOrganizationUsers
         //instance.removeOrganizationUsers(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
+    describe('updateOrganizationFeatureFlagOverride', function() {
+      it('should call updateOrganizationFeatureFlagOverride successfully', function(done) {
+        //uncomment below and update the code to test updateOrganizationFeatureFlagOverride
+        //instance.updateOrganizationFeatureFlagOverride(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});

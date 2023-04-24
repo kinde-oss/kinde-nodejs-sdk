@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.UpdateUserRequest();
+    instance = new KindeManagementApi.RemoveOrganizationUsersResponse();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,28 +47,22 @@
       object[property] = value;
   }
 
-  describe('UpdateUserRequest', function() {
-    it('should create an instance of UpdateUserRequest', function() {
-      // uncomment below and update the code to test UpdateUserRequest
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be.a(KindeManagementApi.UpdateUserRequest);
+  describe('RemoveOrganizationUsersResponse', function() {
+    it('should create an instance of RemoveOrganizationUsersResponse', function() {
+      // uncomment below and update the code to test RemoveOrganizationUsersResponse
+      //var instance = new KindeManagementApi.RemoveOrganizationUsersResponse();
+      //expect(instance).to.be.a(KindeManagementApi.RemoveOrganizationUsersResponse);
     });
 
-    it('should have the property givenName (base name: "given_name")', function() {
-      // uncomment below and update the code to test the property givenName
-      //var instance = new KindeManagementApi.UpdateUserRequest();
+    it('should have the property message (base name: "message")', function() {
+      // uncomment below and update the code to test the property message
+      //var instance = new KindeManagementApi.RemoveOrganizationUsersResponse();
       //expect(instance).to.be();
     });
 
-    it('should have the property familyName (base name: "family_name")', function() {
-      // uncomment below and update the code to test the property familyName
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property isSuspended (base name: "is_suspended")', function() {
-      // uncomment below and update the code to test the property isSuspended
-      //var instance = new KindeManagementApi.UpdateUserRequest();
+    it('should have the property usersAdded (base name: "users_added")', function() {
+      // uncomment below and update the code to test the property usersAdded
+      //var instance = new KindeManagementApi.RemoveOrganizationUsersResponse();
       //expect(instance).to.be();
     });
 

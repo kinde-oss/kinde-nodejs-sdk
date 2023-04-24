@@ -58,6 +58,7 @@ export default class PKCE {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Kinde-SDK': `${client.languageOrFramework}/${client.languageOrFrameworkVersion}`,
       },
       body: new URLSearchParams(searchParams),
     });

@@ -50,6 +50,9 @@ class UserProfileV2 {
             if (data.hasOwnProperty('id')) {
                 obj['id'] = ApiClient.convertToType(data['id'], 'String');
             }
+            if (data.hasOwnProperty('sub')) {
+                obj['sub'] = ApiClient.convertToType(data['sub'], 'String');
+            }
             if (data.hasOwnProperty('provided_id')) {
                 obj['provided_id'] = ApiClient.convertToType(data['provided_id'], 'String');
             }
@@ -83,6 +86,10 @@ class UserProfileV2 {
             throw new Error("Expected the field `id` to be a primitive type in the JSON string but got " + data['id']);
         }
         // ensure the json data is a string
+        if (data['sub'] && !(typeof data['sub'] === 'string' || data['sub'] instanceof String)) {
+            throw new Error("Expected the field `sub` to be a primitive type in the JSON string but got " + data['sub']);
+        }
+        // ensure the json data is a string
         if (data['provided_id'] && !(typeof data['provided_id'] === 'string' || data['provided_id'] instanceof String)) {
             throw new Error("Expected the field `provided_id` to be a primitive type in the JSON string but got " + data['provided_id']);
         }
@@ -112,43 +119,49 @@ class UserProfileV2 {
 
 
 /**
- * Unique id of the user in Kinde
+ * Unique id of the user in Kinde (deprecated).
  * @member {String} id
  */
 UserProfileV2.prototype['id'] = undefined;
 
 /**
- * Value of the user's id in a third-party system when the user is imported into Kinde
+ * Unique id of the user in Kinde.
+ * @member {String} sub
+ */
+UserProfileV2.prototype['sub'] = undefined;
+
+/**
+ * Value of the user's id in a third-party system when the user is imported into Kinde.
  * @member {String} provided_id
  */
 UserProfileV2.prototype['provided_id'] = undefined;
 
 /**
- * Users's first and last name separated by a space
+ * Users's first and last name separated by a space.
  * @member {String} name
  */
 UserProfileV2.prototype['name'] = undefined;
 
 /**
- * User's first name
+ * User's first name.
  * @member {String} given_name
  */
 UserProfileV2.prototype['given_name'] = undefined;
 
 /**
- * User's last name
+ * User's last name.
  * @member {String} family_name
  */
 UserProfileV2.prototype['family_name'] = undefined;
 
 /**
- * Date the user was last updated at (In Unix time)
+ * Date the user was last updated at (In Unix time).
  * @member {Number} updated_at
  */
 UserProfileV2.prototype['updated_at'] = undefined;
 
 /**
- * User's email address if available
+ * User's email address if available.
  * @member {String} email
  */
 UserProfileV2.prototype['email'] = undefined;

@@ -81,13 +81,13 @@ class ConnectedAppsAccessToken {
 
 
 /**
- * The access token to access a third-party provider
+ * The access token to access a third-party provider.
  * @member {String} access_token
  */
 ConnectedAppsAccessToken.prototype['access_token'] = undefined;
 
 /**
- * The date and time that the access token expires
+ * The date and time that the access token expires.
  * @member {String} access_token_expiry
  */
 ConnectedAppsAccessToken.prototype['access_token_expiry'] = undefined;

@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.UpdateUserRequest();
+    instance = new KindeManagementApi.ErrorResponse();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,28 +47,16 @@
       object[property] = value;
   }
 
-  describe('UpdateUserRequest', function() {
-    it('should create an instance of UpdateUserRequest', function() {
-      // uncomment below and update the code to test UpdateUserRequest
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be.a(KindeManagementApi.UpdateUserRequest);
+  describe('ErrorResponse', function() {
+    it('should create an instance of ErrorResponse', function() {
+      // uncomment below and update the code to test ErrorResponse
+      //var instance = new KindeManagementApi.ErrorResponse();
+      //expect(instance).to.be.a(KindeManagementApi.ErrorResponse);
     });
 
-    it('should have the property givenName (base name: "given_name")', function() {
-      // uncomment below and update the code to test the property givenName
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property familyName (base name: "family_name")', function() {
-      // uncomment below and update the code to test the property familyName
-      //var instance = new KindeManagementApi.UpdateUserRequest();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property isSuspended (base name: "is_suspended")', function() {
-      // uncomment below and update the code to test the property isSuspended
-      //var instance = new KindeManagementApi.UpdateUserRequest();
+    it('should have the property errors (base name: "errors")', function() {
+      // uncomment below and update the code to test the property errors
+      //var instance = new KindeManagementApi.ErrorResponse();
       //expect(instance).to.be();
     });
 

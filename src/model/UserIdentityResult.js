@@ -21,7 +21,7 @@ import ApiClient from '../ApiClient';
 class UserIdentityResult {
     /**
      * Constructs a new <code>UserIdentityResult</code>.
-     * The result of the user creation operation
+     * The result of the user creation operation.
      * @alias module:model/UserIdentityResult
      */
     constructor() { 
@@ -74,13 +74,13 @@ class UserIdentityResult {
 
 
 /**
- * True if the user identity was successfully created
+ * True if the user identity was successfully created.
  * @member {Boolean} created
  */
 UserIdentityResult.prototype['created'] = undefined;
 
 /**
- * Unique id of the user's identity in Kinde
+ * Unique id of the user's identity in Kinde.
  * @member {Number} identity_id
  */
 UserIdentityResult.prototype['identity_id'] = undefined;
