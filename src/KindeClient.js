@@ -19,7 +19,7 @@ import { SDK_VERSION } from "./sdk/utils/SDKVersion";
  * @property {String} options.audience - API Identifier for the target API (Optional)
  * @property {String} options.scope - List of scopes requested by the application (default: 'openid profile email offline')
  * @property {String} options.languageOrFramework - Language or framework name (default: 'Javascript')
- * @property {String} options.languageOrFrameworkVersion - Language or framework version (default: '3.0.9')
+ * @property {String} options.languageOrFrameworkVersion - Language or framework version (default: '1.0.0')
  */
 export default class KindeClient {
   constructor(options) {
