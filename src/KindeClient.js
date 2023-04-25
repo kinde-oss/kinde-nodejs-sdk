@@ -384,13 +384,26 @@ export default class KindeClient {
     if (kindeAccessToken && !this.isTokenExpired(request)) {
       return kindeAccessToken;
     }
-    const auth = new RefreshToken();
-    const resGetToken = await auth.getToken(this, kindeRefreshToken);
-    if (resGetToken?.error) {
-      throw new Error('Refresh token are invalid or expired.');
+    let auth, resGetToken;
+    if (this.grantType === GrantType.CLIENT_CREDENTIALS) {
+      auth = new ClientCredentials();
+      resGetToken = await auth.getToken(this);
+      if (resGetToken?.error) {
+        const msg = resGetToken?.error_description || resGetToken?.error;
+        throw new Error(msg);
+      }
+      this.saveToken(req, resGetToken);
+      return resGetToken.access_token;
+    } else if (this.grantType === GrantType.AUTHORIZATION_CODE || this.grantType === GrantType.PKCE) {
+      auth = new RefreshToken();
+      resGetToken = await auth.getToken(this, kindeRefreshToken);
+      if (resGetToken?.error) {
+        throw new Error('Refresh token are invalid or expired.');
+      }
+      this.saveToken(request, resGetToken);
+      return resGetToken.access_token;
     }
-    this.saveToken(request, resGetToken);
-    return resGetToken.access_token;
+    throw new Error('Please provide correct grantType');
   }
 
   /**
