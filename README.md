@@ -222,11 +222,11 @@ We provide helper functions to more easily access feature flags:
  * Get a flag from the feature_flags claim of the access_token.
  * @param {Object} request - Request object
  * @param {String} code - The name of the flag.
- * @param {obj} [defaultValue] - A fallback value if the flag isn't found.
+ * @param {Object} [defaultValue] - A fallback value if the flag isn't found.
  * @param {'s'|'b'|'i'|undefined} [flagType] - The data type of the flag (integer / boolean / string).
  * @return {Object} Flag details.
  */
-client.getFlag(req, code, defaultValue, flagType);
+client.getFlag(req, code, { defaultValue }, flagType);
 
 /* Example usage */
 
@@ -238,7 +238,7 @@ client.getFlag(req, 'theme');
 //   "is_default": false // whether the fallback value had to be used
 }*/
 
-client.getFlag(req, 'create_competition', {defaultValue: false});
+client.getFlag(req, 'create_competition', { defaultValue: false });
 /*{
       "code": "create_competition",
       "value": false,

@@ -5,9 +5,10 @@
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src -d dist",
+    "build": "npm run genversion && babel src -d dist",
     "prepare": "npm run build",
-    "test": "mocha --require @babel/register --recursive"
+    "test": "mocha --require @babel/register --recursive",
+    "genversion": "node -p \"'export const SDK_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/sdk/utils/SDKVersion.js"
   },
   "browser": {
     "fs": false
