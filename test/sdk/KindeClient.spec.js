@@ -406,7 +406,7 @@ import sinon from 'sinon';
         const request = { session: { kindeFeatureFlags: {} } };
         const defaultValue = true;
         sandbox.stub(instance, 'isAuthenticated').returns(true);
-        const result = instance.getFlag(request, 'my-flag', defaultValue, 'b');
+        const result = instance.getFlag(request, 'my-flag', { defaultValue }, 'b');
         expect(result.code).to.equal('my-flag');
         expect(result.type).to.equal('boolean');
         expect(result.value).to.equal(true);
@@ -425,9 +425,10 @@ import sinon from 'sinon';
         const request = { session: { kindeFeatureFlags: {
           'my-flag': { t: 's', v: 'a' }
         } } };
+        const defaultValue = 123;
         sandbox.stub(instance, 'isAuthenticated').returns(true);
         expect(() => {
-          instance.getFlag(request, 'my-flag', 123, 'i');
+          instance.getFlag(request, 'my-flag', { defaultValue }, 'i');
         }).to.throwError('Flag my-flag is of type string - requested type integer');
       });
 

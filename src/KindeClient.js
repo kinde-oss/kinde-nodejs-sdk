@@ -379,9 +379,9 @@ export default class KindeClient {
    * @returns {String} - Returns the access token
    */
   async getToken(request) {
-    const { kindAccessToken, kindeRefreshToken } = request.session ?? {};
-    if (kindAccessToken && !this.isTokenExpired(request)) {
-      return kindAccessToken;
+    const { kindeAccessToken, kindeRefreshToken } = request.session ?? {};
+    if (kindeAccessToken && !this.isTokenExpired(request)) {
+      return kindeAccessToken;
     }
     const auth = new RefreshToken();
     const resGetToken = await auth.getToken(this, kindeRefreshToken);
@@ -410,16 +410,17 @@ export default class KindeClient {
    * Get a flag from the feature_flags claim of the access_token.
    * @param {Object} request - Request object
    * @param {String} code - The name of the flag.
-   * @param {obj} [defaultValue] - A fallback value if the flag isn't found.
+   * @param {Object} [defaultValueObj] - A fallback value if the flag isn't found.
    * @param {'s'|'b'|'i'|undefined} [flagType] - The data type of the flag (integer / boolean / string).
    * @return {Object} Flag details.
    */
-  getFlag(request, code, defaultValue, flagType) {
+  getFlag(request, code, defaultValueObj, flagType) {
     if (!this.isAuthenticated(request)) {
       throw new Error('Request is missing required authentication credential');
     }
     const flags = request.session.kindeFeatureFlags;
     const flag = flags && flags[code] ? flags[code] : {};
+    const defaultValue = defaultValueObj?.defaultValue;
     if (flag.v === undefined && defaultValue === undefined) {
       throw new Error(
         `Flag ${code} does not exist, and no default value has been provided`
@@ -447,7 +448,7 @@ export default class KindeClient {
    * @return {Boolean}
    */
   getBooleanFlag(request, code, defaultValue) {
-    const flag = this.getFlag(request, code, defaultValue, 'b');
+    const flag = this.getFlag(request, code, { defaultValue }, 'b');
     return flag.value;
   };
 
@@ -459,19 +460,18 @@ export default class KindeClient {
    * @return {String}
    */
   getStringFlag(request, code, defaultValue) {
-    const flag = this.getFlag(request, code, defaultValue, 's');
+    const flag = this.getFlag(request, code, { defaultValue }, 's');
     return flag.value;
   };
 
   /**
    * Get an integer flag from the feature_flags claim of the access_token.
-   * @param {Object} request - Request object
    * @param {String} code - The name of the flag.
    * @param {Integer} [defaultValue] - A fallback value if the flag isn't found.
    * @return {Integer}
    */
   getIntegerFlag(request, code, defaultValue) {
-    const flag = this.getFlag(request, code, defaultValue, 'i');
+    const flag = this.getFlag(request, code, { defaultValue }, 'i');
     return flag.value;
   };
 
