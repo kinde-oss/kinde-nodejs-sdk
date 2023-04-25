@@ -1,7 +1,7 @@
 {
   "name": "@kinde-oss/kinde-nodejs-sdk",
   "version": "1.0.0",
-  "description": "Provides endpoints to manage your Kinde Businesses",
+  "description": "Kinde Nodejs SDK allows integrate with Express server using middleware, helpers function",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
