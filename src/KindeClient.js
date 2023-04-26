@@ -356,21 +356,25 @@ export default class KindeClient {
     request.session.kindeIdToken = token.id_token;
     request.session.kindeExpiresIn = token.expires_in || 0;
     request.session.kindeRefreshToken = token.refresh_token;
-    const payloadIdToken = parseJWT(token.id_token);
-    if (payloadIdToken) {
-      const user = {
-        id: payloadIdToken.sub,
-        given_name: payloadIdToken.given_name,
-        family_name: payloadIdToken.family_name,
-        email: payloadIdToken.email,
-        picture: payloadIdToken.picture,
+    if (token.id_token){
+      const payloadIdToken = parseJWT(token.id_token);
+      if (payloadIdToken) {
+        const user = {
+          id: payloadIdToken.sub,
+          given_name: payloadIdToken.given_name,
+          family_name: payloadIdToken.family_name,
+          email: payloadIdToken.email,
+          picture: payloadIdToken.picture,
+        }
+        request.session.kindeUser = user;
       }
-      request.session.kindeUser = user;
     }
-    const payloadAccessToken = parseJWT(token.access_token);
-    if (payloadAccessToken) {
-      const { feature_flags } = payloadAccessToken;
-      request.session.kindeFeatureFlags = feature_flags;
+    if (token.access_token){
+      const payloadAccessToken = parseJWT(token.access_token);
+      if (payloadAccessToken) {
+        const { feature_flags } = payloadAccessToken;
+        request.session.kindeFeatureFlags = feature_flags;
+      }
     }
   }
 
