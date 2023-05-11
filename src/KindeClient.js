@@ -398,7 +398,8 @@ export default class KindeClient {
       }
       this.saveToken(req, resGetToken);
       return resGetToken.access_token;
-    } else if (this.grantType === GrantType.AUTHORIZATION_CODE || this.grantType === GrantType.PKCE) {
+    } 
+    if (this.grantType === GrantType.AUTHORIZATION_CODE || this.grantType === GrantType.PKCE) {
       auth = new RefreshToken();
       resGetToken = await auth.getToken(this, kindeRefreshToken);
       if (resGetToken?.error) {
@@ -419,8 +420,8 @@ export default class KindeClient {
     if (!request.session) {
       throw new Error('OAuth 2.0 authentication requires session support when using state. Did you forget to use express-session middleware?');
     }
-    const currentTime = Date.now() / 1000;
-    const tokenExpiration = request.session.kindeLoginTimeStamp + request.session.kindeExpiresIn;
+    const currentTime = Date.now();
+    const tokenExpiration = request.session.kindeLoginTimeStamp + request.session.kindeExpiresIn*1000;
     return currentTime > tokenExpiration;
   }
 

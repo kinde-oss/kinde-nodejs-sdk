@@ -356,7 +356,7 @@ import sinon from 'sinon';
       it('should call isTokenExpired return true if it is expired', () => {
         const request = {
           session: {
-            kindeLoginTimeStamp: Date.now() / 1000 - 4000,
+            kindeLoginTimeStamp: Date.now() - 3601*1000,
             kindeExpiresIn: 3600 // 1 hour
           }
         };
@@ -367,7 +367,7 @@ import sinon from 'sinon';
       it('should call isTokenExpired return false if it is not expired', () => {
         const request = {
           session: {
-            kindeLoginTimeStamp: Date.now() / 1000 - 1000,
+            kindeLoginTimeStamp: Date.now() - 1000,
             kindeExpiresIn: 3600 // 1 hour
           }
         };

@@ -382,7 +382,7 @@ You can also pass state as your register url
 
 `http://localhost:3000/register?state=<state>`
 
-If you want a user to sign into a particular organization, pass this code along with the sign in method.
+If you want a user to sign in to a particular organization, pass this code along with the sign in method.
 
 `http://localhost:3000/login?org_code=<org_code>`
 
