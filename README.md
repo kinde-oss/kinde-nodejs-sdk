@@ -56,25 +56,11 @@ The following variables need to be replaced in the code snippets below.
 
 
 ## Integrate with your app
-You need to add module `express-session` to init session in server and execute the following JS code to create KindeClient instance: 
+You need to execute the following JS code to create KindeClient instance: 
 
 ```javascript
 require('dotenv').config();
-const express = require('express');
 const { KindeClient, GrantType } = require('@kinde-oss/kinde-nodejs-sdk');
-const session = require('express-session');
-const app = express();
-const port = 3000;
-
-app.use(
-  session({
-    secret: '<secret_string>',
-    saveUninitialized: true,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 },
-    resave: false,
-  }),
-);
-
 const options = {
   domain: process.env.KINDE_DOMAIN,
   clientId: process.env.KINDE_CLIENT_ID,
@@ -83,7 +69,6 @@ const options = {
   logoutRedirectUri: process.env.KINDE_LOGOUT_REDIRECT_URI,
   grantType: GrantType.PKCE,
 };
-
 const client = new KindeClient(options);
 ```
 

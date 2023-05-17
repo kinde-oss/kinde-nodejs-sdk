@@ -128,6 +128,16 @@
         done();
       });
     });
+    describe('updateOrganization', function() {
+      it('should call updateOrganization successfully', function(done) {
+        //uncomment below and update the code to test updateOrganization
+        //instance.updateOrganization(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
     describe('updateOrganizationFeatureFlagOverride', function() {
       it('should call updateOrganizationFeatureFlagOverride successfully', function(done) {
         //uncomment below and update the code to test updateOrganizationFeatureFlagOverride

@@ -14,18 +14,18 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The CreateOrganizationRequest model module.
- * @module model/CreateOrganizationRequest
+ * The UpdateOrganizationRequest model module.
+ * @module model/UpdateOrganizationRequest
  * @version 1
  */
-class CreateOrganizationRequest {
+class UpdateOrganizationRequest {
     /**
-     * Constructs a new <code>CreateOrganizationRequest</code>.
-     * @alias module:model/CreateOrganizationRequest
+     * Constructs a new <code>UpdateOrganizationRequest</code>.
+     * @alias module:model/UpdateOrganizationRequest
      */
     constructor() { 
         
-        CreateOrganizationRequest.initialize(this);
+        UpdateOrganizationRequest.initialize(this);
     }
 
     /**
@@ -37,21 +37,18 @@ class CreateOrganizationRequest {
     }
 
     /**
-     * Constructs a <code>CreateOrganizationRequest</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>UpdateOrganizationRequest</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/CreateOrganizationRequest} obj Optional instance to populate.
-     * @return {module:model/CreateOrganizationRequest} The populated <code>CreateOrganizationRequest</code> instance.
+     * @param {module:model/UpdateOrganizationRequest} obj Optional instance to populate.
+     * @return {module:model/UpdateOrganizationRequest} The populated <code>UpdateOrganizationRequest</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new CreateOrganizationRequest();
+            obj = obj || new UpdateOrganizationRequest();
 
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
-            }
-            if (data.hasOwnProperty('feature_flags')) {
-                obj['feature_flags'] = ApiClient.convertToType(data['feature_flags'], {'String': 'String'});
             }
             if (data.hasOwnProperty('external_id')) {
                 obj['external_id'] = ApiClient.convertToType(data['external_id'], 'String');
@@ -73,9 +70,9 @@ class CreateOrganizationRequest {
     }
 
     /**
-     * Validates the JSON data with respect to <code>CreateOrganizationRequest</code>.
+     * Validates the JSON data with respect to <code>UpdateOrganizationRequest</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>CreateOrganizationRequest</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>UpdateOrganizationRequest</code>.
      */
     static validateJSON(data) {
         // ensure the json data is a string
@@ -115,75 +112,42 @@ class CreateOrganizationRequest {
  * The organization's name.
  * @member {String} name
  */
-CreateOrganizationRequest.prototype['name'] = undefined;
-
-/**
- * The organization's feature flag settings.
- * @member {Object.<String, module:model/CreateOrganizationRequest.InnerEnum>} feature_flags
- */
-CreateOrganizationRequest.prototype['feature_flags'] = undefined;
+UpdateOrganizationRequest.prototype['name'] = undefined;
 
 /**
  * The organization's ID.
  * @member {String} external_id
  */
-CreateOrganizationRequest.prototype['external_id'] = undefined;
+UpdateOrganizationRequest.prototype['external_id'] = undefined;
 
 /**
  * The organization's brand settings - background color.
  * @member {String} background_color
  */
-CreateOrganizationRequest.prototype['background_color'] = undefined;
+UpdateOrganizationRequest.prototype['background_color'] = undefined;
 
 /**
  * The organization's brand settings - button color.
  * @member {String} button_color
  */
-CreateOrganizationRequest.prototype['button_color'] = undefined;
+UpdateOrganizationRequest.prototype['button_color'] = undefined;
 
 /**
  * The organization's brand settings - button text color.
  * @member {String} button_text_color
  */
-CreateOrganizationRequest.prototype['button_text_color'] = undefined;
+UpdateOrganizationRequest.prototype['button_text_color'] = undefined;
 
 /**
  * The organization's brand settings - link color.
  * @member {String} link_color
  */
-CreateOrganizationRequest.prototype['link_color'] = undefined;
+UpdateOrganizationRequest.prototype['link_color'] = undefined;
 
 
 
 
 
-/**
- * Allowed values for the <code>inner</code> property.
- * @enum {String}
- * @readonly
- */
-CreateOrganizationRequest['InnerEnum'] = {
 
-    /**
-     * value: "str"
-     * @const
-     */
-    "str": "str",
-
-    /**
-     * value: "int"
-     * @const
-     */
-    "int": "int",
-
-    /**
-     * value: "bool"
-     * @const
-     */
-    "bool": "bool"
-};
-
-
-
-export default CreateOrganizationRequest;
+export default UpdateOrganizationRequest;
 

@@ -4,6 +4,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**email** | **String** | The email address of the user | [optional] 
+**email** | **String** | The email address of the user. | [optional] 
 
 

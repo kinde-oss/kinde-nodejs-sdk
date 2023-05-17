@@ -63,3 +63,34 @@ export function parseJWT(token) {
     return null;
   }
 }
+
+/**
+ * Returns an object with key-value pairs of cookies extracted from the request headers
+ * @param {Object} request - The HTTP request object that contains headers with cookie information
+ * @returns {Object} - An object containing key-value pairs of cookies
+ */
+function getCookie(request) {
+  const cookies = {};
+  const cookieString = request.headers && request.headers.cookie;
+  if (cookieString) {
+    cookieString.split(';').forEach((cookie) => {
+      const [name, value] = cookie.trim().split('=');
+      cookies[name] = value;
+    });
+  }
+  return cookies;
+}
+
+/**
+ * Returns the session ID if it exists in the cookie header of the HTTP request object, otherwise generates a new session ID and returns it.
+ * @param {Object} request - The HTTP request object
+ * @returns {string} - A session ID string
+ */
+export function getSessionId(request) {
+  if (!request.headers?.cookie){
+    const sessionId = crypto.randomBytes(16).toString('hex');
+    return sessionId;
+  }
+  const cookies = getCookie(request);
+  return cookies.sessionId;
+}

@@ -9,7 +9,7 @@ export default class RefreshToken {
     const searchParams = {
       grant_type: 'refresh_token',
       client_id: client.clientId,
-      client_secret: client.clientSecret,     
+      client_secret: client.clientSecret,
       refresh_token: refreshToken,
     };
 
@@ -17,7 +17,7 @@ export default class RefreshToken {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Kinde-SDK': `${client.languageOrFramework}/${client.languageOrFrameworkVersion}`,
+        'Kinde-SDK': `${client.kindeSdkLanguage}/${client.kindeSdkLanguageVersion}`,
       },
       body: new URLSearchParams(searchParams),
     });

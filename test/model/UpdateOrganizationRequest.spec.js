@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.CreateOrganizationRequest();
+    instance = new KindeManagementApi.UpdateOrganizationRequest();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,52 +47,46 @@
       object[property] = value;
   }
 
-  describe('CreateOrganizationRequest', function() {
-    it('should create an instance of CreateOrganizationRequest', function() {
-      // uncomment below and update the code to test CreateOrganizationRequest
-      //var instance = new KindeManagementApi.CreateOrganizationRequest();
-      //expect(instance).to.be.a(KindeManagementApi.CreateOrganizationRequest);
+  describe('UpdateOrganizationRequest', function() {
+    it('should create an instance of UpdateOrganizationRequest', function() {
+      // uncomment below and update the code to test UpdateOrganizationRequest
+      //var instance = new KindeManagementApi.UpdateOrganizationRequest();
+      //expect(instance).to.be.a(KindeManagementApi.UpdateOrganizationRequest);
     });
 
     it('should have the property name (base name: "name")', function() {
       // uncomment below and update the code to test the property name
-      //var instance = new KindeManagementApi.CreateOrganizationRequest();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property featureFlags (base name: "feature_flags")', function() {
-      // uncomment below and update the code to test the property featureFlags
-      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //var instance = new KindeManagementApi.UpdateOrganizationRequest();
       //expect(instance).to.be();
     });
 
     it('should have the property externalId (base name: "external_id")', function() {
       // uncomment below and update the code to test the property externalId
-      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //var instance = new KindeManagementApi.UpdateOrganizationRequest();
       //expect(instance).to.be();
     });
 
     it('should have the property backgroundColor (base name: "background_color")', function() {
       // uncomment below and update the code to test the property backgroundColor
-      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //var instance = new KindeManagementApi.UpdateOrganizationRequest();
       //expect(instance).to.be();
     });
 
     it('should have the property buttonColor (base name: "button_color")', function() {
       // uncomment below and update the code to test the property buttonColor
-      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //var instance = new KindeManagementApi.UpdateOrganizationRequest();
       //expect(instance).to.be();
     });
 
     it('should have the property buttonTextColor (base name: "button_text_color")', function() {
       // uncomment below and update the code to test the property buttonTextColor
-      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //var instance = new KindeManagementApi.UpdateOrganizationRequest();
       //expect(instance).to.be();
     });
 
     it('should have the property linkColor (base name: "link_color")', function() {
       // uncomment below and update the code to test the property linkColor
-      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //var instance = new KindeManagementApi.UpdateOrganizationRequest();
       //expect(instance).to.be();
     });
 

@@ -16,6 +16,7 @@ import ApiClient from "../ApiClient";
 import AddOrganizationUsersRequest from '../model/AddOrganizationUsersRequest';
 import AddOrganizationUsersResponse from '../model/AddOrganizationUsersResponse';
 import CreateOrganizationRequest from '../model/CreateOrganizationRequest';
+import CreateOrganizationResponse from '../model/CreateOrganizationResponse';
 import ErrorResponse from '../model/ErrorResponse';
 import GetOrganizationsResponse from '../model/GetOrganizationsResponse';
 import GetOrganizationsUsersResponse from '../model/GetOrganizationsUsersResponse';
@@ -23,6 +24,7 @@ import Organization from '../model/Organization';
 import RemoveOrganizationUsersRequest from '../model/RemoveOrganizationUsersRequest';
 import RemoveOrganizationUsersResponse from '../model/RemoveOrganizationUsersResponse';
 import SuccessResponse from '../model/SuccessResponse';
+import UpdateOrganizationRequest from '../model/UpdateOrganizationRequest';
 
 /**
 * Organizations service.
@@ -89,7 +91,7 @@ export default class OrganizationsApi {
      * Callback function to receive the result of the createOrganization operation.
      * @callback module:api/OrganizationsApi~createOrganizationCallback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/CreateOrganizationResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -99,6 +101,7 @@ export default class OrganizationsApi {
      * @param {Object} opts Optional parameters
      * @param {module:model/CreateOrganizationRequest} opts.createOrganizationRequest Organization details.
      * @param {module:api/OrganizationsApi~createOrganizationCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/CreateOrganizationResponse}
      */
     createOrganization(opts, callback) {
       opts = opts || {};
@@ -116,7 +119,7 @@ export default class OrganizationsApi {
       let authNames = ['kindeBearerAuth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json', 'application/json; charset=utf-8'];
-      let returnType = null;
+      let returnType = CreateOrganizationResponse;
       return this.apiClient.callApi(
         '/api/v1/organization', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -388,6 +391,51 @@ export default class OrganizationsApi {
       let returnType = RemoveOrganizationUsersResponse;
       return this.apiClient.callApi(
         '/api/v1/organization/users', 'PATCH',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the updateOrganization operation.
+     * @callback module:api/OrganizationsApi~updateOrganizationCallback
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update Organization
+     * Update an organization.
+     * @param {String} orgCode The identifier for the organization.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/UpdateOrganizationRequest} opts.updateOrganizationRequest Organization details.
+     * @param {module:api/OrganizationsApi~updateOrganizationCallback} callback The callback function, accepting three arguments: error, data, response
+     */
+    updateOrganization(orgCode, opts, callback) {
+      opts = opts || {};
+      let postBody = opts['updateOrganizationRequest'];
+      // verify the required parameter 'orgCode' is set
+      if (orgCode === undefined || orgCode === null) {
+        throw new Error("Missing the required parameter 'orgCode' when calling updateOrganization");
+      }
+
+      let pathParams = {
+        'org_code': orgCode
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['kindeBearerAuth'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = null;
+      return this.apiClient.callApi(
+        '/api/v1/organizations/{org_code}', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

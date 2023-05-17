@@ -25,6 +25,7 @@ import ApiResult from './model/ApiResult';
 import ConnectedAppsAccessToken from './model/ConnectedAppsAccessToken';
 import ConnectedAppsAuthUrl from './model/ConnectedAppsAuthUrl';
 import CreateOrganizationRequest from './model/CreateOrganizationRequest';
+import CreateOrganizationResponse from './model/CreateOrganizationResponse';
 import CreateUserRequest from './model/CreateUserRequest';
 import CreateUserRequestIdentitiesInner from './model/CreateUserRequestIdentitiesInner';
 import CreateUserRequestIdentitiesInnerDetails from './model/CreateUserRequestIdentitiesInnerDetails';
@@ -39,6 +40,7 @@ import OrganizationUser from './model/OrganizationUser';
 import RemoveOrganizationUsersRequest from './model/RemoveOrganizationUsersRequest';
 import RemoveOrganizationUsersResponse from './model/RemoveOrganizationUsersResponse';
 import SuccessResponse from './model/SuccessResponse';
+import UpdateOrganizationRequest from './model/UpdateOrganizationRequest';
 import UpdateUserRequest from './model/UpdateUserRequest';
 import User from './model/User';
 import UserIdentity from './model/UserIdentity';
@@ -165,6 +167,12 @@ export {
     CreateOrganizationRequest,
 
     /**
+     * The CreateOrganizationResponse model constructor.
+     * @property {module:model/CreateOrganizationResponse}
+     */
+    CreateOrganizationResponse,
+
+    /**
      * The CreateUserRequest model constructor.
      * @property {module:model/CreateUserRequest}
      */
@@ -247,6 +255,12 @@ export {
      * @property {module:model/SuccessResponse}
      */
     SuccessResponse,
+
+    /**
+     * The UpdateOrganizationRequest model constructor.
+     * @property {module:model/UpdateOrganizationRequest}
+     */
+    UpdateOrganizationRequest,
 
     /**
      * The UpdateUserRequest model constructor.

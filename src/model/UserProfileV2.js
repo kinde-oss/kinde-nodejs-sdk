@@ -71,6 +71,9 @@ class UserProfileV2 {
             if (data.hasOwnProperty('email')) {
                 obj['email'] = ApiClient.convertToType(data['email'], 'String');
             }
+            if (data.hasOwnProperty('picture')) {
+                obj['picture'] = ApiClient.convertToType(data['picture'], 'String');
+            }
         }
         return obj;
     }
@@ -108,6 +111,10 @@ class UserProfileV2 {
         // ensure the json data is a string
         if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
             throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
+        }
+        // ensure the json data is a string
+        if (data['picture'] && !(typeof data['picture'] === 'string' || data['picture'] instanceof String)) {
+            throw new Error("Expected the field `picture` to be a primitive type in the JSON string but got " + data['picture']);
         }
 
         return true;
@@ -165,6 +172,12 @@ UserProfileV2.prototype['updated_at'] = undefined;
  * @member {String} email
  */
 UserProfileV2.prototype['email'] = undefined;
+
+/**
+ * URL that point's to the user's picture or avatar
+ * @member {String} picture
+ */
+UserProfileV2.prototype['picture'] = undefined;
 
 
 

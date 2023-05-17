@@ -84,6 +84,12 @@
       //expect(instance).to.be();
     });
 
+    it('should have the property picture (base name: "picture")', function() {
+      // uncomment below and update the code to test the property picture
+      //var instance = new KindeManagementApi.UserProfile();
+      //expect(instance).to.be();
+    });
+
   });
 
 }));

@@ -62,6 +62,9 @@ class UserProfile {
             if (data.hasOwnProperty('first_name')) {
                 obj['first_name'] = ApiClient.convertToType(data['first_name'], 'String');
             }
+            if (data.hasOwnProperty('picture')) {
+                obj['picture'] = ApiClient.convertToType(data['picture'], 'String');
+            }
         }
         return obj;
     }
@@ -91,6 +94,10 @@ class UserProfile {
         // ensure the json data is a string
         if (data['first_name'] && !(typeof data['first_name'] === 'string' || data['first_name'] instanceof String)) {
             throw new Error("Expected the field `first_name` to be a primitive type in the JSON string but got " + data['first_name']);
+        }
+        // ensure the json data is a string
+        if (data['picture'] && !(typeof data['picture'] === 'string' || data['picture'] instanceof String)) {
+            throw new Error("Expected the field `picture` to be a primitive type in the JSON string but got " + data['picture']);
         }
 
         return true;
@@ -130,6 +137,12 @@ UserProfile.prototype['last_name'] = undefined;
  * @member {String} first_name
  */
 UserProfile.prototype['first_name'] = undefined;
+
+/**
+ * URL that point's to the user's picture or avatar
+ * @member {String} picture
+ */
+UserProfile.prototype['picture'] = undefined;
 
 
 
