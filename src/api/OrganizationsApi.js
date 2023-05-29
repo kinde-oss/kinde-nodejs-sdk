@@ -56,20 +56,24 @@ export default class OrganizationsApi {
     /**
      * Assign Users to an Organization
      * Add existing users to an organization.
+     * @param {String} orgCode The organization's code.
      * @param {Object} opts Optional parameters
-     * @param {String} opts.code The organization's code.
      * @param {module:model/AddOrganizationUsersRequest} opts.addOrganizationUsersRequest 
      * @param {module:api/OrganizationsApi~addOrganizationUsersCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/AddOrganizationUsersResponse}
      */
-    addOrganizationUsers(opts, callback) {
+    addOrganizationUsers(orgCode, opts, callback) {
       opts = opts || {};
       let postBody = opts['addOrganizationUsersRequest'];
+      // verify the required parameter 'orgCode' is set
+      if (orgCode === undefined || orgCode === null) {
+        throw new Error("Missing the required parameter 'orgCode' when calling addOrganizationUsers");
+      }
 
       let pathParams = {
+        'org_code': orgCode
       };
       let queryParams = {
-        'code': opts['code']
       };
       let headerParams = {
       };
@@ -81,7 +85,7 @@ export default class OrganizationsApi {
       let accepts = ['application/json', 'application/json; charset=utf-8'];
       let returnType = AddOrganizationUsersResponse;
       return this.apiClient.callApi(
-        '/api/v1/organization/users', 'POST',
+        '/api/v1/organizations/{org_code}/users', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -271,26 +275,30 @@ export default class OrganizationsApi {
     /**
      * List Organization Users
      * Get users in an organization.
+     * @param {String} orgCode The organization's code.
      * @param {Object} opts Optional parameters
      * @param {module:model/String} opts.sort Field and order to sort the result by.
      * @param {Number} opts.pageSize Number of results per page. Defaults to 10 if parameter not sent.
      * @param {String} opts.nextToken A string to get the next page of results if there are more results.
-     * @param {String} opts.code The organization's code.
      * @param {String} opts.permissions Filter by user permissions
      * @param {module:api/OrganizationsApi~getOrganizationUsersCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/GetOrganizationsUsersResponse}
      */
-    getOrganizationUsers(opts, callback) {
+    getOrganizationUsers(orgCode, opts, callback) {
       opts = opts || {};
       let postBody = null;
+      // verify the required parameter 'orgCode' is set
+      if (orgCode === undefined || orgCode === null) {
+        throw new Error("Missing the required parameter 'orgCode' when calling getOrganizationUsers");
+      }
 
       let pathParams = {
+        'org_code': orgCode
       };
       let queryParams = {
         'sort': opts['sort'],
         'page_size': opts['pageSize'],
         'next_token': opts['nextToken'],
-        'code': opts['code'],
         'permissions': opts['permissions']
       };
       let headerParams = {
@@ -303,7 +311,7 @@ export default class OrganizationsApi {
       let accepts = ['application/json', 'application/json; charset=utf-8'];
       let returnType = GetOrganizationsUsersResponse;
       return this.apiClient.callApi(
-        '/api/v1/organization/users', 'GET',
+        '/api/v1/organizations/{org_code}/users', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -365,20 +373,24 @@ export default class OrganizationsApi {
     /**
      * Remove Users from an Organization
      * Remove existing users from an organization.
+     * @param {String} orgCode The organization's code.
      * @param {Object} opts Optional parameters
-     * @param {String} opts.code The organization's code.
      * @param {module:model/RemoveOrganizationUsersRequest} opts.removeOrganizationUsersRequest 
      * @param {module:api/OrganizationsApi~removeOrganizationUsersCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/RemoveOrganizationUsersResponse}
      */
-    removeOrganizationUsers(opts, callback) {
+    removeOrganizationUsers(orgCode, opts, callback) {
       opts = opts || {};
       let postBody = opts['removeOrganizationUsersRequest'];
+      // verify the required parameter 'orgCode' is set
+      if (orgCode === undefined || orgCode === null) {
+        throw new Error("Missing the required parameter 'orgCode' when calling removeOrganizationUsers");
+      }
 
       let pathParams = {
+        'org_code': orgCode
       };
       let queryParams = {
-        'code': opts['code']
       };
       let headerParams = {
       };
@@ -390,7 +402,7 @@ export default class OrganizationsApi {
       let accepts = ['application/json', 'application/json; charset=utf-8'];
       let returnType = RemoveOrganizationUsersResponse;
       return this.apiClient.callApi(
-        '/api/v1/organization/users', 'PATCH',
+        '/api/v1/organizations/{org_code}/users', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
