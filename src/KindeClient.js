@@ -406,7 +406,7 @@ export default class KindeClient {
         return res_get_token.access_token;
       }
     } catch (err) {
-      delete SessionStore[sessionId];
+      SessionStore.removeData(sessionId);
       throw new Error(err);
     }
   }
