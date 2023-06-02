@@ -98,7 +98,7 @@ export default class KindeClient {
         org_code,
       } = req.query;
 
-      if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken')) {
+      if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken') && !this.isTokenExpired(sessionId)) {
         return next();
       }
 
@@ -161,7 +161,7 @@ export default class KindeClient {
         org_code,
       } = req.query;
 
-      if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken')) {
+      if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken') && !this.isTokenExpired(sessionId)) {
         return next();
       }
 
@@ -209,7 +209,7 @@ export default class KindeClient {
     return async (req, res, next) => {
       const sessionId = getSessionId(req);
       try {
-        if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken')) {
+        if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken') && !this.isTokenExpired(sessionId)) {
           return next();
         }
 
@@ -278,7 +278,7 @@ export default class KindeClient {
   createOrg() {
     return (req, res, next) => {
       const sessionId = getSessionId(req);
-      if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken')) {
+      if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken') && !this.isTokenExpired(sessionId)) {
         return next();
       }
 
