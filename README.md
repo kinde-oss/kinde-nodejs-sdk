@@ -133,6 +133,23 @@ client.isAuthenticated(req);
 
 You need to have already authenticated before you call the API, otherwise an error will occur.
 
+Use the `ApiClient` and `OAuthApi` class, then call the getUser method.
+```javascript
+...
+const { ApiClient, OAuthApi } = require('@kinde-oss/kinde-nodejs-sdk');
+...
+
+const apiClient = new ApiClient('YOUR_KINDE_DOMAIN');
+apiClient.authentications.kindeBearerAuth.accessToken = 'ACCESS_TOKEN'
+const apiInstance = new OAuthApi(apiClient);
+apiInstance.getUser((error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+  }
+});
+```
 ### User Permissions
 
 After a user signs in and they are verified, the token return includes permissions for that user. [User permissions are set in Kinde](https://kinde.com/docs/user-management/user-permissions), but you must also configure your application to unlock these functions.
