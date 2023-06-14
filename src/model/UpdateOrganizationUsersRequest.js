@@ -12,21 +12,21 @@
  */
 
 import ApiClient from '../ApiClient';
-import AddOrganizationUsersRequestUsersInner from './AddOrganizationUsersRequestUsersInner';
+import UpdateOrganizationUsersRequestUsersInner from './UpdateOrganizationUsersRequestUsersInner';
 
 /**
- * The AddOrganizationUsersRequest model module.
- * @module model/AddOrganizationUsersRequest
+ * The UpdateOrganizationUsersRequest model module.
+ * @module model/UpdateOrganizationUsersRequest
  * @version 1
  */
-class AddOrganizationUsersRequest {
+class UpdateOrganizationUsersRequest {
     /**
-     * Constructs a new <code>AddOrganizationUsersRequest</code>.
-     * @alias module:model/AddOrganizationUsersRequest
+     * Constructs a new <code>UpdateOrganizationUsersRequest</code>.
+     * @alias module:model/UpdateOrganizationUsersRequest
      */
     constructor() { 
         
-        AddOrganizationUsersRequest.initialize(this);
+        UpdateOrganizationUsersRequest.initialize(this);
     }
 
     /**
@@ -38,27 +38,27 @@ class AddOrganizationUsersRequest {
     }
 
     /**
-     * Constructs a <code>AddOrganizationUsersRequest</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>UpdateOrganizationUsersRequest</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/AddOrganizationUsersRequest} obj Optional instance to populate.
-     * @return {module:model/AddOrganizationUsersRequest} The populated <code>AddOrganizationUsersRequest</code> instance.
+     * @param {module:model/UpdateOrganizationUsersRequest} obj Optional instance to populate.
+     * @return {module:model/UpdateOrganizationUsersRequest} The populated <code>UpdateOrganizationUsersRequest</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new AddOrganizationUsersRequest();
+            obj = obj || new UpdateOrganizationUsersRequest();
 
             if (data.hasOwnProperty('users')) {
-                obj['users'] = ApiClient.convertToType(data['users'], [AddOrganizationUsersRequestUsersInner]);
+                obj['users'] = ApiClient.convertToType(data['users'], [UpdateOrganizationUsersRequestUsersInner]);
             }
         }
         return obj;
     }
 
     /**
-     * Validates the JSON data with respect to <code>AddOrganizationUsersRequest</code>.
+     * Validates the JSON data with respect to <code>UpdateOrganizationUsersRequest</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>AddOrganizationUsersRequest</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>UpdateOrganizationUsersRequest</code>.
      */
     static validateJSON(data) {
         if (data['users']) { // data not null
@@ -68,7 +68,7 @@ class AddOrganizationUsersRequest {
             }
             // validate the optional field `users` (array)
             for (const item of data['users']) {
-                AddOrganizationUsersRequestUsersInner.validateJsonObject(item);
+                UpdateOrganizationUsersRequestUsersInner.validateJsonObject(item);
             };
         }
 
@@ -82,14 +82,14 @@ class AddOrganizationUsersRequest {
 
 /**
  * Users to be added to the organization.
- * @member {Array.<module:model/AddOrganizationUsersRequestUsersInner>} users
+ * @member {Array.<module:model/UpdateOrganizationUsersRequestUsersInner>} users
  */
-AddOrganizationUsersRequest.prototype['users'] = undefined;
+UpdateOrganizationUsersRequest.prototype['users'] = undefined;
 
 
 
 
 
 
-export default AddOrganizationUsersRequest;
+export default UpdateOrganizationUsersRequest;
 

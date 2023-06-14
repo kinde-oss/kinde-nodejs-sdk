@@ -13,7 +13,8 @@
 
 
 import ApiClient from "../ApiClient";
-import GetRedirectCallbackUrlsResponse from '../model/GetRedirectCallbackUrlsResponse';
+import ErrorResponse from '../model/ErrorResponse';
+import RedirectCallbackUrls from '../model/RedirectCallbackUrls';
 
 /**
 * Callbacks service.
@@ -86,7 +87,7 @@ export default class CallbacksApi {
      * Callback function to receive the result of the getCallbackURLs operation.
      * @callback module:api/CallbacksApi~getCallbackURLsCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/GetRedirectCallbackUrlsResponse} data The data returned by the service call.
+     * @param {module:model/RedirectCallbackUrls} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -95,7 +96,7 @@ export default class CallbacksApi {
      * Returns an application's redirect callback URLs. 
      * @param {String} appId The identifier for the application.
      * @param {module:api/CallbacksApi~getCallbackURLsCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/GetRedirectCallbackUrlsResponse}
+     * data is of type: {@link module:model/RedirectCallbackUrls}
      */
     getCallbackURLs(appId, callback) {
       let postBody = null;
@@ -117,7 +118,7 @@ export default class CallbacksApi {
       let authNames = ['kindeBearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json; charset=utf-8'];
-      let returnType = GetRedirectCallbackUrlsResponse;
+      let returnType = RedirectCallbackUrls;
       return this.apiClient.callApi(
         '/api/v1/applications/{app_id}/auth_redirect_urls', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,

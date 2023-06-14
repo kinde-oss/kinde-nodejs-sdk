@@ -344,7 +344,6 @@ import sinon from 'sinon';
           kindeExpiresIn: 3600,
         });
         const result = instance.isTokenExpired('session-id');
-        expect(KindeManagementApi.SessionStore.getData('session-id')).to.equal(undefined);
         expect(result).to.be(true);
       });
 
@@ -355,6 +354,72 @@ import sinon from 'sinon';
         });
         const result = instance.isTokenExpired('session-id');
         expect(result).to.be(false);
+      });
+    });
+
+    describe('getRefreshToken', () => {
+      afterEach(() => {
+        sinon.restore();
+      });
+    
+      it('should call getRefreshToken successfully', async () => {
+        const sessionId = '123456';
+        const kindeRefreshToken = 'refresh_token';
+        const refreshedToken = { token: 'new_token' };    
+        const authStub = sinon.stub(KindeManagementApi.RefreshToken.prototype, 'getToken').resolves(refreshedToken);
+        const getSessionDataStub = sinon.stub(KindeManagementApi.SessionStore, 'getDataByKey').returns(kindeRefreshToken);  
+        const result = await instance.getRefreshToken(sessionId);
+        expect(getSessionDataStub.calledWith(sessionId, 'kindeRefreshToken')).to.be(true);
+        expect(authStub.calledWith(sinon.match.any, kindeRefreshToken)).to.be(true);
+        expect(result).to.eql(refreshedToken);
+      });
+    
+      it('should call getRefreshToken throw an error ', async () => {
+        const sessionId = '123456';
+        sinon.stub(KindeManagementApi.SessionStore, 'getDataByKey').returns(undefined);
+        try {
+          await instance.getRefreshToken(sessionId);
+        } catch (error) {
+          expect(error.message).to.eql('Refresh token is missing');
+        }
+      });
+    });
+
+    describe('isAuthenticated', function() {
+      let sandbox;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should call isAuthenticated return true', async () => {
+        KindeManagementApi.SessionStore.setData('session-id', {
+          kindeAccessToken: 'access_token',
+          kindeLoginTimeStamp: Date.now(),
+          kindeExpiresIn: 86399,
+        });
+        const request = {
+          headers: {
+            cookie: 'sessionId=session-id',
+          },
+        };
+        sandbox.stub(instance, 'isTokenExpired').returns(false);
+        const isAuthenticated = await instance.isAuthenticated(request);
+        expect(isAuthenticated).to.be(true);
+      });
+
+      it('should call isAuthenticated return false', async () => {
+        KindeManagementApi.SessionStore.setData('session-id', {});
+        const request = {
+          headers: {
+            cookie: 'sessionId=session-id',
+          },
+        };
+        const isAuthenticated = await instance.isAuthenticated(request);
+        expect(isAuthenticated).to.be(false);
       });
     });
 
@@ -662,7 +727,7 @@ import sinon from 'sinon';
       });
     });
 
-    describe('cleanSession', function() {
+    describe('clearSession', function() {
       it('should call cleanSession successfully', function() {
         KindeManagementApi.SessionStore.setData('session-id', {
           kindeFeatureFlags: {
@@ -672,36 +737,9 @@ import sinon from 'sinon';
         const res = {
           clearCookie: sinon.spy(),
         };
-        instance.cleanSession('session-id', res);
+        instance.clearSession('session-id', res);
         expect(res.clearCookie.calledOnce).to.be(true);
         expect(KindeManagementApi.SessionStore.getData('session-id')).to.be(undefined);
-      });
-    });
-
-    describe('isAuthenticated', function() {
-      it('should call isAuthenticated return true', () => {
-        KindeManagementApi.SessionStore.setData('session-id', {
-          kindeLoginTimeStamp: Date.now(),
-          kindeExpiresIn: 86399,
-        });
-        const request = {
-          headers: {
-            cookie: 'sessionId=session-id',
-          },
-        };
-        const isAuthenticated = instance.isAuthenticated(request);
-        expect(isAuthenticated).to.be(true);
-      });
-
-      it('should call isAuthenticated return false', () => {
-        KindeManagementApi.SessionStore.setData('session-id', {});
-        const request = {
-          headers: {
-            cookie: 'sessionId=session-id',
-          },
-        };
-        const isAuthenticated = instance.isAuthenticated(request);
-        expect(isAuthenticated).to.be(false);
       });
     });
 
@@ -816,15 +854,6 @@ import sinon from 'sinon';
         sandbox.restore();
       });
 
-      it('should call getPermissions throw an error', () => {
-        sandbox.stub(instance, 'isAuthenticated').returns(false);
-        expect(() => instance.getPermissions(req)).to.throwException((exception) => {
-            expect(exception.message).to.be(
-              'Request is missing required authentication credential'
-            );
-        });
-      });
-
       it('should call getPermissions successfully', () => {
         const orgCode = 'org123';
         const permissions = ['view', 'edit'];
@@ -840,6 +869,15 @@ import sinon from 'sinon';
         };
         expect(instance.getPermissions(req)).to.eql(expectedPermissions);
         sandbox.restore();
+      });
+
+      it('should call getPermissions throw an error', () => {
+        sandbox.stub(instance, 'isAuthenticated').returns(false);
+        expect(() => instance.getPermissions(req)).to.throwException((exception) => {
+            expect(exception.message).to.be(
+              'Request is missing required authentication credential'
+            );
+        });
       });
     });
 

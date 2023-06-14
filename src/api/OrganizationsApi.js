@@ -17,14 +17,16 @@ import AddOrganizationUsersRequest from '../model/AddOrganizationUsersRequest';
 import AddOrganizationUsersResponse from '../model/AddOrganizationUsersResponse';
 import CreateOrganizationRequest from '../model/CreateOrganizationRequest';
 import CreateOrganizationResponse from '../model/CreateOrganizationResponse';
+import CreateOrganizationUserRoleRequest from '../model/CreateOrganizationUserRoleRequest';
 import ErrorResponse from '../model/ErrorResponse';
 import GetOrganizationsResponse from '../model/GetOrganizationsResponse';
+import GetOrganizationsUserRolesResponse from '../model/GetOrganizationsUserRolesResponse';
 import GetOrganizationsUsersResponse from '../model/GetOrganizationsUsersResponse';
 import Organization from '../model/Organization';
-import RemoveOrganizationUsersRequest from '../model/RemoveOrganizationUsersRequest';
 import RemoveOrganizationUsersResponse from '../model/RemoveOrganizationUsersResponse';
 import SuccessResponse from '../model/SuccessResponse';
 import UpdateOrganizationRequest from '../model/UpdateOrganizationRequest';
+import UpdateOrganizationUsersRequest from '../model/UpdateOrganizationUsersRequest';
 
 /**
 * Organizations service.
@@ -54,7 +56,7 @@ export default class OrganizationsApi {
      */
 
     /**
-     * Assign Users to an Organization
+     * Add Organization Users
      * Add existing users to an organization.
      * @param {String} orgCode The organization's code.
      * @param {Object} opts Optional parameters
@@ -126,6 +128,60 @@ export default class OrganizationsApi {
       let returnType = CreateOrganizationResponse;
       return this.apiClient.callApi(
         '/api/v1/organization', 'POST',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the createOrganizationUserRole operation.
+     * @callback module:api/OrganizationsApi~createOrganizationUserRoleCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/SuccessResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Add Organization User Role
+     * Add role to an organization user.
+     * @param {String} orgCode The organization's code.
+     * @param {String} userId The user's id.
+     * @param {module:model/CreateOrganizationUserRoleRequest} createOrganizationUserRoleRequest Role details.
+     * @param {module:api/OrganizationsApi~createOrganizationUserRoleCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/SuccessResponse}
+     */
+    createOrganizationUserRole(orgCode, userId, createOrganizationUserRoleRequest, callback) {
+      let postBody = createOrganizationUserRoleRequest;
+      // verify the required parameter 'orgCode' is set
+      if (orgCode === undefined || orgCode === null) {
+        throw new Error("Missing the required parameter 'orgCode' when calling createOrganizationUserRole");
+      }
+      // verify the required parameter 'userId' is set
+      if (userId === undefined || userId === null) {
+        throw new Error("Missing the required parameter 'userId' when calling createOrganizationUserRole");
+      }
+      // verify the required parameter 'createOrganizationUserRoleRequest' is set
+      if (createOrganizationUserRoleRequest === undefined || createOrganizationUserRoleRequest === null) {
+        throw new Error("Missing the required parameter 'createOrganizationUserRoleRequest' when calling createOrganizationUserRole");
+      }
+
+      let pathParams = {
+        'org_code': orgCode,
+        'user_id': userId
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['kindeBearerAuth'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = SuccessResponse;
+      return this.apiClient.callApi(
+        '/api/v1/organizations/{org_code}/users/{user_id}/roles', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -224,6 +280,61 @@ export default class OrganizationsApi {
     }
 
     /**
+     * Callback function to receive the result of the deleteOrganizationUserRole operation.
+     * @callback module:api/OrganizationsApi~deleteOrganizationUserRoleCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/SuccessResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete Organization User Role
+     * Delete role for an organization user.
+     * @param {String} orgCode The organization's code.
+     * @param {String} userId The user's id.
+     * @param {String} roleId The role id.
+     * @param {module:api/OrganizationsApi~deleteOrganizationUserRoleCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/SuccessResponse}
+     */
+    deleteOrganizationUserRole(orgCode, userId, roleId, callback) {
+      let postBody = null;
+      // verify the required parameter 'orgCode' is set
+      if (orgCode === undefined || orgCode === null) {
+        throw new Error("Missing the required parameter 'orgCode' when calling deleteOrganizationUserRole");
+      }
+      // verify the required parameter 'userId' is set
+      if (userId === undefined || userId === null) {
+        throw new Error("Missing the required parameter 'userId' when calling deleteOrganizationUserRole");
+      }
+      // verify the required parameter 'roleId' is set
+      if (roleId === undefined || roleId === null) {
+        throw new Error("Missing the required parameter 'roleId' when calling deleteOrganizationUserRole");
+      }
+
+      let pathParams = {
+        'org_code': orgCode,
+        'user_id': userId,
+        'role_id': roleId
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['kindeBearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = SuccessResponse;
+      return this.apiClient.callApi(
+        '/api/v1/organizations/{org_code}/users/{user_id}/roles/{role_id}', 'DELETE',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
      * Callback function to receive the result of the getOrganization operation.
      * @callback module:api/OrganizationsApi~getOrganizationCallback
      * @param {String} error Error message, if any.
@@ -259,6 +370,55 @@ export default class OrganizationsApi {
       let returnType = Organization;
       return this.apiClient.callApi(
         '/api/v1/organization', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the getOrganizationUserRoles operation.
+     * @callback module:api/OrganizationsApi~getOrganizationUserRolesCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/GetOrganizationsUserRolesResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Organization User Roles
+     * Get roles for an organization user.
+     * @param {String} orgCode The organization's code.
+     * @param {String} userId The user's id.
+     * @param {module:api/OrganizationsApi~getOrganizationUserRolesCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/GetOrganizationsUserRolesResponse}
+     */
+    getOrganizationUserRoles(orgCode, userId, callback) {
+      let postBody = null;
+      // verify the required parameter 'orgCode' is set
+      if (orgCode === undefined || orgCode === null) {
+        throw new Error("Missing the required parameter 'orgCode' when calling getOrganizationUserRoles");
+      }
+      // verify the required parameter 'userId' is set
+      if (userId === undefined || userId === null) {
+        throw new Error("Missing the required parameter 'userId' when calling getOrganizationUserRoles");
+      }
+
+      let pathParams = {
+        'org_code': orgCode,
+        'user_id': userId
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['kindeBearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = GetOrganizationsUserRolesResponse;
+      return this.apiClient.callApi(
+        '/api/v1/organizations/{org_code}/users/{user_id}/roles', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -363,32 +523,35 @@ export default class OrganizationsApi {
     }
 
     /**
-     * Callback function to receive the result of the removeOrganizationUsers operation.
-     * @callback module:api/OrganizationsApi~removeOrganizationUsersCallback
+     * Callback function to receive the result of the removeOrganizationUser operation.
+     * @callback module:api/OrganizationsApi~removeOrganizationUserCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/RemoveOrganizationUsersResponse} data The data returned by the service call.
+     * @param {module:model/SuccessResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
     /**
-     * Remove Users from an Organization
-     * Remove existing users from an organization.
+     * Remove Organization User
+     * Remove user from an organization.
      * @param {String} orgCode The organization's code.
-     * @param {Object} opts Optional parameters
-     * @param {module:model/RemoveOrganizationUsersRequest} opts.removeOrganizationUsersRequest 
-     * @param {module:api/OrganizationsApi~removeOrganizationUsersCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/RemoveOrganizationUsersResponse}
+     * @param {String} userId The user's id.
+     * @param {module:api/OrganizationsApi~removeOrganizationUserCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/SuccessResponse}
      */
-    removeOrganizationUsers(orgCode, opts, callback) {
-      opts = opts || {};
-      let postBody = opts['removeOrganizationUsersRequest'];
+    removeOrganizationUser(orgCode, userId, callback) {
+      let postBody = null;
       // verify the required parameter 'orgCode' is set
       if (orgCode === undefined || orgCode === null) {
-        throw new Error("Missing the required parameter 'orgCode' when calling removeOrganizationUsers");
+        throw new Error("Missing the required parameter 'orgCode' when calling removeOrganizationUser");
+      }
+      // verify the required parameter 'userId' is set
+      if (userId === undefined || userId === null) {
+        throw new Error("Missing the required parameter 'userId' when calling removeOrganizationUser");
       }
 
       let pathParams = {
-        'org_code': orgCode
+        'org_code': orgCode,
+        'user_id': userId
       };
       let queryParams = {
       };
@@ -398,11 +561,11 @@ export default class OrganizationsApi {
       };
 
       let authNames = ['kindeBearerAuth'];
-      let contentTypes = ['application/json'];
+      let contentTypes = [];
       let accepts = ['application/json', 'application/json; charset=utf-8'];
-      let returnType = RemoveOrganizationUsersResponse;
+      let returnType = SuccessResponse;
       return this.apiClient.callApi(
-        '/api/v1/organizations/{org_code}/users', 'PATCH',
+        '/api/v1/organizations/{org_code}/users/{user_id}', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -503,6 +666,52 @@ export default class OrganizationsApi {
       let returnType = SuccessResponse;
       return this.apiClient.callApi(
         '/api/v1/organizations/{org_code}/feature_flags/{feature_flag_key}', 'PATCH',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the updateOrganizationUsers operation.
+     * @callback module:api/OrganizationsApi~updateOrganizationUsersCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/RemoveOrganizationUsersResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update organization users
+     * Update users that belong to an organization.
+     * @param {String} orgCode The organization's code.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/UpdateOrganizationUsersRequest} opts.updateOrganizationUsersRequest 
+     * @param {module:api/OrganizationsApi~updateOrganizationUsersCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/RemoveOrganizationUsersResponse}
+     */
+    updateOrganizationUsers(orgCode, opts, callback) {
+      opts = opts || {};
+      let postBody = opts['updateOrganizationUsersRequest'];
+      // verify the required parameter 'orgCode' is set
+      if (orgCode === undefined || orgCode === null) {
+        throw new Error("Missing the required parameter 'orgCode' when calling updateOrganizationUsers");
+      }
+
+      let pathParams = {
+        'org_code': orgCode
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['kindeBearerAuth'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = RemoveOrganizationUsersResponse;
+      return this.apiClient.callApi(
+        '/api/v1/organizations/{org_code}/users', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

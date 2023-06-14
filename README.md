@@ -69,7 +69,7 @@ const options = {
   logoutRedirectUri: process.env.KINDE_LOGOUT_REDIRECT_URI,
   grantType: GrantType.PKCE,
 };
-const client = new KindeClient(options);
+const kindeClient = new KindeClient(options);
 ```
 
 ## Login and registration
@@ -80,12 +80,12 @@ The Kinde client provides methods for easy to implement login / registration by 
 
 ```javascript
 ...
-app.get('/login', client.login(),(req, res) => {
+app.get('/login', kindeClient.login(),(req, res) => {
   // do something in next step
   return res.redirect('/');
 });
 
-app.get('/register', client.register(),(req, res) => {
+app.get('/register', kindeClient.register(),(req, res) => {
   // do something in next step 
   return res.redirect('/');
 });
@@ -97,15 +97,15 @@ When the user is redirected back to your site from Kinde, this will call your ca
 
 ```javascript
 ...
-app.get('/login', client.login(),(req, res) => {
+app.get('/login', kindeClient.login(),(req, res) => {
   // do something in next step 
   return res.redirect('/');
 });
-app.get('/register', client.register(),(req, res) => {
+app.get('/register', kindeClient.register(),(req, res) => {
   // do something in next step 
   return res.redirect('/');
 });
-app.get('/callback', client.callback(), (req, res) => {
+app.get('/callback', kindeClient.callback(), (req, res) => {
   // do something in next step
   return res.redirect('/');
 });
@@ -125,7 +125,7 @@ app.get('/logout', client.logout());
 We have provided a helper to get a boolean value to check if a user is logged in by verifying that the access token is still
 
 ```javascript
-client.isAuthenticated(req);
+kindeClient.isAuthenticated(req);
 // true
 ``` 
 
@@ -133,15 +133,12 @@ client.isAuthenticated(req);
 
 You need to have already authenticated before you call the API, otherwise an error will occur.
 
-Use the `ApiClient` and `OAuthApi` class, then call the getUser method.
+Use the `OAuthApi` class, then call the getUser method.
 ```javascript
 ...
-const { ApiClient, OAuthApi } = require('@kinde-oss/kinde-nodejs-sdk');
+const { OAuthApi } = require('@kinde-oss/kinde-nodejs-sdk');
 ...
-
-const apiClient = new ApiClient('YOUR_KINDE_DOMAIN');
-apiClient.authentications.kindeBearerAuth.accessToken = 'ACCESS_TOKEN'
-const apiInstance = new OAuthApi(apiClient);
+const apiInstance = new OAuthApi(kindeClient);
 apiInstance.getUser((error, data, response) => {
   if (error) {
     console.error(error);
@@ -169,17 +166,17 @@ After a user signs in and they are verified, the token return includes permissio
 We provide helper functions to more easily access permissions:
 
 ```javascript
-client.getPermission(req, 'create:todos');
+kindeClient.getPermission(req, 'create:todos');
 // { orgCode: 'org_1234', isGranted: true }
 
-client.getPermissions(req);
+kindeClient.getPermissions(req);
 // { orgCode: 'org_1234', permissions: ['create:todos', 'update:todos', 'read:todos'] }
 ```
 
 A practical example in code might look something like:
 
 ```javascript
-if (client.getPermission(req, 'create:todos')['isGranted']) {
+if (kindeClient.getPermission(req, 'create:todos')['isGranted']) {
     // create new a todo
 }
 ```
@@ -228,11 +225,11 @@ We provide helper functions to more easily access feature flags:
  * @param {'s'|'b'|'i'|undefined} [flagType] - The data type of the flag (integer / boolean / string).
  * @return {Object} Flag details.
  */
-client.getFlag(req, code, { defaultValue }, flagType);
+kindeClient.getFlag(req, code, { defaultValue }, flagType);
 
 /* Example usage */
 
-client.getFlag(req, 'theme');
+kindeClient.getFlag(req, 'theme');
 /*{
 //   "code": "theme",
 //   "type": "string",
@@ -240,7 +237,7 @@ client.getFlag(req, 'theme');
 //   "is_default": false // whether the fallback value had to be used
 }*/
 
-client.getFlag(req, 'create_competition', { defaultValue: false });
+kindeClient.getFlag(req, 'create_competition', { defaultValue: false });
 /*{
       "code": "create_competition",
       "value": false,
@@ -257,16 +254,16 @@ Booleans:
  * @param {Boolean} [defaultValue] - A fallback value if the flag isn't found.
  * @return {Boolean}
  */
-client.getBooleanFlag(req, code, defaultValue);
+kindeClient.getBooleanFlag(req, code, defaultValue);
 
 /* Example usage */
-client.getBooleanFlag(req, "is_dark_mode");
+kindeClient.getBooleanFlag(req, "is_dark_mode");
 // true
 
-client.getBooleanFlag(req, "is_dark_mode", false);
+kindeClient.getBooleanFlag(req, "is_dark_mode", false);
 // true
 
-client.getBooleanFlag(req, "new_feature", false);
+kindeClient.getBooleanFlag(req, "new_feature", false);
 // false (flag does not exist so falls back to default)
 ```
 Strings and integers work in the same way as booleans above:
@@ -278,7 +275,7 @@ Strings and integers work in the same way as booleans above:
  * @param {String} [defaultValue] - A fallback value if the flag isn't found.
  * @return {String}
  */
-client.getStringFlag(req, code, defaultValue);
+kindeClient.getStringFlag(req, code, defaultValue);
 
 /**
  * Get an integer flag from the feature_flags claim of the access_token.
@@ -287,7 +284,7 @@ client.getStringFlag(req, code, defaultValue);
  * @param {Integer} [defaultValue] - A fallback value if the flag isn't found.
  * @return {Integer}
  */
-client.getIntegerFlag(code, defaultValue);
+kindeClient.getIntegerFlag(code, defaultValue);
 ```
 
 ## Audience
@@ -307,7 +304,7 @@ const options = {
   audience: 'api.example.com/v1',
 };
 
-const client = new KindeClient(options);
+const kindeClient = new KindeClient(options);
 ```
 
 For details on how to connect, see [Register an API](https://kinde.com/docs/developer-tools/register-an-api/)
@@ -335,7 +332,7 @@ const options = {
   scope: 'openid profile email offline',
 };
 
-const client = new KindeClient(options);
+const kindeClient = new KindeClient(options);
 ```
 
 ## Getting claims
@@ -343,13 +340,13 @@ const client = new KindeClient(options);
 We have provided a helper to grab any claim from your id or access tokens. The helper defaults to access tokens:
 
 ```javascript
-client.getClaim(req, 'aud');
+kindeClient.getClaim(req, 'aud');
 // {
 //    name: "aud",
 //    value: ["api.myapp.com", "api2.blah.com"]
 // }
 
-client.getClaim(req, 'given_name', 'id_token');
+kindeClient.getClaim(req, 'given_name', 'id_token');
 // {
 //    name: "given_name",
 //    value: "David"
@@ -364,7 +361,7 @@ To have a new organization created within your application, you will need to run
 
 ```javascript
 ...
-app.get('/createOrg', client.createOrg(), (req, res) => {
+app.get('/createOrg', kindeClient.createOrg(), (req, res) => {
   // do something in next step
   return res.redirect('/');
 });
@@ -420,10 +417,10 @@ The id_token will also contain an array of organization that a user belongs to -
 There are two helper functions you can use to extract information:
 
 ```javascript
-client.getOrganization(req);
+kindeClient.getOrganization(req);
 // { orgCode: 'org_1234' }
 
-client.getUserOrganizations(req);
+kindeClient.getUserOrganizations(req);
 // { orgCodes: ['org_1234', 'org_abcd'] }
 ```
 
@@ -448,18 +445,18 @@ client.getUserOrganizations(req);
 | logout               | Logs the user out of Kinde                                                                            |                                                                 |                                                    |                                                                                                                                                                  |
 | callback             | Returns the raw access token from URL after logged from Kinde                                         |                                                                 |                                                    |                                                                                                                                                                  |
 | createOrg            | Constructs redirect url and sends user to Kinde to sign up and create a new org for your business     | org\_name?: string                                              |                                                    |                                                                                                                                                                  |
-| isAuthenticated      | Get a boolean value to check if a user is logged in by verifying that the access token is still valid | req: Request                                                    | client.isAuthenticated(req);                       | true                                                                                                                                                             |
-| getClaim             | Gets a claim from an access or id token                                                               | req: Request, keyName: string, tokenKey?: string                | client.getClaim(req, 'given\_name', 'id\_token');  | \{ name : 'given\_name', value : 'David' \}                                                                                                                                                              |
-| getPermission        | Returns the state of a given permission                                                               | req: Request, key: string                                       | client.getPermission(req, 'read:todos');           | \{ orgCode : 'org\_1234', isGranted : true \}                                                                                                                     |
-| getPermissions       | Returns all permissions for the current user for the organization they are logged into                | req: Request                                                    | client.getPermissions(req);                        | \{ orgCode : 'org\_1234', permissions : \['create:todos', 'update:todos', 'read:todos'\] \}                                                                      |
-| getOrganization      | Get details for the organization your user is logged into                                             | req: Request                                                    | client.getOrganization(req);                       | \{ orgCode : 'org\_1234' \}                                                                                                                                      |
-| getUserDetails       | Returns the profile for the current user                                                              | req: Request                                                    | client.getUserDetails(req);                        | \{ given\_name: 'Dave', id: 'abcdef', family\_name : 'Smith', email : 'dave@smith.com' \}                                                                        |
-| getUserOrganizations | Gets an array of all organizations the user has access to                                             | req: Request                                                    | client.getUserOrganizations(req);                  | \{ orgCodes: ['org_7052552de68', 'org_5a5c29381327'] \}                                                                                                          |
-| getToken             | Returns the access token                                                                              | req: Request                                                    | client.getToken(req);                              | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c      | 
-| getFlag              | Get a flag from the feature_flags claim of the access_token                                           | req: Request, code: string, defaultValue: obj, flagType: string | client.getFlag(req, 'theme');                      | \{   "code": "theme", "type": "string", "value": "pink", "is_default": false \}                                                                                  | 
-| getBooleanFlag       | Get a boolean flag from the feature_flags claim of the access_token                                   | req: Request, code: string, defaultValue: obj                   | client.getBooleanFlag(req, "is_dark_mode");        | true                                                                                                                                                             |
-| getStringFlag        | Get a string flag from the feature_flags claim of the access_token                                    | req: Request, code: string, defaultValue: obj                   | client.getStringFlag(req, "theme");                | pink                                                                                                                                                             |
-| getIntegerFlag       | Get an integer flag from the feature_flags claim of the access_token                                  | req: Request, code: string, defaultValue: obj                   | client.getIntegerFlag(req, "team_count");          | 2                                                                                                                                                                |
+| isAuthenticated      | Get a boolean value to check if a user is logged in by verifying that the access token is still valid | req: Request                                                    | kindeClient.isAuthenticated(req);                       | true                                                                                                                                                             |
+| getClaim             | Gets a claim from an access or id token                                                               | req: Request, keyName: string, tokenKey?: string                | kindeClient.getClaim(req, 'given\_name', 'id\_token');  | \{ name : 'given\_name', value : 'David' \}                                                                                                                                                              |
+| getPermission        | Returns the state of a given permission                                                               | req: Request, key: string                                       | kindeClient.getPermission(req, 'read:todos');           | \{ orgCode : 'org\_1234', isGranted : true \}                                                                                                                     |
+| getPermissions       | Returns all permissions for the current user for the organization they are logged into                | req: Request                                                    | kindeClient.getPermissions(req);                        | \{ orgCode : 'org\_1234', permissions : \['create:todos', 'update:todos', 'read:todos'\] \}                                                                      |
+| getOrganization      | Get details for the organization your user is logged into                                             | req: Request                                                    | kindeClient.getOrganization(req);                       | \{ orgCode : 'org\_1234' \}                                                                                                                                      |
+| getUserDetails       | Returns the profile for the current user                                                              | req: Request                                                    | kindeClient.getUserDetails(req);                        | \{ given\_name: 'Dave', id: 'abcdef', family\_name : 'Smith', email : 'dave@smith.com' \}                                                                        |
+| getUserOrganizations | Gets an array of all organizations the user has access to                                             | req: Request                                                    | kindeClient.getUserOrganizations(req);                  | \{ orgCodes: ['org_7052552de68', 'org_5a5c29381327'] \}                                                                                                          |
+| getToken             | Returns the access token                                                                              | req: Request                                                    | kindeClient.getToken(req);                              | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c      | 
+| getFlag              | Get a flag from the feature_flags claim of the access_token                                           | req: Request, code: string, defaultValue: obj, flagType: string | kindeClient.getFlag(req, 'theme');                      | \{   "code": "theme", "type": "string", "value": "pink", "is_default": false \}                                                                                  | 
+| getBooleanFlag       | Get a boolean flag from the feature_flags claim of the access_token                                   | req: Request, code: string, defaultValue: obj                   | kindeClient.getBooleanFlag(req, "is_dark_mode");        | true                                                                                                                                                             |
+| getStringFlag        | Get a string flag from the feature_flags claim of the access_token                                    | req: Request, code: string, defaultValue: obj                   | kindeClient.getStringFlag(req, "theme");                | pink                                                                                                                                                             |
+| getIntegerFlag       | Get an integer flag from the feature_flags claim of the access_token                                  | req: Request, code: string, defaultValue: obj                   | kindeClient.getIntegerFlag(req, "team_count");          | 2                                                                                                                                                                |
 
 
 If you need help connecting to Kinde, please contact us at [support@kinde.com](mailto:support@kinde.com).

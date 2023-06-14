@@ -50,6 +50,9 @@ class User {
             if (data.hasOwnProperty('id')) {
                 obj['id'] = ApiClient.convertToType(data['id'], 'String');
             }
+            if (data.hasOwnProperty('provided_id')) {
+                obj['provided_id'] = ApiClient.convertToType(data['provided_id'], 'String');
+            }
             if (data.hasOwnProperty('email')) {
                 obj['email'] = ApiClient.convertToType(data['email'], 'String');
             }
@@ -59,11 +62,26 @@ class User {
             if (data.hasOwnProperty('first_name')) {
                 obj['first_name'] = ApiClient.convertToType(data['first_name'], 'String');
             }
+            if (data.hasOwnProperty('full_name')) {
+                obj['full_name'] = ApiClient.convertToType(data['full_name'], 'String');
+            }
             if (data.hasOwnProperty('is_suspended')) {
                 obj['is_suspended'] = ApiClient.convertToType(data['is_suspended'], 'Boolean');
             }
             if (data.hasOwnProperty('picture')) {
                 obj['picture'] = ApiClient.convertToType(data['picture'], 'String');
+            }
+            if (data.hasOwnProperty('total_sign_ins')) {
+                obj['total_sign_ins'] = ApiClient.convertToType(data['total_sign_ins'], 'Number');
+            }
+            if (data.hasOwnProperty('failed_sign_ins')) {
+                obj['failed_sign_ins'] = ApiClient.convertToType(data['failed_sign_ins'], 'Number');
+            }
+            if (data.hasOwnProperty('last_signed_in')) {
+                obj['last_signed_in'] = ApiClient.convertToType(data['last_signed_in'], 'String');
+            }
+            if (data.hasOwnProperty('created_on')) {
+                obj['created_on'] = ApiClient.convertToType(data['created_on'], 'String');
             }
         }
         return obj;
@@ -80,6 +98,10 @@ class User {
             throw new Error("Expected the field `id` to be a primitive type in the JSON string but got " + data['id']);
         }
         // ensure the json data is a string
+        if (data['provided_id'] && !(typeof data['provided_id'] === 'string' || data['provided_id'] instanceof String)) {
+            throw new Error("Expected the field `provided_id` to be a primitive type in the JSON string but got " + data['provided_id']);
+        }
+        // ensure the json data is a string
         if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
             throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
         }
@@ -92,8 +114,20 @@ class User {
             throw new Error("Expected the field `first_name` to be a primitive type in the JSON string but got " + data['first_name']);
         }
         // ensure the json data is a string
+        if (data['full_name'] && !(typeof data['full_name'] === 'string' || data['full_name'] instanceof String)) {
+            throw new Error("Expected the field `full_name` to be a primitive type in the JSON string but got " + data['full_name']);
+        }
+        // ensure the json data is a string
         if (data['picture'] && !(typeof data['picture'] === 'string' || data['picture'] instanceof String)) {
             throw new Error("Expected the field `picture` to be a primitive type in the JSON string but got " + data['picture']);
+        }
+        // ensure the json data is a string
+        if (data['last_signed_in'] && !(typeof data['last_signed_in'] === 'string' || data['last_signed_in'] instanceof String)) {
+            throw new Error("Expected the field `last_signed_in` to be a primitive type in the JSON string but got " + data['last_signed_in']);
+        }
+        // ensure the json data is a string
+        if (data['created_on'] && !(typeof data['created_on'] === 'string' || data['created_on'] instanceof String)) {
+            throw new Error("Expected the field `created_on` to be a primitive type in the JSON string but got " + data['created_on']);
         }
 
         return true;
@@ -109,6 +143,12 @@ class User {
  * @member {String} id
  */
 User.prototype['id'] = undefined;
+
+/**
+ * External id for user.
+ * @member {String} provided_id
+ */
+User.prototype['provided_id'] = undefined;
 
 /**
  * Default email address of the user in Kinde.
@@ -129,6 +169,12 @@ User.prototype['last_name'] = undefined;
 User.prototype['first_name'] = undefined;
 
 /**
+ * User's full name.
+ * @member {String} full_name
+ */
+User.prototype['full_name'] = undefined;
+
+/**
  * Whether the user is currently suspended or not.
  * @member {Boolean} is_suspended
  */
@@ -139,6 +185,30 @@ User.prototype['is_suspended'] = undefined;
  * @member {String} picture
  */
 User.prototype['picture'] = undefined;
+
+/**
+ * Total number of user sign ins.
+ * @member {Number} total_sign_ins
+ */
+User.prototype['total_sign_ins'] = undefined;
+
+/**
+ * Number of consecutive failed user sign ins.
+ * @member {Number} failed_sign_ins
+ */
+User.prototype['failed_sign_ins'] = undefined;
+
+/**
+ * Last sign in date in ISO 8601 format.
+ * @member {String} last_signed_in
+ */
+User.prototype['last_signed_in'] = undefined;
+
+/**
+ * Date of user creation in ISO 8601 format.
+ * @member {String} created_on
+ */
+User.prototype['created_on'] = undefined;
 
 
 

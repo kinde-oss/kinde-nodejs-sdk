@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.CreateOrganizationResponse();
+    instance = new KindeManagementApi.GetOrganizationsUserRolesResponse();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,28 +47,34 @@
       object[property] = value;
   }
 
-  describe('CreateOrganizationResponse', function() {
-    it('should create an instance of CreateOrganizationResponse', function() {
-      // uncomment below and update the code to test CreateOrganizationResponse
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
-      //expect(instance).to.be.a(KindeManagementApi.CreateOrganizationResponse);
-    });
-
-    it('should have the property message (base name: "message")', function() {
-      // uncomment below and update the code to test the property message
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
-      //expect(instance).to.be();
+  describe('GetOrganizationsUserRolesResponse', function() {
+    it('should create an instance of GetOrganizationsUserRolesResponse', function() {
+      // uncomment below and update the code to test GetOrganizationsUserRolesResponse
+      //var instance = new KindeManagementApi.GetOrganizationsUserRolesResponse();
+      //expect(instance).to.be.a(KindeManagementApi.GetOrganizationsUserRolesResponse);
     });
 
     it('should have the property code (base name: "code")', function() {
       // uncomment below and update the code to test the property code
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
+      //var instance = new KindeManagementApi.GetOrganizationsUserRolesResponse();
       //expect(instance).to.be();
     });
 
-    it('should have the property organization (base name: "organization")', function() {
-      // uncomment below and update the code to test the property organization
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
+    it('should have the property message (base name: "message")', function() {
+      // uncomment below and update the code to test the property message
+      //var instance = new KindeManagementApi.GetOrganizationsUserRolesResponse();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property roles (base name: "roles")', function() {
+      // uncomment below and update the code to test the property roles
+      //var instance = new KindeManagementApi.GetOrganizationsUserRolesResponse();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property nextToken (base name: "next_token")', function() {
+      // uncomment below and update the code to test the property nextToken
+      //var instance = new KindeManagementApi.GetOrganizationsUserRolesResponse();
       //expect(instance).to.be();
     });
 

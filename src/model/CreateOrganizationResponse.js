@@ -12,6 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
+import CreateOrganizationResponseOrganization from './CreateOrganizationResponseOrganization';
 
 /**
  * The CreateOrganizationResponse model module.
@@ -47,8 +48,14 @@ class CreateOrganizationResponse {
         if (data) {
             obj = obj || new CreateOrganizationResponse();
 
+            if (data.hasOwnProperty('message')) {
+                obj['message'] = ApiClient.convertToType(data['message'], 'String');
+            }
             if (data.hasOwnProperty('code')) {
                 obj['code'] = ApiClient.convertToType(data['code'], 'String');
+            }
+            if (data.hasOwnProperty('organization')) {
+                obj['organization'] = CreateOrganizationResponseOrganization.constructFromObject(data['organization']);
             }
         }
         return obj;
@@ -61,8 +68,16 @@ class CreateOrganizationResponse {
      */
     static validateJSON(data) {
         // ensure the json data is a string
+        if (data['message'] && !(typeof data['message'] === 'string' || data['message'] instanceof String)) {
+            throw new Error("Expected the field `message` to be a primitive type in the JSON string but got " + data['message']);
+        }
+        // ensure the json data is a string
         if (data['code'] && !(typeof data['code'] === 'string' || data['code'] instanceof String)) {
             throw new Error("Expected the field `code` to be a primitive type in the JSON string but got " + data['code']);
+        }
+        // validate the optional field `organization`
+        if (data['organization']) { // data not null
+          CreateOrganizationResponseOrganization.validateJSON(data['organization']);
         }
 
         return true;
@@ -74,10 +89,19 @@ class CreateOrganizationResponse {
 
 
 /**
- * The organization's code.
+ * @member {String} message
+ */
+CreateOrganizationResponse.prototype['message'] = undefined;
+
+/**
  * @member {String} code
  */
 CreateOrganizationResponse.prototype['code'] = undefined;
+
+/**
+ * @member {module:model/CreateOrganizationResponseOrganization} organization
+ */
+CreateOrganizationResponse.prototype['organization'] = undefined;
 
 
 

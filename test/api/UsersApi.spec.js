@@ -58,10 +58,10 @@
         done();
       });
     });
-    describe('deleteuser', function() {
-      it('should call deleteuser successfully', function(done) {
-        //uncomment below and update the code to test deleteuser
-        //instance.deleteuser(function(error) {
+    describe('deleteUser', function() {
+      it('should call deleteUser successfully', function(done) {
+        //uncomment below and update the code to test deleteUser
+        //instance.deleteUser(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});

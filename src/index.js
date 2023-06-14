@@ -21,6 +21,7 @@ import PKCE from './sdk/oauth2/PKCE';
 import RefreshToken from './sdk/oauth2/RefreshToken';
 import SessionStore from './sdk/store/SessionStore';
 import AddOrganizationUsersRequest from './model/AddOrganizationUsersRequest';
+import AddOrganizationUsersRequestUsersInner from './model/AddOrganizationUsersRequestUsersInner';
 import AddOrganizationUsersResponse from './model/AddOrganizationUsersResponse';
 import ApiResult from './model/ApiResult';
 import Application from './model/Application';
@@ -28,6 +29,10 @@ import ConnectedAppsAccessToken from './model/ConnectedAppsAccessToken';
 import ConnectedAppsAuthUrl from './model/ConnectedAppsAuthUrl';
 import CreateOrganizationRequest from './model/CreateOrganizationRequest';
 import CreateOrganizationResponse from './model/CreateOrganizationResponse';
+import CreateOrganizationResponseOrganization from './model/CreateOrganizationResponseOrganization';
+import CreateOrganizationUserRoleRequest from './model/CreateOrganizationUserRoleRequest';
+import CreatePermissionRequest from './model/CreatePermissionRequest';
+import CreateRoleRequest from './model/CreateRoleRequest';
 import CreateUserRequest from './model/CreateUserRequest';
 import CreateUserRequestIdentitiesInner from './model/CreateUserRequestIdentitiesInner';
 import CreateUserRequestIdentitiesInnerDetails from './model/CreateUserRequestIdentitiesInnerDetails';
@@ -37,15 +42,20 @@ import Error from './model/Error';
 import ErrorResponse from './model/ErrorResponse';
 import GetApplicationsResponse from './model/GetApplicationsResponse';
 import GetOrganizationsResponse from './model/GetOrganizationsResponse';
+import GetOrganizationsUserRolesResponse from './model/GetOrganizationsUserRolesResponse';
 import GetOrganizationsUsersResponse from './model/GetOrganizationsUsersResponse';
 import GetRedirectCallbackUrlsResponse from './model/GetRedirectCallbackUrlsResponse';
 import Organization from './model/Organization';
 import OrganizationUser from './model/OrganizationUser';
+import OrganizationUserRole from './model/OrganizationUserRole';
+import Permissions from './model/Permissions';
 import RedirectCallbackUrls from './model/RedirectCallbackUrls';
-import RemoveOrganizationUsersRequest from './model/RemoveOrganizationUsersRequest';
 import RemoveOrganizationUsersResponse from './model/RemoveOrganizationUsersResponse';
+import Roles from './model/Roles';
 import SuccessResponse from './model/SuccessResponse';
 import UpdateOrganizationRequest from './model/UpdateOrganizationRequest';
+import UpdateOrganizationUsersRequest from './model/UpdateOrganizationUsersRequest';
+import UpdateOrganizationUsersRequestUsersInner from './model/UpdateOrganizationUsersRequestUsersInner';
 import UpdateUserRequest from './model/UpdateUserRequest';
 import User from './model/User';
 import UserIdentity from './model/UserIdentity';
@@ -59,6 +69,8 @@ import EnvironmentsApi from './api/EnvironmentsApi';
 import FeatureFlagsApi from './api/FeatureFlagsApi';
 import OAuthApi from './api/OAuthApi';
 import OrganizationsApi from './api/OrganizationsApi';
+import PermissionsApi from './api/PermissionsApi';
+import RolesApi from './api/RolesApi';
 import UsersApi from './api/UsersApi';
 
 
@@ -149,6 +161,12 @@ export {
     AddOrganizationUsersRequest,
 
     /**
+     * The AddOrganizationUsersRequestUsersInner model constructor.
+     * @property {module:model/AddOrganizationUsersRequestUsersInner}
+     */
+    AddOrganizationUsersRequestUsersInner,
+
+    /**
      * The AddOrganizationUsersResponse model constructor.
      * @property {module:model/AddOrganizationUsersResponse}
      */
@@ -189,6 +207,30 @@ export {
      * @property {module:model/CreateOrganizationResponse}
      */
     CreateOrganizationResponse,
+
+    /**
+     * The CreateOrganizationResponseOrganization model constructor.
+     * @property {module:model/CreateOrganizationResponseOrganization}
+     */
+    CreateOrganizationResponseOrganization,
+
+    /**
+     * The CreateOrganizationUserRoleRequest model constructor.
+     * @property {module:model/CreateOrganizationUserRoleRequest}
+     */
+    CreateOrganizationUserRoleRequest,
+
+    /**
+     * The CreatePermissionRequest model constructor.
+     * @property {module:model/CreatePermissionRequest}
+     */
+    CreatePermissionRequest,
+
+    /**
+     * The CreateRoleRequest model constructor.
+     * @property {module:model/CreateRoleRequest}
+     */
+    CreateRoleRequest,
 
     /**
      * The CreateUserRequest model constructor.
@@ -245,6 +287,12 @@ export {
     GetOrganizationsResponse,
 
     /**
+     * The GetOrganizationsUserRolesResponse model constructor.
+     * @property {module:model/GetOrganizationsUserRolesResponse}
+     */
+    GetOrganizationsUserRolesResponse,
+
+    /**
      * The GetOrganizationsUsersResponse model constructor.
      * @property {module:model/GetOrganizationsUsersResponse}
      */
@@ -269,22 +317,34 @@ export {
     OrganizationUser,
 
     /**
+     * The OrganizationUserRole model constructor.
+     * @property {module:model/OrganizationUserRole}
+     */
+    OrganizationUserRole,
+
+    /**
+     * The Permissions model constructor.
+     * @property {module:model/Permissions}
+     */
+    Permissions,
+
+    /**
      * The RedirectCallbackUrls model constructor.
      * @property {module:model/RedirectCallbackUrls}
      */
     RedirectCallbackUrls,
 
     /**
-     * The RemoveOrganizationUsersRequest model constructor.
-     * @property {module:model/RemoveOrganizationUsersRequest}
-     */
-    RemoveOrganizationUsersRequest,
-
-    /**
      * The RemoveOrganizationUsersResponse model constructor.
      * @property {module:model/RemoveOrganizationUsersResponse}
      */
     RemoveOrganizationUsersResponse,
+
+    /**
+     * The Roles model constructor.
+     * @property {module:model/Roles}
+     */
+    Roles,
 
     /**
      * The SuccessResponse model constructor.
@@ -297,6 +357,18 @@ export {
      * @property {module:model/UpdateOrganizationRequest}
      */
     UpdateOrganizationRequest,
+
+    /**
+     * The UpdateOrganizationUsersRequest model constructor.
+     * @property {module:model/UpdateOrganizationUsersRequest}
+     */
+    UpdateOrganizationUsersRequest,
+
+    /**
+     * The UpdateOrganizationUsersRequestUsersInner model constructor.
+     * @property {module:model/UpdateOrganizationUsersRequestUsersInner}
+     */
+    UpdateOrganizationUsersRequestUsersInner,
 
     /**
      * The UpdateUserRequest model constructor.
@@ -375,6 +447,18 @@ export {
     * @property {module:api/OrganizationsApi}
     */
     OrganizationsApi,
+
+    /**
+    * The PermissionsApi service constructor.
+    * @property {module:api/PermissionsApi}
+    */
+    PermissionsApi,
+
+    /**
+    * The RolesApi service constructor.
+    * @property {module:api/RolesApi}
+    */
+    RolesApi,
 
     /**
     * The UsersApi service constructor.

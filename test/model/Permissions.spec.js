@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.OrganizationUser();
+    instance = new KindeManagementApi.Permissions();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,46 +47,28 @@
       object[property] = value;
   }
 
-  describe('OrganizationUser', function() {
-    it('should create an instance of OrganizationUser', function() {
-      // uncomment below and update the code to test OrganizationUser
-      //var instance = new KindeManagementApi.OrganizationUser();
-      //expect(instance).to.be.a(KindeManagementApi.OrganizationUser);
+  describe('Permissions', function() {
+    it('should create an instance of Permissions', function() {
+      // uncomment below and update the code to test Permissions
+      //var instance = new KindeManagementApi.Permissions();
+      //expect(instance).to.be.a(KindeManagementApi.Permissions);
     });
 
     it('should have the property id (base name: "id")', function() {
       // uncomment below and update the code to test the property id
-      //var instance = new KindeManagementApi.OrganizationUser();
+      //var instance = new KindeManagementApi.Permissions();
       //expect(instance).to.be();
     });
 
-    it('should have the property email (base name: "email")', function() {
-      // uncomment below and update the code to test the property email
-      //var instance = new KindeManagementApi.OrganizationUser();
+    it('should have the property name (base name: "name")', function() {
+      // uncomment below and update the code to test the property name
+      //var instance = new KindeManagementApi.Permissions();
       //expect(instance).to.be();
     });
 
-    it('should have the property fullName (base name: "full_name")', function() {
-      // uncomment below and update the code to test the property fullName
-      //var instance = new KindeManagementApi.OrganizationUser();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property lastName (base name: "last_name")', function() {
-      // uncomment below and update the code to test the property lastName
-      //var instance = new KindeManagementApi.OrganizationUser();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property firstName (base name: "first_name")', function() {
-      // uncomment below and update the code to test the property firstName
-      //var instance = new KindeManagementApi.OrganizationUser();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property roles (base name: "roles")', function() {
-      // uncomment below and update the code to test the property roles
-      //var instance = new KindeManagementApi.OrganizationUser();
+    it('should have the property description (base name: "description")', function() {
+      // uncomment below and update the code to test the property description
+      //var instance = new KindeManagementApi.Permissions();
       //expect(instance).to.be();
     });
 

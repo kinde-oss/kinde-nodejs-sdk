@@ -62,6 +62,9 @@ class OrganizationUser {
             if (data.hasOwnProperty('first_name')) {
                 obj['first_name'] = ApiClient.convertToType(data['first_name'], 'String');
             }
+            if (data.hasOwnProperty('roles')) {
+                obj['roles'] = ApiClient.convertToType(data['roles'], ['String']);
+            }
         }
         return obj;
     }
@@ -91,6 +94,10 @@ class OrganizationUser {
         // ensure the json data is a string
         if (data['first_name'] && !(typeof data['first_name'] === 'string' || data['first_name'] instanceof String)) {
             throw new Error("Expected the field `first_name` to be a primitive type in the JSON string but got " + data['first_name']);
+        }
+        // ensure the json data is an array
+        if (!Array.isArray(data['roles'])) {
+            throw new Error("Expected the field `roles` to be an array in the JSON data but got " + data['roles']);
         }
 
         return true;
@@ -125,6 +132,11 @@ OrganizationUser.prototype['last_name'] = undefined;
  * @member {String} first_name
  */
 OrganizationUser.prototype['first_name'] = undefined;
+
+/**
+ * @member {Array.<String>} roles
+ */
+OrganizationUser.prototype['roles'] = undefined;
 
 
 

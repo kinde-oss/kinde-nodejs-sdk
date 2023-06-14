@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.CreateOrganizationResponse();
+    instance = new KindeManagementApi.UpdateOrganizationUsersRequest();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,28 +47,16 @@
       object[property] = value;
   }
 
-  describe('CreateOrganizationResponse', function() {
-    it('should create an instance of CreateOrganizationResponse', function() {
-      // uncomment below and update the code to test CreateOrganizationResponse
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
-      //expect(instance).to.be.a(KindeManagementApi.CreateOrganizationResponse);
+  describe('UpdateOrganizationUsersRequest', function() {
+    it('should create an instance of UpdateOrganizationUsersRequest', function() {
+      // uncomment below and update the code to test UpdateOrganizationUsersRequest
+      //var instance = new KindeManagementApi.UpdateOrganizationUsersRequest();
+      //expect(instance).to.be.a(KindeManagementApi.UpdateOrganizationUsersRequest);
     });
 
-    it('should have the property message (base name: "message")', function() {
-      // uncomment below and update the code to test the property message
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property code (base name: "code")', function() {
-      // uncomment below and update the code to test the property code
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property organization (base name: "organization")', function() {
-      // uncomment below and update the code to test the property organization
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
+    it('should have the property users (base name: "users")', function() {
+      // uncomment below and update the code to test the property users
+      //var instance = new KindeManagementApi.UpdateOrganizationUsersRequest();
       //expect(instance).to.be();
     });
 

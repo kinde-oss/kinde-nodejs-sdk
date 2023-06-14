@@ -1,6 +1,6 @@
 import FlagDataTypeMap from "./sdk/constant/FlagDataTypeMap";
 import RefreshToken from "./sdk/oauth2/RefreshToken";
-import { GrantType, SessionStore } from "./index";
+import { ApiClient, GrantType, SessionStore } from "./index";
 import AuthorizationCode from "./sdk/oauth2/AuthorizationCode";
 import ClientCredentials from "./sdk/oauth2/ClientCredentials";
 import PKCE from "./sdk/oauth2/PKCE";
@@ -23,7 +23,7 @@ import { SDK_VERSION } from "./sdk/utils/SDKVersion";
  * @property {String} options.kindeSdkLanguage - Kinde SDK language name (default: 'Javascript')
  * @property {String} options.kindeSdkLanguageVersion - Kinde SDK language version
  */
-export default class KindeClient {
+export default class KindeClient extends ApiClient {
   constructor(options) {
     const {
       domain,
@@ -41,6 +41,7 @@ export default class KindeClient {
     if (!domain || typeof domain !== 'string') {
       throw new Error('Please provide domain');
     }
+    super(domain);
     this.domain = domain;
 
     if (!redirectUri || typeof redirectUri !== 'string') {
@@ -261,7 +262,7 @@ export default class KindeClient {
             return next();
         }
       } catch (err) {
-        this.cleanSession(sessionId, res);
+        this.clearSession(sessionId, res);
         return next(new Error(err));
       }
     };
@@ -331,7 +332,7 @@ export default class KindeClient {
   logout() {
     return (req, res) => {
       const sessionId = getSessionId(req);
-      this.cleanSession(sessionId, res);
+      this.clearSession(sessionId, res);
       return res.redirect(`${this.logoutEndpoint}?redirect=${encodeURIComponent(this.logoutRedirectUri)}`);
     };
   }
@@ -342,6 +343,7 @@ export default class KindeClient {
    * @param {Object} token - Token object containing access_token, id_token, expires_in, etc ...
    */
   saveToken(sessionId, token) {
+    this.authentications.kindeBearerAuth.accessToken = token.access_token;
     SessionStore.setData(sessionId, {
       kindeAccessToken: token.access_token,
       kindeIdToken: token.id_token,
@@ -373,6 +375,29 @@ export default class KindeClient {
   }
 
   /**
+   * Retrieves the refresh token for the specified session ID and updates the authentication token.
+   * @param {String} sessionId - The sessionId.
+   * @throws {Error} If the refresh token is invalid or expired.
+   * @throws {Error} If the refresh token is missing.
+   */
+  async getRefreshToken(sessionId) {
+    const auth = new RefreshToken();
+    const kindeRefreshToken = SessionStore.getDataByKey(sessionId, 'kindeRefreshToken');
+    if (kindeRefreshToken) {
+      const res_get_token = await auth.getToken(this, kindeRefreshToken);
+      if (res_get_token?.error) {
+        SessionStore.removeData(sessionId);
+        delete this.authentications.kindeBearerAuth.accessToken;
+        throw new Error('Refresh token is invalid or expired');
+      }
+      this.saveToken(sessionId, res_get_token);
+      return res_get_token;
+    } else {
+      throw new Error('Refresh token is missing');
+    }
+  }
+
+  /**
    * Function return an access token from memory
    * @param {Object} request - The HTTP request object
    * @returns {String} - Returns the access token
@@ -389,6 +414,7 @@ export default class KindeClient {
         res_get_token = await auth.getToken(this);
         if (res_get_token?.error) {
           SessionStore.removeData(sessionId);
+          delete this.authentications.kindeBearerAuth.accessToken;
           const msg = res_get_token?.error_description || res_get_token?.error;
           throw new Error(msg);
         }
@@ -396,17 +422,12 @@ export default class KindeClient {
         return res_get_token.access_token;
       }
       if (this.grantType === GrantType.AUTHORIZATION_CODE || this.grantType === GrantType.PKCE) {
-        auth = new RefreshToken();
-        res_get_token = await auth.getToken(this, SessionStore.getDataByKey(sessionId, 'kindeRefreshToken'));
-        if (res_get_token?.error) {
-          SessionStore.removeData(sessionId);
-          throw new Error('Refresh token are invalid or expired.');
-        }
-        this.saveToken(sessionId, res_get_token);
+        res_get_token = await this.getRefreshToken(sessionId);
         return res_get_token.access_token;
       }
     } catch (err) {
       SessionStore.removeData(sessionId);
+      delete this.authentications.kindeBearerAuth.accessToken;
       throw new Error(err);
     }
   }
@@ -418,9 +439,26 @@ export default class KindeClient {
    */
   isTokenExpired(sessionId) {
     const currentTime = Date.now();
-    const tokenExpiration = SessionStore.getDataByKey(sessionId, 'kindeLoginTimeStamp') + SessionStore.getDataByKey(sessionId, 'kindeExpiresIn') * 1000;
-    if (currentTime > tokenExpiration) {
-      SessionStore.removeData(sessionId);
+    const kindeLoginTimeStamp = SessionStore.getDataByKey(sessionId, 'kindeLoginTimeStamp');
+    const kindeExpiresIn = SessionStore.getDataByKey(sessionId, 'kindeExpiresIn');
+    if (!kindeLoginTimeStamp || !kindeExpiresIn || currentTime > kindeLoginTimeStamp + kindeExpiresIn * 1000) {
+      delete this.authentications.kindeBearerAuth.accessToken;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Check if the user is authenticated.
+   * @param {Object} request - The HTTP request object
+   * @returns {Boolean} true if the user is authenticated, otherwise false.
+   */
+  async isAuthenticated(request) {
+    const sessionId = getSessionId(request);
+    if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken')) {
+      if (this.isTokenExpired(sessionId)) {
+        await this.getRefreshToken(sessionId);
+      }
       return true;
     }
     return false;
@@ -497,26 +535,14 @@ export default class KindeClient {
   }
 
   /**
-   * cleanSession - Function is used to destroy the current session and remove related data from store.
+   * clearSession - Function is used to destroy the current session and remove related data from store.
    * @param {String} sessionId - sessionId
    * @param {Object} response - Response object
    */
-  cleanSession(sessionId, response) {
+  clearSession(sessionId, response) {
     SessionStore.removeData(sessionId);
+    delete this.authentications.kindeBearerAuth.accessToken;
     response.clearCookie('sessionId');
-  }
-
-  /**
-   * Check if the user is authenticated.
-   * @param {Object} request - The HTTP request object
-   * @returns {Boolean} true if the user is authenticated, otherwise false.
-   */
-  isAuthenticated(request) {
-    const sessionId = getSessionId(request);
-    if (!SessionStore.getDataByKey(sessionId, 'kindeLoginTimeStamp') || !SessionStore.getDataByKey(sessionId, 'kindeExpiresIn') || this.isTokenExpired(sessionId)) {
-      return false;
-    }
-    return true;
   }
 
   /**

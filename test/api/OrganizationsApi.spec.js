@@ -68,6 +68,16 @@
         done();
       });
     });
+    describe('createOrganizationUserRole', function() {
+      it('should call createOrganizationUserRole successfully', function(done) {
+        //uncomment below and update the code to test createOrganizationUserRole
+        //instance.createOrganizationUserRole(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
     describe('deleteOrganizationFeatureFlagOverride', function() {
       it('should call deleteOrganizationFeatureFlagOverride successfully', function(done) {
         //uncomment below and update the code to test deleteOrganizationFeatureFlagOverride
@@ -88,10 +98,30 @@
         done();
       });
     });
+    describe('deleteOrganizationUserRole', function() {
+      it('should call deleteOrganizationUserRole successfully', function(done) {
+        //uncomment below and update the code to test deleteOrganizationUserRole
+        //instance.deleteOrganizationUserRole(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
     describe('getOrganization', function() {
       it('should call getOrganization successfully', function(done) {
         //uncomment below and update the code to test getOrganization
         //instance.getOrganization(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
+    describe('getOrganizationUserRoles', function() {
+      it('should call getOrganizationUserRoles successfully', function(done) {
+        //uncomment below and update the code to test getOrganizationUserRoles
+        //instance.getOrganizationUserRoles(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});
@@ -118,10 +148,10 @@
         done();
       });
     });
-    describe('removeOrganizationUsers', function() {
-      it('should call removeOrganizationUsers successfully', function(done) {
-        //uncomment below and update the code to test removeOrganizationUsers
-        //instance.removeOrganizationUsers(function(error) {
+    describe('removeOrganizationUser', function() {
+      it('should call removeOrganizationUser successfully', function(done) {
+        //uncomment below and update the code to test removeOrganizationUser
+        //instance.removeOrganizationUser(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});
@@ -142,6 +172,16 @@
       it('should call updateOrganizationFeatureFlagOverride successfully', function(done) {
         //uncomment below and update the code to test updateOrganizationFeatureFlagOverride
         //instance.updateOrganizationFeatureFlagOverride(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
+    describe('updateOrganizationUsers', function() {
+      it('should call updateOrganizationUsers successfully', function(done) {
+        //uncomment below and update the code to test updateOrganizationUsers
+        //instance.updateOrganizationUsers(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});

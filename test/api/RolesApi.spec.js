@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.CreateOrganizationResponse();
+    instance = new KindeManagementApi.RolesApi();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,31 +47,37 @@
       object[property] = value;
   }
 
-  describe('CreateOrganizationResponse', function() {
-    it('should create an instance of CreateOrganizationResponse', function() {
-      // uncomment below and update the code to test CreateOrganizationResponse
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
-      //expect(instance).to.be.a(KindeManagementApi.CreateOrganizationResponse);
+  describe('RolesApi', function() {
+    describe('createRole', function() {
+      it('should call createRole successfully', function(done) {
+        //uncomment below and update the code to test createRole
+        //instance.createRole(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
     });
-
-    it('should have the property message (base name: "message")', function() {
-      // uncomment below and update the code to test the property message
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
-      //expect(instance).to.be();
+    describe('getRoles', function() {
+      it('should call getRoles successfully', function(done) {
+        //uncomment below and update the code to test getRoles
+        //instance.getRoles(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
     });
-
-    it('should have the property code (base name: "code")', function() {
-      // uncomment below and update the code to test the property code
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
-      //expect(instance).to.be();
+    describe('updateRoles', function() {
+      it('should call updateRoles successfully', function(done) {
+        //uncomment below and update the code to test updateRoles
+        //instance.updateRoles(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
     });
-
-    it('should have the property organization (base name: "organization")', function() {
-      // uncomment below and update the code to test the property organization
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
-      //expect(instance).to.be();
-    });
-
   });
 
 }));

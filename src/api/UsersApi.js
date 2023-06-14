@@ -81,8 +81,8 @@ export default class UsersApi {
     }
 
     /**
-     * Callback function to receive the result of the deleteuser operation.
-     * @callback module:api/UsersApi~deleteuserCallback
+     * Callback function to receive the result of the deleteUser operation.
+     * @callback module:api/UsersApi~deleteUserCallback
      * @param {String} error Error message, if any.
      * @param {module:model/SuccessResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
@@ -93,10 +93,10 @@ export default class UsersApi {
      * Delete a user record. 
      * @param {Object} opts Optional parameters
      * @param {String} opts.id The user's id.
-     * @param {module:api/UsersApi~deleteuserCallback} callback The callback function, accepting three arguments: error, data, response
+     * @param {module:api/UsersApi~deleteUserCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/SuccessResponse}
      */
-    deleteuser(opts, callback) {
+    deleteUser(opts, callback) {
       opts = opts || {};
       let postBody = null;
 
@@ -132,19 +132,21 @@ export default class UsersApi {
     /**
      * Get User
      * Retrieve a user record. 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.id The user's id.
+     * @param {String} id The user's id.
      * @param {module:api/UsersApi~getUserDataCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/User}
      */
-    getUserData(opts, callback) {
-      opts = opts || {};
+    getUserData(id, callback) {
       let postBody = null;
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling getUserData");
+      }
 
       let pathParams = {
       };
       let queryParams = {
-        'id': opts['id']
+        'id': id
       };
       let headerParams = {
       };
@@ -178,6 +180,7 @@ export default class UsersApi {
      * @param {Number} opts.pageSize Number of results per page. Defaults to 10 if parameter not sent.
      * @param {String} opts.userId ID of the user to filter by.
      * @param {String} opts.nextToken A string to get the next page of results if there are more results.
+     * @param {String} opts.email Filter the results by email address. The query string should be comma separated and url encoded.
      * @param {module:api/UsersApi~getUsersCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/UsersResponse}
      */
@@ -191,7 +194,8 @@ export default class UsersApi {
         'sort': opts['sort'],
         'page_size': opts['pageSize'],
         'user_id': opts['userId'],
-        'next_token': opts['nextToken']
+        'next_token': opts['nextToken'],
+        'email': opts['email']
       };
       let headerParams = {
       };

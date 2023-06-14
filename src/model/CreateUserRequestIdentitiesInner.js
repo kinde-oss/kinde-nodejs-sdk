@@ -84,7 +84,7 @@ class CreateUserRequestIdentitiesInner {
 
 /**
  * The type of identity to create, for e.g. email.
- * @member {String} type
+ * @member {module:model/CreateUserRequestIdentitiesInner.TypeEnum} type
  */
 CreateUserRequestIdentitiesInner.prototype['type'] = undefined;
 
@@ -95,6 +95,21 @@ CreateUserRequestIdentitiesInner.prototype['details'] = undefined;
 
 
 
+
+
+/**
+ * Allowed values for the <code>type</code> property.
+ * @enum {String}
+ * @readonly
+ */
+CreateUserRequestIdentitiesInner['TypeEnum'] = {
+
+    /**
+     * value: "email"
+     * @const
+     */
+    "email": "email"
+};
 
 
 

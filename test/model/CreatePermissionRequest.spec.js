@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.CreateOrganizationResponse();
+    instance = new KindeManagementApi.CreatePermissionRequest();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,28 +47,28 @@
       object[property] = value;
   }
 
-  describe('CreateOrganizationResponse', function() {
-    it('should create an instance of CreateOrganizationResponse', function() {
-      // uncomment below and update the code to test CreateOrganizationResponse
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
-      //expect(instance).to.be.a(KindeManagementApi.CreateOrganizationResponse);
+  describe('CreatePermissionRequest', function() {
+    it('should create an instance of CreatePermissionRequest', function() {
+      // uncomment below and update the code to test CreatePermissionRequest
+      //var instance = new KindeManagementApi.CreatePermissionRequest();
+      //expect(instance).to.be.a(KindeManagementApi.CreatePermissionRequest);
     });
 
-    it('should have the property message (base name: "message")', function() {
-      // uncomment below and update the code to test the property message
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
+    it('should have the property name (base name: "name")', function() {
+      // uncomment below and update the code to test the property name
+      //var instance = new KindeManagementApi.CreatePermissionRequest();
       //expect(instance).to.be();
     });
 
-    it('should have the property code (base name: "code")', function() {
-      // uncomment below and update the code to test the property code
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
+    it('should have the property description (base name: "description")', function() {
+      // uncomment below and update the code to test the property description
+      //var instance = new KindeManagementApi.CreatePermissionRequest();
       //expect(instance).to.be();
     });
 
-    it('should have the property organization (base name: "organization")', function() {
-      // uncomment below and update the code to test the property organization
-      //var instance = new KindeManagementApi.CreateOrganizationResponse();
+    it('should have the property key (base name: "key")', function() {
+      // uncomment below and update the code to test the property key
+      //var instance = new KindeManagementApi.CreatePermissionRequest();
       //expect(instance).to.be();
     });
 
