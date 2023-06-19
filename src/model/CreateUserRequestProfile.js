@@ -21,7 +21,7 @@ import ApiClient from '../ApiClient';
 class CreateUserRequestProfile {
     /**
      * Constructs a new <code>CreateUserRequestProfile</code>.
-     * Basic information required to create a user
+     * Basic information required to create a user.
      * @alias module:model/CreateUserRequestProfile
      */
     constructor() { 
@@ -82,13 +82,13 @@ class CreateUserRequestProfile {
 
 
 /**
- * User's first name
+ * User's first name.
  * @member {String} given_name
  */
 CreateUserRequestProfile.prototype['given_name'] = undefined;
 
 /**
- * User's last name
+ * User's last name.
  * @member {String} family_name
  */
 CreateUserRequestProfile.prototype['family_name'] = undefined;

@@ -14,18 +14,18 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The RemoveOrganizationUsers200Response model module.
- * @module model/RemoveOrganizationUsers200Response
+ * The SuccessResponse model module.
+ * @module model/SuccessResponse
  * @version 1
  */
-class RemoveOrganizationUsers200Response {
+class SuccessResponse {
     /**
-     * Constructs a new <code>RemoveOrganizationUsers200Response</code>.
-     * @alias module:model/RemoveOrganizationUsers200Response
+     * Constructs a new <code>SuccessResponse</code>.
+     * @alias module:model/SuccessResponse
      */
     constructor() { 
         
-        RemoveOrganizationUsers200Response.initialize(this);
+        SuccessResponse.initialize(this);
     }
 
     /**
@@ -37,39 +37,39 @@ class RemoveOrganizationUsers200Response {
     }
 
     /**
-     * Constructs a <code>RemoveOrganizationUsers200Response</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>SuccessResponse</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/RemoveOrganizationUsers200Response} obj Optional instance to populate.
-     * @return {module:model/RemoveOrganizationUsers200Response} The populated <code>RemoveOrganizationUsers200Response</code> instance.
+     * @param {module:model/SuccessResponse} obj Optional instance to populate.
+     * @return {module:model/SuccessResponse} The populated <code>SuccessResponse</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new RemoveOrganizationUsers200Response();
+            obj = obj || new SuccessResponse();
 
             if (data.hasOwnProperty('message')) {
                 obj['message'] = ApiClient.convertToType(data['message'], 'String');
             }
-            if (data.hasOwnProperty('users_added')) {
-                obj['users_added'] = ApiClient.convertToType(data['users_added'], ['String']);
+            if (data.hasOwnProperty('code')) {
+                obj['code'] = ApiClient.convertToType(data['code'], 'String');
             }
         }
         return obj;
     }
 
     /**
-     * Validates the JSON data with respect to <code>RemoveOrganizationUsers200Response</code>.
+     * Validates the JSON data with respect to <code>SuccessResponse</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>RemoveOrganizationUsers200Response</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>SuccessResponse</code>.
      */
     static validateJSON(data) {
         // ensure the json data is a string
         if (data['message'] && !(typeof data['message'] === 'string' || data['message'] instanceof String)) {
             throw new Error("Expected the field `message` to be a primitive type in the JSON string but got " + data['message']);
         }
-        // ensure the json data is an array
-        if (!Array.isArray(data['users_added'])) {
-            throw new Error("Expected the field `users_added` to be an array in the JSON data but got " + data['users_added']);
+        // ensure the json data is a string
+        if (data['code'] && !(typeof data['code'] === 'string' || data['code'] instanceof String)) {
+            throw new Error("Expected the field `code` to be a primitive type in the JSON string but got " + data['code']);
         }
 
         return true;
@@ -83,17 +83,17 @@ class RemoveOrganizationUsers200Response {
 /**
  * @member {String} message
  */
-RemoveOrganizationUsers200Response.prototype['message'] = undefined;
+SuccessResponse.prototype['message'] = undefined;
 
 /**
- * @member {Array.<String>} users_added
+ * @member {String} code
  */
-RemoveOrganizationUsers200Response.prototype['users_added'] = undefined;
+SuccessResponse.prototype['code'] = undefined;
 
 
 
 
 
 
-export default RemoveOrganizationUsers200Response;
+export default SuccessResponse;
 

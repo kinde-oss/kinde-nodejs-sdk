@@ -56,25 +56,11 @@ The following variables need to be replaced in the code snippets below.
 
 
 ## Integrate with your app
-You need to add module `express-session` to init session in server and execute the following JS code to create KindeClient instance: 
+You need to execute the following JS code to create KindeClient instance: 
 
 ```javascript
 require('dotenv').config();
-const express = require('express');
 const { KindeClient, GrantType } = require('@kinde-oss/kinde-nodejs-sdk');
-const session = require('express-session');
-const app = express();
-const port = 3000;
-
-app.use(
-  session({
-    secret: '<secret_string>',
-    saveUninitialized: true,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 },
-    resave: false,
-  }),
-);
-
 const options = {
   domain: process.env.KINDE_DOMAIN,
   clientId: process.env.KINDE_CLIENT_ID,
@@ -83,8 +69,7 @@ const options = {
   logoutRedirectUri: process.env.KINDE_LOGOUT_REDIRECT_URI,
   grantType: GrantType.PKCE,
 };
-
-const client = new KindeClient(options);
+const kindeClient = new KindeClient(options);
 ```
 
 ## Login and registration
@@ -95,12 +80,12 @@ The Kinde client provides methods for easy to implement login / registration by 
 
 ```javascript
 ...
-app.get('/login', client.login(),(req, res) => {
+app.get('/login', kindeClient.login(),(req, res) => {
   // do something in next step
   return res.redirect('/');
 });
 
-app.get('/register', client.register(),(req, res) => {
+app.get('/register', kindeClient.register(),(req, res) => {
   // do something in next step 
   return res.redirect('/');
 });
@@ -112,15 +97,15 @@ When the user is redirected back to your site from Kinde, this will call your ca
 
 ```javascript
 ...
-app.get('/login', client.login(),(req, res) => {
+app.get('/login', kindeClient.login(),(req, res) => {
   // do something in next step 
   return res.redirect('/');
 });
-app.get('/register', client.register(),(req, res) => {
+app.get('/register', kindeClient.register(),(req, res) => {
   // do something in next step 
   return res.redirect('/');
 });
-app.get('/callback', client.callback(), (req, res) => {
+app.get('/callback', kindeClient.callback(), (req, res) => {
   // do something in next step
   return res.redirect('/');
 });
@@ -137,10 +122,10 @@ The Kinde client comes with a logout method.
 app.get('/logout', client.logout());
 ```
 ## Check isAuthenticated              
-We have provided a helper to get a boolean value to check if a user is logged in by verifying that the access token is still
+We have provided a helper to get a boolean value to check if a user is logged in by verifying that the access token is still valid, and it will return a new access token with an auto-refresh token mechanism if the access token expired
 
 ```javascript
-client.isAuthenticated(req);
+const isAuthenticated = await kindeClient.isAuthenticated(req);
 // true
 ``` 
 
@@ -148,6 +133,20 @@ client.isAuthenticated(req);
 
 You need to have already authenticated before you call the API, otherwise an error will occur.
 
+Use the `OAuthApi` class, then call the getUser method.
+```javascript
+...
+const { OAuthApi } = require('@kinde-oss/kinde-nodejs-sdk');
+...
+const apiInstance = new OAuthApi(kindeClient);
+apiInstance.getUser((error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+  }
+});
+```
 ### User Permissions
 
 After a user signs in and they are verified, the token return includes permissions for that user. [User permissions are set in Kinde](https://kinde.com/docs/user-management/user-permissions), but you must also configure your application to unlock these functions.
@@ -167,20 +166,127 @@ After a user signs in and they are verified, the token return includes permissio
 We provide helper functions to more easily access permissions:
 
 ```javascript
-client.getPermission(req, 'create:todos');
+kindeClient.getPermission(req, 'create:todos');
 // { orgCode: 'org_1234', isGranted: true }
 
-client.getPermissions(req);
+kindeClient.getPermissions(req);
 // { orgCode: 'org_1234', permissions: ['create:todos', 'update:todos', 'read:todos'] }
 ```
 
 A practical example in code might look something like:
 
 ```javascript
-if (client.getPermission(req, 'create:todos')['isGranted']) {
+if (kindeClient.getPermission(req, 'create:todos')['isGranted']) {
     // create new a todo
 }
 ```
+## Feature flags
+
+When a user signs in the Access token your product/application receives contains a custom claim called feature_flags which is an object detailing the feature flags for that user.
+
+You can set feature flags in your Kinde account. Here’s an example.
+
+```javascript
+feature_flags: {
+  theme: {
+      "t": "s",
+      "v": "pink"
+ },
+ is_dark_mode: {
+      "t": "b",
+      "v": true
+  },
+ competitions_limit: {
+      "t": "i",
+      "v": 5
+  }
+}
+```
+In order to minimize the payload in the token we have used single letter keys / values where possible. The single letters represent the following:
+
+t = type
+
+v = value
+
+s = string
+
+b = boolean
+
+i = integer
+
+We provide helper functions to more easily access feature flags:
+
+```javascript
+/**
+ * Get a flag from the feature_flags claim of the access_token.
+ * @param {Object} request - Request object
+ * @param {String} code - The name of the flag.
+ * @param {Object} [defaultValue] - A fallback value if the flag isn't found.
+ * @param {'s'|'b'|'i'|undefined} [flagType] - The data type of the flag (integer / boolean / string).
+ * @return {Object} Flag details.
+ */
+kindeClient.getFlag(req, code, { defaultValue }, flagType);
+
+/* Example usage */
+
+kindeClient.getFlag(req, 'theme');
+/*{
+//   "code": "theme",
+//   "type": "string",
+//   "value": "pink",
+//   "is_default": false // whether the fallback value had to be used
+}*/
+
+kindeClient.getFlag(req, 'create_competition', { defaultValue: false });
+/*{
+      "code": "create_competition",
+      "value": false,
+      "is_default": true // because fallback value had to be used
+}*/
+```
+We also require wrapper functions by type which should leverage getFlag above.
+Booleans:
+```javascript
+/**
+ * Get a boolean flag from the feature_flags claim of the access_token.
+ * @param {Object} request - Request object
+ * @param {String} code - The name of the flag.
+ * @param {Boolean} [defaultValue] - A fallback value if the flag isn't found.
+ * @return {Boolean}
+ */
+kindeClient.getBooleanFlag(req, code, defaultValue);
+
+/* Example usage */
+kindeClient.getBooleanFlag(req, "is_dark_mode");
+// true
+
+kindeClient.getBooleanFlag(req, "is_dark_mode", false);
+// true
+
+kindeClient.getBooleanFlag(req, "new_feature", false);
+// false (flag does not exist so falls back to default)
+```
+Strings and integers work in the same way as booleans above:
+```javascript
+/**
+ * Get a string flag from the feature_flags claim of the access_token.
+ * @param {Object} request - Request object
+ * @param {String} code - The name of the flag.
+ * @param {String} [defaultValue] - A fallback value if the flag isn't found.
+ * @return {String}
+ */
+kindeClient.getStringFlag(req, code, defaultValue);
+
+/**
+ * Get an integer flag from the feature_flags claim of the access_token.
+ * @param {Object} request - Request object
+ * @param {String} code - The name of the flag.
+ * @param {Integer} [defaultValue] - A fallback value if the flag isn't found.
+ * @return {Integer}
+ */
+kindeClient.getIntegerFlag(code, defaultValue);
+```
+
 ## Audience
 
 An `audience` is the intended recipient of an access token - for example the API for your application. The audience argument can be passed to the Kinde client to request an audience be added to the provided token.
@@ -198,7 +304,7 @@ const options = {
   audience: 'api.example.com/v1',
 };
 
-const client = new KindeClient(options);
+const kindeClient = new KindeClient(options);
 ```
 
 For details on how to connect, see [Register an API](https://kinde.com/docs/developer-tools/register-an-api/)
@@ -226,7 +332,7 @@ const options = {
   scope: 'openid profile email offline',
 };
 
-const client = new KindeClient(options);
+const kindeClient = new KindeClient(options);
 ```
 
 ## Getting claims
@@ -234,11 +340,17 @@ const client = new KindeClient(options);
 We have provided a helper to grab any claim from your id or access tokens. The helper defaults to access tokens:
 
 ```javascript
-client.getClaim(req, 'aud');
-// ['api.yourapp.com']
+kindeClient.getClaim(req, 'aud');
+// {
+//    name: "aud",
+//    value: ["api.myapp.com", "api2.blah.com"]
+// }
 
-client.getClaim(req, 'given_name', 'id_token');
-// 'David'
+kindeClient.getClaim(req, 'given_name', 'id_token');
+// {
+//    name: "given_name",
+//    value: "David"
+// }
 ```
 
 ## Organizations Control
@@ -249,7 +361,7 @@ To have a new organization created within your application, you will need to run
 
 ```javascript
 ...
-app.get('/createOrg', client.createOrg(), (req, res) => {
+app.get('/createOrg', kindeClient.createOrg(), (req, res) => {
   // do something in next step
   return res.redirect('/');
 });
@@ -269,7 +381,7 @@ You can also pass state as your register url
 
 `http://localhost:3000/register?state=<state>`
 
-If you want a user to sign into a particular organization, pass this code along with the sign in method.
+If you want a user to sign in to a particular organization, pass this code along with the sign in method.
 
 `http://localhost:3000/login?org_code=<org_code>`
 
@@ -305,10 +417,10 @@ The id_token will also contain an array of organization that a user belongs to -
 There are two helper functions you can use to extract information:
 
 ```javascript
-client.getOrganization(req);
+kindeClient.getOrganization(req);
 // { orgCode: 'org_1234' }
 
-client.getUserOrganizations(req);
+kindeClient.getUserOrganizations(req);
 // { orgCodes: ['org_1234', 'org_abcd'] }
 ```
 
@@ -326,19 +438,25 @@ client.getUserOrganizations(req);
 
 ## KindeSDK methods
 
-| Property             | Description                                                                                           | Arguments                                        | Usage                                              | Sample output                                                                                  |
-| -------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| login                | Constructs redirect url and sends user to Kinde to sign in                                            | org\_code?: string, state?: string               |                                                    |                                                                                                |
-| register             | Constructs redirect url and sends user to Kinde to sign up                                            | org\_code?: string, state?: string               |                                                    |                                                                                                |
-| logout               | Logs the user out of Kinde                                                                            |                                                  |                                                    |                                                                                                |
-| callback             | Returns the raw access token from URL after logged from Kinde                                         |                                                  |                                                    |                                                                                                |
-| createOrg            | Constructs redirect url and sends user to Kinde to sign up and create a new org for your business     | org\_name?: string                               |                                                    |                                                                                                |
-| isAuthenticated      | Get a boolean value to check if a user is logged in by verifying that the access token is still valid | req: Request                                     | client.isAuthenticated(req);                       | true                                                                                           |
-| getClaim             | Gets a claim from an access or id token                                                               | req: Request, keyName: string, tokenKey?: string | client.getClaim(req, 'given\_name', 'id\_token');  | David                                                                                          |
-| getPermission        | Returns the state of a given permission                                                               | req: Request, key: string                        | client.getPermission(req, 'read:todos');           | \{ orgCode : 'org\_1234', isGranted : true\}                                                   |
-| getPermissions       | Returns all permissions for the current user for the organization they are logged into                | req: Request                                     | client.getPermissions(req);                        | \{ orgCode : 'org\_1234', permissions : \['create:todos', 'update:todos', 'read:todos'\] \}    |
-| getOrganization      | Get details for the organization your user is logged into                                             | req: Request                                     | client.getOrganization(req);                       | \{ orgCode : 'org\_1234' \}                                                                    |
-| getUserDetails       | Returns the profile for the current user                                                              | req: Request                                     | client.getUserDetails(req);                        | \{ given\_name: 'Dave', id: 'abcdef', family\_name : 'Smith', email : 'dave@smith.com' \}      |
-| getUserOrganizations | Gets an array of all organizations the user has access to                                             | req: Request                                     | client.getUserOrganizations(req);                  | \{ orgCodes: ['org_7052552de68', 'org_5a5c29381327'] \}                                        | 
+| Property             | Description                                                                                           | Arguments                                                       | Usage                                                   | Sample output                                                                                                                                                    |
+| -------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| login                | Constructs redirect url and sends user to Kinde to sign in                                            | org\_code?: string, state?: string                              |                                                         |                                                                                                                                                                  |
+| register             | Constructs redirect url and sends user to Kinde to sign up                                            | org\_code?: string, state?: string                              |                                                         |                                                                                                                                                                  |
+| logout               | Logs the user out of Kinde                                                                            |                                                                 |                                                         |                                                                                                                                                                  |
+| callback             | Returns the raw access token from URL after logged from Kinde                                         |                                                                 |                                                         |                                                                                                                                                                  |
+| createOrg            | Constructs redirect url and sends user to Kinde to sign up and create a new org for your business     | org\_name?: string                                              |                                                         |                                                                                                                                                                  |
+| isAuthenticated      | Get a boolean value to check if a user is logged in by verifying that the access token is still valid | req: Request                                                    | await kindeClient.isAuthenticated(req);                 | true                                                                                                                                                             |
+| getClaim             | Get a claim from an access or id token                                                                | req: Request, keyName: string, tokenKey?: string                | kindeClient.getClaim(req, 'given\_name', 'id\_token');  | \{ name : 'given\_name', value : 'David' \}                                                                                                                      |
+| getPermission        | Returns the state of a given permission                                                               | req: Request, key: string                                       | kindeClient.getPermission(req, 'read:todos');           | \{ orgCode : 'org\_1234', isGranted : true \}                                                                                                                    |
+| getPermissions       | Returns all permissions for the current user for the organization they are logged into                | req: Request                                                    | kindeClient.getPermissions(req);                        | \{ orgCode : 'org\_1234', permissions : \['create:todos', 'update:todos', 'read:todos'\] \}                                                                      |
+| getOrganization      | Get details for the organization your user is logged into                                             | req: Request                                                    | kindeClient.getOrganization(req);                       | \{ orgCode : 'org\_1234' \}                                                                                                                                      |
+| getUserDetails       | Returns the profile for the current user                                                              | req: Request                                                    | kindeClient.getUserDetails(req);                        | \{ given\_name: 'Dave', id: 'abcdef', family\_name : 'Smith', email : 'dave@smith.com' \}                                                                        |
+| getUserOrganizations | Get an array of all organizations the user has access to                                              | req: Request                                                    | kindeClient.getUserOrganizations(req);                  | \{ orgCodes: ['org_7052552de68', 'org_5a5c29381327'] \}                                                                                                          |
+| getToken             | Returns the access token                                                                              | req: Request                                                    | await kindeClient.getToken(req);                        | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c      | 
+| getFlag              | Get a flag from the feature_flags claim of the access_token                                           | req: Request, code: string, defaultValue: obj, flagType: string | kindeClient.getFlag(req, 'theme');                      | \{   "code": "theme", "type": "string", "value": "pink", "is_default": false \}                                                                                  | 
+| getBooleanFlag       | Get a boolean flag from the feature_flags claim of the access_token                                   | req: Request, code: string, defaultValue: obj                   | kindeClient.getBooleanFlag(req, "is_dark_mode");        | true                                                                                                                                                             |
+| getStringFlag        | Get a string flag from the feature_flags claim of the access_token                                    | req: Request, code: string, defaultValue: obj                   | kindeClient.getStringFlag(req, "theme");                | pink                                                                                                                                                             |
+| getIntegerFlag       | Get an integer flag from the feature_flags claim of the access_token                                  | req: Request, code: string, defaultValue: obj                   | kindeClient.getIntegerFlag(req, "team_count");          | 2                                                                                                                                                                |
+
 
 If you need help connecting to Kinde, please contact us at [support@kinde.com](mailto:support@kinde.com).

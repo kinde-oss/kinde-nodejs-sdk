@@ -13,15 +13,13 @@
 
 
 import ApiClient from "../ApiClient";
-import AddOrganizationUsers200Response from '../model/AddOrganizationUsers200Response';
-import AddOrganizationUsersRequest from '../model/AddOrganizationUsersRequest';
-import CreateUser200Response from '../model/CreateUser200Response';
 import CreateUserRequest from '../model/CreateUserRequest';
-import OrganizationUser from '../model/OrganizationUser';
-import RemoveOrganizationUsers200Response from '../model/RemoveOrganizationUsers200Response';
-import RemoveOrganizationUsersRequest from '../model/RemoveOrganizationUsersRequest';
+import CreateUserResponse from '../model/CreateUserResponse';
+import ErrorResponse from '../model/ErrorResponse';
+import SuccessResponse from '../model/SuccessResponse';
 import UpdateUserRequest from '../model/UpdateUserRequest';
 import User from '../model/User';
+import UsersResponse from '../model/UsersResponse';
 
 /**
 * Users service.
@@ -43,52 +41,10 @@ export default class UsersApi {
 
 
     /**
-     * Callback function to receive the result of the addOrganizationUsers operation.
-     * @callback module:api/UsersApi~addOrganizationUsersCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/AddOrganizationUsers200Response} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
-
-    /**
-     * Assign Users to an Organization
-     * Add existing users to an organization.
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.code The organization's code.
-     * @param {module:model/AddOrganizationUsersRequest} opts.addOrganizationUsersRequest 
-     * @param {module:api/UsersApi~addOrganizationUsersCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/AddOrganizationUsers200Response}
-     */
-    addOrganizationUsers(opts, callback) {
-      opts = opts || {};
-      let postBody = opts['addOrganizationUsersRequest'];
-
-      let pathParams = {
-      };
-      let queryParams = {
-        'code': opts['code']
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
-
-      let authNames = ['kindeBearerAuth'];
-      let contentTypes = ['application/json'];
-      let accepts = ['application/json'];
-      let returnType = AddOrganizationUsers200Response;
-      return this.apiClient.callApi(
-        '/api/v1/organization/users', 'POST',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
-      );
-    }
-
-    /**
      * Callback function to receive the result of the createUser operation.
      * @callback module:api/UsersApi~createUserCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/CreateUser200Response} data The data returned by the service call.
+     * @param {module:model/CreateUserResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -98,7 +54,7 @@ export default class UsersApi {
      * @param {Object} opts Optional parameters
      * @param {module:model/CreateUserRequest} opts.createUserRequest The details of the user to create.
      * @param {module:api/UsersApi~createUserCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/CreateUser200Response}
+     * data is of type: {@link module:model/CreateUserResponse}
      */
     createUser(opts, callback) {
       opts = opts || {};
@@ -115,8 +71,8 @@ export default class UsersApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = ['application/json'];
-      let accepts = ['application/json'];
-      let returnType = CreateUser200Response;
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = CreateUserResponse;
       return this.apiClient.callApi(
         '/api/v1/user', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -125,21 +81,22 @@ export default class UsersApi {
     }
 
     /**
-     * Callback function to receive the result of the deleteuser operation.
-     * @callback module:api/UsersApi~deleteuserCallback
+     * Callback function to receive the result of the deleteUser operation.
+     * @callback module:api/UsersApi~deleteUserCallback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/SuccessResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
     /**
      * Delete User
-     * Delete a user record 
+     * Delete a user record. 
      * @param {Object} opts Optional parameters
      * @param {String} opts.id The user's id.
-     * @param {module:api/UsersApi~deleteuserCallback} callback The callback function, accepting three arguments: error, data, response
+     * @param {module:api/UsersApi~deleteUserCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/SuccessResponse}
      */
-    deleteuser(opts, callback) {
+    deleteUser(opts, callback) {
       opts = opts || {};
       let postBody = null;
 
@@ -155,57 +112,10 @@ export default class UsersApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = [];
-      let accepts = [];
-      let returnType = null;
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = SuccessResponse;
       return this.apiClient.callApi(
         '/api/v1/user', 'DELETE',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
-      );
-    }
-
-    /**
-     * Callback function to receive the result of the getOrganizationUsers operation.
-     * @callback module:api/UsersApi~getOrganizationUsersCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/OrganizationUser} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
-
-    /**
-     * List Organization Users
-     * Get users in an organizaiton.
-     * @param {Object} opts Optional parameters
-     * @param {module:model/String} opts.sort Field and order to sort the result by.
-     * @param {Number} opts.pageSize Number of results per page. Defaults to 10 if parameter not sent.
-     * @param {String} opts.nextToken A string to get the next page of results if there are more results.
-     * @param {String} opts.code The organization's code.
-     * @param {module:api/UsersApi~getOrganizationUsersCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/OrganizationUser}
-     */
-    getOrganizationUsers(opts, callback) {
-      opts = opts || {};
-      let postBody = null;
-
-      let pathParams = {
-      };
-      let queryParams = {
-        'sort': opts['sort'],
-        'page_size': opts['pageSize'],
-        'next_token': opts['nextToken'],
-        'code': opts['code']
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
-
-      let authNames = ['kindeBearerAuth'];
-      let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = OrganizationUser;
-      return this.apiClient.callApi(
-        '/api/v1/organization/users', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -221,20 +131,22 @@ export default class UsersApi {
 
     /**
      * Get User
-     * Retrieve a user record 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.id The user's id.
+     * Retrieve a user record. 
+     * @param {String} id The user's id.
      * @param {module:api/UsersApi~getUserDataCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/User}
      */
-    getUserData(opts, callback) {
-      opts = opts || {};
+    getUserData(id, callback) {
       let postBody = null;
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling getUserData");
+      }
 
       let pathParams = {
       };
       let queryParams = {
-        'id': opts['id']
+        'id': id
       };
       let headerParams = {
       };
@@ -243,7 +155,7 @@ export default class UsersApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = [];
-      let accepts = ['application/json'];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
       let returnType = User;
       return this.apiClient.callApi(
         '/api/v1/user', 'GET',
@@ -256,7 +168,7 @@ export default class UsersApi {
      * Callback function to receive the result of the getUsers operation.
      * @callback module:api/UsersApi~getUsersCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/User>} data The data returned by the service call.
+     * @param {module:model/UsersResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -266,10 +178,11 @@ export default class UsersApi {
      * @param {Object} opts Optional parameters
      * @param {module:model/String} opts.sort Field and order to sort the result by.
      * @param {Number} opts.pageSize Number of results per page. Defaults to 10 if parameter not sent.
-     * @param {Number} opts.userId ID of the user to filter by.
+     * @param {String} opts.userId ID of the user to filter by.
      * @param {String} opts.nextToken A string to get the next page of results if there are more results.
+     * @param {String} opts.email Filter the results by email address. The query string should be comma separated and url encoded.
      * @param {module:api/UsersApi~getUsersCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/User>}
+     * data is of type: {@link module:model/UsersResponse}
      */
     getUsers(opts, callback) {
       opts = opts || {};
@@ -281,7 +194,8 @@ export default class UsersApi {
         'sort': opts['sort'],
         'page_size': opts['pageSize'],
         'user_id': opts['userId'],
-        'next_token': opts['nextToken']
+        'next_token': opts['nextToken'],
+        'email': opts['email']
       };
       let headerParams = {
       };
@@ -290,52 +204,10 @@ export default class UsersApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = [User];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
+      let returnType = UsersResponse;
       return this.apiClient.callApi(
         '/api/v1/users', 'GET',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
-      );
-    }
-
-    /**
-     * Callback function to receive the result of the removeOrganizationUsers operation.
-     * @callback module:api/UsersApi~removeOrganizationUsersCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/RemoveOrganizationUsers200Response} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
-
-    /**
-     * Remove Users from an Organization
-     * Remove existing users from an organization.
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.code The organization's code.
-     * @param {module:model/RemoveOrganizationUsersRequest} opts.removeOrganizationUsersRequest 
-     * @param {module:api/UsersApi~removeOrganizationUsersCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/RemoveOrganizationUsers200Response}
-     */
-    removeOrganizationUsers(opts, callback) {
-      opts = opts || {};
-      let postBody = opts['removeOrganizationUsersRequest'];
-
-      let pathParams = {
-      };
-      let queryParams = {
-        'code': opts['code']
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
-
-      let authNames = ['kindeBearerAuth'];
-      let contentTypes = ['application/json'];
-      let accepts = ['application/json'];
-      let returnType = RemoveOrganizationUsers200Response;
-      return this.apiClient.callApi(
-        '/api/v1/organization/users', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -351,7 +223,7 @@ export default class UsersApi {
 
     /**
      * Update User
-     * Update a user record 
+     * Update a user record. 
      * @param {module:model/UpdateUserRequest} updateUserRequest The user to update.
      * @param {Object} opts Optional parameters
      * @param {String} opts.id The user's id.
@@ -378,7 +250,7 @@ export default class UsersApi {
 
       let authNames = ['kindeBearerAuth'];
       let contentTypes = ['application/json'];
-      let accepts = ['application/json'];
+      let accepts = ['application/json', 'application/json; charset=utf-8'];
       let returnType = User;
       return this.apiClient.callApi(
         '/api/v1/user', 'PATCH',

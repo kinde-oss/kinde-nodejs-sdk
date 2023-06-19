@@ -60,6 +60,12 @@
       //expect(instance).to.be();
     });
 
+    it('should have the property providedId (base name: "provided_id")', function() {
+      // uncomment below and update the code to test the property providedId
+      //var instance = new KindeManagementApi.User();
+      //expect(instance).to.be();
+    });
+
     it('should have the property email (base name: "email")', function() {
       // uncomment below and update the code to test the property email
       //var instance = new KindeManagementApi.User();
@@ -78,8 +84,44 @@
       //expect(instance).to.be();
     });
 
+    it('should have the property fullName (base name: "full_name")', function() {
+      // uncomment below and update the code to test the property fullName
+      //var instance = new KindeManagementApi.User();
+      //expect(instance).to.be();
+    });
+
     it('should have the property isSuspended (base name: "is_suspended")', function() {
       // uncomment below and update the code to test the property isSuspended
+      //var instance = new KindeManagementApi.User();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property picture (base name: "picture")', function() {
+      // uncomment below and update the code to test the property picture
+      //var instance = new KindeManagementApi.User();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property totalSignIns (base name: "total_sign_ins")', function() {
+      // uncomment below and update the code to test the property totalSignIns
+      //var instance = new KindeManagementApi.User();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property failedSignIns (base name: "failed_sign_ins")', function() {
+      // uncomment below and update the code to test the property failedSignIns
+      //var instance = new KindeManagementApi.User();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property lastSignedIn (base name: "last_signed_in")', function() {
+      // uncomment below and update the code to test the property lastSignedIn
+      //var instance = new KindeManagementApi.User();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property createdOn (base name: "created_on")', function() {
+      // uncomment below and update the code to test the property createdOn
       //var instance = new KindeManagementApi.User();
       //expect(instance).to.be();
     });

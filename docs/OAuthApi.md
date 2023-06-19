@@ -15,7 +15,7 @@ Method | HTTP request | Description
 
 Returns the details of the currently logged in user
 
-Contains the id, names and email of the currently logged in user 
+Contains the id, names and email of the currently logged in user. 
 
 ### Example
 
@@ -60,7 +60,7 @@ This endpoint does not need any parameter.
 
 Returns the details of the currently logged in user
 
-Contains the id, names and email of the currently logged in user 
+Contains the id, names, profile picture URL and email of the currently logged in user. 
 
 ### Example
 

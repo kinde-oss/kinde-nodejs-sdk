@@ -17,6 +17,7 @@ export default class ClientCredentials {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Kinde-SDK': `${client.kindeSdkLanguage}/${client.kindeSdkLanguageVersion}`,
       },
       body: new URLSearchParams(searchParams),
     });

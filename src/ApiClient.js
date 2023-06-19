@@ -597,7 +597,7 @@ class ApiClient {
               'description': "No description provided",
               'variables': {
                 businessName: {
-                    'description': "Business Name created in the Kinde Console",
+                    'description': "Business name created in the Kinde admin area.",
                     'default_value': "app",
                   }
                 }

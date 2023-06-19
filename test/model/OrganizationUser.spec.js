@@ -54,8 +54,8 @@
       //expect(instance).to.be.a(KindeManagementApi.OrganizationUser);
     });
 
-    it('should have the property userId (base name: "user_id")', function() {
-      // uncomment below and update the code to test the property userId
+    it('should have the property id (base name: "id")', function() {
+      // uncomment below and update the code to test the property id
       //var instance = new KindeManagementApi.OrganizationUser();
       //expect(instance).to.be();
     });
@@ -80,6 +80,12 @@
 
     it('should have the property firstName (base name: "first_name")', function() {
       // uncomment below and update the code to test the property firstName
+      //var instance = new KindeManagementApi.OrganizationUser();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property roles (base name: "roles")', function() {
+      // uncomment below and update the code to test the property roles
       //var instance = new KindeManagementApi.OrganizationUser();
       //expect(instance).to.be();
     });

@@ -14,18 +14,18 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The AddOrganizationUsers200Response model module.
- * @module model/AddOrganizationUsers200Response
+ * The Error model module.
+ * @module model/Error
  * @version 1
  */
-class AddOrganizationUsers200Response {
+class Error {
     /**
-     * Constructs a new <code>AddOrganizationUsers200Response</code>.
-     * @alias module:model/AddOrganizationUsers200Response
+     * Constructs a new <code>Error</code>.
+     * @alias module:model/Error
      */
     constructor() { 
         
-        AddOrganizationUsers200Response.initialize(this);
+        Error.initialize(this);
     }
 
     /**
@@ -37,39 +37,39 @@ class AddOrganizationUsers200Response {
     }
 
     /**
-     * Constructs a <code>AddOrganizationUsers200Response</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>Error</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/AddOrganizationUsers200Response} obj Optional instance to populate.
-     * @return {module:model/AddOrganizationUsers200Response} The populated <code>AddOrganizationUsers200Response</code> instance.
+     * @param {module:model/Error} obj Optional instance to populate.
+     * @return {module:model/Error} The populated <code>Error</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new AddOrganizationUsers200Response();
+            obj = obj || new Error();
 
+            if (data.hasOwnProperty('code')) {
+                obj['code'] = ApiClient.convertToType(data['code'], 'String');
+            }
             if (data.hasOwnProperty('message')) {
                 obj['message'] = ApiClient.convertToType(data['message'], 'String');
-            }
-            if (data.hasOwnProperty('users_add')) {
-                obj['users_add'] = ApiClient.convertToType(data['users_add'], ['String']);
             }
         }
         return obj;
     }
 
     /**
-     * Validates the JSON data with respect to <code>AddOrganizationUsers200Response</code>.
+     * Validates the JSON data with respect to <code>Error</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>AddOrganizationUsers200Response</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>Error</code>.
      */
     static validateJSON(data) {
         // ensure the json data is a string
+        if (data['code'] && !(typeof data['code'] === 'string' || data['code'] instanceof String)) {
+            throw new Error("Expected the field `code` to be a primitive type in the JSON string but got " + data['code']);
+        }
+        // ensure the json data is a string
         if (data['message'] && !(typeof data['message'] === 'string' || data['message'] instanceof String)) {
             throw new Error("Expected the field `message` to be a primitive type in the JSON string but got " + data['message']);
-        }
-        // ensure the json data is an array
-        if (!Array.isArray(data['users_add'])) {
-            throw new Error("Expected the field `users_add` to be an array in the JSON data but got " + data['users_add']);
         }
 
         return true;
@@ -81,19 +81,21 @@ class AddOrganizationUsers200Response {
 
 
 /**
- * @member {String} message
+ * Error code.
+ * @member {String} code
  */
-AddOrganizationUsers200Response.prototype['message'] = undefined;
+Error.prototype['code'] = undefined;
 
 /**
- * @member {Array.<String>} users_add
+ * Error message.
+ * @member {String} message
  */
-AddOrganizationUsers200Response.prototype['users_add'] = undefined;
+Error.prototype['message'] = undefined;
 
 
 
 
 
 
-export default AddOrganizationUsers200Response;
+export default Error;
 

@@ -48,16 +48,6 @@
   }
 
   describe('UsersApi', function() {
-    describe('addOrganizationUsers', function() {
-      it('should call addOrganizationUsers successfully', function(done) {
-        //uncomment below and update the code to test addOrganizationUsers
-        //instance.addOrganizationUsers(function(error) {
-        //  if (error) throw error;
-        //expect().to.be();
-        //});
-        done();
-      });
-    });
     describe('createUser', function() {
       it('should call createUser successfully', function(done) {
         //uncomment below and update the code to test createUser
@@ -68,20 +58,10 @@
         done();
       });
     });
-    describe('deleteuser', function() {
-      it('should call deleteuser successfully', function(done) {
-        //uncomment below and update the code to test deleteuser
-        //instance.deleteuser(function(error) {
-        //  if (error) throw error;
-        //expect().to.be();
-        //});
-        done();
-      });
-    });
-    describe('getOrganizationUsers', function() {
-      it('should call getOrganizationUsers successfully', function(done) {
-        //uncomment below and update the code to test getOrganizationUsers
-        //instance.getOrganizationUsers(function(error) {
+    describe('deleteUser', function() {
+      it('should call deleteUser successfully', function(done) {
+        //uncomment below and update the code to test deleteUser
+        //instance.deleteUser(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});
@@ -102,16 +82,6 @@
       it('should call getUsers successfully', function(done) {
         //uncomment below and update the code to test getUsers
         //instance.getUsers(function(error) {
-        //  if (error) throw error;
-        //expect().to.be();
-        //});
-        done();
-      });
-    });
-    describe('removeOrganizationUsers', function() {
-      it('should call removeOrganizationUsers successfully', function(done) {
-        //uncomment below and update the code to test removeOrganizationUsers
-        //instance.removeOrganizationUsers(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});

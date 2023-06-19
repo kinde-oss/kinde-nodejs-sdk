@@ -47,9 +47,50 @@ export function pkceChallengeFromVerifier(codeVerifier) {
  * @returns {Object|null} - the JSON object represented by the token or null if the parsing fails
  */
 export function parseJWT(token) {
+  if (typeof token !== 'string') {
+    throw new Error('Token must be a string');
+  }
+
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    throw new Error('Invalid token format');
+  }
+
+  const base64Payload = parts[1];
   try {
-    return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString('utf8'));
-  } catch (e) {
+    return JSON.parse(Buffer.from(base64Payload, 'base64').toString('utf8'));
+  } catch (error) {
     return null;
   }
+}
+
+/**
+ * Returns an object with key-value pairs of cookies extracted from the request headers
+ * @param {Object} request - The HTTP request object that contains headers with cookie information
+ * @returns {Object} - An object containing key-value pairs of cookies
+ */
+function getCookie(request) {
+  const cookies = {};
+  const cookieString = request.headers && request.headers.cookie;
+  if (cookieString) {
+    cookieString.split(';').forEach((cookie) => {
+      const [name, value] = cookie.trim().split('=');
+      cookies[name] = value;
+    });
+  }
+  return cookies;
+}
+
+/**
+ * Returns the session ID if it exists in the cookie header of the HTTP request object, otherwise generates a new session ID and returns it.
+ * @param {Object} request - The HTTP request object
+ * @returns {string} - A session ID string
+ */
+export function getSessionId(request) {
+  if (!request.headers?.cookie){
+    const sessionId = crypto.randomBytes(16).toString('hex');
+    return sessionId;
+  }
+  const cookies = getCookie(request);
+  return cookies.sessionId;
 }

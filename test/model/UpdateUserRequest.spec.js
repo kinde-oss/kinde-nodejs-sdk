@@ -66,6 +66,12 @@
       //expect(instance).to.be();
     });
 
+    it('should have the property isSuspended (base name: "is_suspended")', function() {
+      // uncomment below and update the code to test the property isSuspended
+      //var instance = new KindeManagementApi.UpdateUserRequest();
+      //expect(instance).to.be();
+    });
+
   });
 
 }));

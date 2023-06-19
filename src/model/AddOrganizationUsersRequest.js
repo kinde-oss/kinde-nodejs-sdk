@@ -12,6 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
+import AddOrganizationUsersRequestUsersInner from './AddOrganizationUsersRequestUsersInner';
 
 /**
  * The AddOrganizationUsersRequest model module.
@@ -48,7 +49,7 @@ class AddOrganizationUsersRequest {
             obj = obj || new AddOrganizationUsersRequest();
 
             if (data.hasOwnProperty('users')) {
-                obj['users'] = ApiClient.convertToType(data['users'], ['String']);
+                obj['users'] = ApiClient.convertToType(data['users'], [AddOrganizationUsersRequestUsersInner]);
             }
         }
         return obj;
@@ -60,9 +61,15 @@ class AddOrganizationUsersRequest {
      * @return {boolean} to indicate whether the JSON data is valid with respect to <code>AddOrganizationUsersRequest</code>.
      */
     static validateJSON(data) {
-        // ensure the json data is an array
-        if (!Array.isArray(data['users'])) {
-            throw new Error("Expected the field `users` to be an array in the JSON data but got " + data['users']);
+        if (data['users']) { // data not null
+            // ensure the json data is an array
+            if (!Array.isArray(data['users'])) {
+                throw new Error("Expected the field `users` to be an array in the JSON data but got " + data['users']);
+            }
+            // validate the optional field `users` (array)
+            for (const item of data['users']) {
+                AddOrganizationUsersRequestUsersInner.validateJsonObject(item);
+            };
         }
 
         return true;
@@ -74,8 +81,8 @@ class AddOrganizationUsersRequest {
 
 
 /**
- * List of user ids to be added to the organization.
- * @member {Array.<String>} users
+ * Users to be added to the organization.
+ * @member {Array.<module:model/AddOrganizationUsersRequestUsersInner>} users
  */
 AddOrganizationUsersRequest.prototype['users'] = undefined;
 

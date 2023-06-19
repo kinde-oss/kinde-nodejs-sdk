@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.CreateUser200Response();
+    instance = new KindeManagementApi.Application();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,28 +47,22 @@
       object[property] = value;
   }
 
-  describe('CreateUser200Response', function() {
-    it('should create an instance of CreateUser200Response', function() {
-      // uncomment below and update the code to test CreateUser200Response
-      //var instance = new KindeManagementApi.CreateUser200Response();
-      //expect(instance).to.be.a(KindeManagementApi.CreateUser200Response);
+  describe('Application', function() {
+    it('should create an instance of Application', function() {
+      // uncomment below and update the code to test Application
+      //var instance = new KindeManagementApi.Application();
+      //expect(instance).to.be.a(KindeManagementApi.Application);
     });
 
-    it('should have the property id (base name: "id")', function() {
-      // uncomment below and update the code to test the property id
-      //var instance = new KindeManagementApi.CreateUser200Response();
+    it('should have the property appId (base name: "app_id")', function() {
+      // uncomment below and update the code to test the property appId
+      //var instance = new KindeManagementApi.Application();
       //expect(instance).to.be();
     });
 
-    it('should have the property created (base name: "created")', function() {
-      // uncomment below and update the code to test the property created
-      //var instance = new KindeManagementApi.CreateUser200Response();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property identities (base name: "identities")', function() {
-      // uncomment below and update the code to test the property identities
-      //var instance = new KindeManagementApi.CreateUser200Response();
+    it('should have the property name (base name: "name")', function() {
+      // uncomment below and update the code to test the property name
+      //var instance = new KindeManagementApi.Application();
       //expect(instance).to.be();
     });
 

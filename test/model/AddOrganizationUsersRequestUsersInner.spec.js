@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.RemoveOrganizationUsersRequest();
+    instance = new KindeManagementApi.AddOrganizationUsersRequestUsersInner();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,16 +47,28 @@
       object[property] = value;
   }
 
-  describe('RemoveOrganizationUsersRequest', function() {
-    it('should create an instance of RemoveOrganizationUsersRequest', function() {
-      // uncomment below and update the code to test RemoveOrganizationUsersRequest
-      //var instance = new KindeManagementApi.RemoveOrganizationUsersRequest();
-      //expect(instance).to.be.a(KindeManagementApi.RemoveOrganizationUsersRequest);
+  describe('AddOrganizationUsersRequestUsersInner', function() {
+    it('should create an instance of AddOrganizationUsersRequestUsersInner', function() {
+      // uncomment below and update the code to test AddOrganizationUsersRequestUsersInner
+      //var instance = new KindeManagementApi.AddOrganizationUsersRequestUsersInner();
+      //expect(instance).to.be.a(KindeManagementApi.AddOrganizationUsersRequestUsersInner);
     });
 
-    it('should have the property users (base name: "users")', function() {
-      // uncomment below and update the code to test the property users
-      //var instance = new KindeManagementApi.RemoveOrganizationUsersRequest();
+    it('should have the property id (base name: "id")', function() {
+      // uncomment below and update the code to test the property id
+      //var instance = new KindeManagementApi.AddOrganizationUsersRequestUsersInner();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property roles (base name: "roles")', function() {
+      // uncomment below and update the code to test the property roles
+      //var instance = new KindeManagementApi.AddOrganizationUsersRequestUsersInner();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property permissions (base name: "permissions")', function() {
+      // uncomment below and update the code to test the property permissions
+      //var instance = new KindeManagementApi.AddOrganizationUsersRequestUsersInner();
       //expect(instance).to.be();
     });
 

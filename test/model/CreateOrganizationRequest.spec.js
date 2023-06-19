@@ -60,6 +60,42 @@
       //expect(instance).to.be();
     });
 
+    it('should have the property featureFlags (base name: "feature_flags")', function() {
+      // uncomment below and update the code to test the property featureFlags
+      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property externalId (base name: "external_id")', function() {
+      // uncomment below and update the code to test the property externalId
+      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property backgroundColor (base name: "background_color")', function() {
+      // uncomment below and update the code to test the property backgroundColor
+      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property buttonColor (base name: "button_color")', function() {
+      // uncomment below and update the code to test the property buttonColor
+      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property buttonTextColor (base name: "button_text_color")', function() {
+      // uncomment below and update the code to test the property buttonTextColor
+      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property linkColor (base name: "link_color")', function() {
+      // uncomment below and update the code to test the property linkColor
+      //var instance = new KindeManagementApi.CreateOrganizationRequest();
+      //expect(instance).to.be();
+    });
+
   });
 
 }));

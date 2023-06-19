@@ -74,7 +74,7 @@ class ApiResult {
 
 
 /**
- * The result of the api operation
+ * The result of the api operation.
  * @member {String} result
  */
 ApiResult.prototype['result'] = undefined;

@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KindeManagementApi.RemoveOrganizationUsers200Response();
+    instance = new KindeManagementApi.Error();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,22 +47,22 @@
       object[property] = value;
   }
 
-  describe('RemoveOrganizationUsers200Response', function() {
-    it('should create an instance of RemoveOrganizationUsers200Response', function() {
-      // uncomment below and update the code to test RemoveOrganizationUsers200Response
-      //var instance = new KindeManagementApi.RemoveOrganizationUsers200Response();
-      //expect(instance).to.be.a(KindeManagementApi.RemoveOrganizationUsers200Response);
+  describe('Error', function() {
+    it('should create an instance of Error', function() {
+      // uncomment below and update the code to test Error
+      //var instance = new KindeManagementApi.Error();
+      //expect(instance).to.be.a(KindeManagementApi.Error);
+    });
+
+    it('should have the property code (base name: "code")', function() {
+      // uncomment below and update the code to test the property code
+      //var instance = new KindeManagementApi.Error();
+      //expect(instance).to.be();
     });
 
     it('should have the property message (base name: "message")', function() {
       // uncomment below and update the code to test the property message
-      //var instance = new KindeManagementApi.RemoveOrganizationUsers200Response();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property usersAdded (base name: "users_added")', function() {
-      // uncomment below and update the code to test the property usersAdded
-      //var instance = new KindeManagementApi.RemoveOrganizationUsers200Response();
+      //var instance = new KindeManagementApi.Error();
       //expect(instance).to.be();
     });
 

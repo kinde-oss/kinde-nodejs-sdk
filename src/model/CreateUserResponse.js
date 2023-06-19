@@ -15,18 +15,18 @@ import ApiClient from '../ApiClient';
 import UserIdentity from './UserIdentity';
 
 /**
- * The CreateUser200Response model module.
- * @module model/CreateUser200Response
+ * The CreateUserResponse model module.
+ * @module model/CreateUserResponse
  * @version 1
  */
-class CreateUser200Response {
+class CreateUserResponse {
     /**
-     * Constructs a new <code>CreateUser200Response</code>.
-     * @alias module:model/CreateUser200Response
+     * Constructs a new <code>CreateUserResponse</code>.
+     * @alias module:model/CreateUserResponse
      */
     constructor() { 
         
-        CreateUser200Response.initialize(this);
+        CreateUserResponse.initialize(this);
     }
 
     /**
@@ -38,15 +38,15 @@ class CreateUser200Response {
     }
 
     /**
-     * Constructs a <code>CreateUser200Response</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>CreateUserResponse</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/CreateUser200Response} obj Optional instance to populate.
-     * @return {module:model/CreateUser200Response} The populated <code>CreateUser200Response</code> instance.
+     * @param {module:model/CreateUserResponse} obj Optional instance to populate.
+     * @return {module:model/CreateUserResponse} The populated <code>CreateUserResponse</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new CreateUser200Response();
+            obj = obj || new CreateUserResponse();
 
             if (data.hasOwnProperty('id')) {
                 obj['id'] = ApiClient.convertToType(data['id'], 'String');
@@ -62,9 +62,9 @@ class CreateUser200Response {
     }
 
     /**
-     * Validates the JSON data with respect to <code>CreateUser200Response</code>.
+     * Validates the JSON data with respect to <code>CreateUserResponse</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>CreateUser200Response</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>CreateUserResponse</code>.
      */
     static validateJSON(data) {
         // ensure the json data is a string
@@ -91,26 +91,26 @@ class CreateUser200Response {
 
 
 /**
- * Unique id of the user in Kinde
+ * Unique id of the user in Kinde.
  * @member {String} id
  */
-CreateUser200Response.prototype['id'] = undefined;
+CreateUserResponse.prototype['id'] = undefined;
 
 /**
- * True if the user was successfully created
+ * True if the user was successfully created.
  * @member {Boolean} created
  */
-CreateUser200Response.prototype['created'] = undefined;
+CreateUserResponse.prototype['created'] = undefined;
 
 /**
  * @member {Array.<module:model/UserIdentity>} identities
  */
-CreateUser200Response.prototype['identities'] = undefined;
+CreateUserResponse.prototype['identities'] = undefined;
 
 
 
 
 
 
-export default CreateUser200Response;
+export default CreateUserResponse;
 

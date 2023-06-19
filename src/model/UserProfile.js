@@ -62,6 +62,9 @@ class UserProfile {
             if (data.hasOwnProperty('first_name')) {
                 obj['first_name'] = ApiClient.convertToType(data['first_name'], 'String');
             }
+            if (data.hasOwnProperty('picture')) {
+                obj['picture'] = ApiClient.convertToType(data['picture'], 'String');
+            }
         }
         return obj;
     }
@@ -92,6 +95,10 @@ class UserProfile {
         if (data['first_name'] && !(typeof data['first_name'] === 'string' || data['first_name'] instanceof String)) {
             throw new Error("Expected the field `first_name` to be a primitive type in the JSON string but got " + data['first_name']);
         }
+        // ensure the json data is a string
+        if (data['picture'] && !(typeof data['picture'] === 'string' || data['picture'] instanceof String)) {
+            throw new Error("Expected the field `picture` to be a primitive type in the JSON string but got " + data['picture']);
+        }
 
         return true;
     }
@@ -102,34 +109,40 @@ class UserProfile {
 
 
 /**
- * Unique id of the user in Kinde
+ * Unique id of the user in Kinde.
  * @member {String} id
  */
 UserProfile.prototype['id'] = undefined;
 
 /**
- * Default email address of the user in Kinde
+ * Default email address of the user in Kinde.
  * @member {String} preferred_email
  */
 UserProfile.prototype['preferred_email'] = undefined;
 
 /**
- * Value of the user's id in a third-party system when the user is imported into Kinde
+ * Value of the user's id in a third-party system when the user is imported into Kinde.
  * @member {String} provided_id
  */
 UserProfile.prototype['provided_id'] = undefined;
 
 /**
- * User's last name
+ * User's last name.
  * @member {String} last_name
  */
 UserProfile.prototype['last_name'] = undefined;
 
 /**
- * User's first name
+ * User's first name.
  * @member {String} first_name
  */
 UserProfile.prototype['first_name'] = undefined;
+
+/**
+ * URL that point's to the user's picture or avatar
+ * @member {String} picture
+ */
+UserProfile.prototype['picture'] = undefined;
 
 
 

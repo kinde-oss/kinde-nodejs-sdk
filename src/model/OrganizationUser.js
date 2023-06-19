@@ -47,8 +47,8 @@ class OrganizationUser {
         if (data) {
             obj = obj || new OrganizationUser();
 
-            if (data.hasOwnProperty('user_id')) {
-                obj['user_id'] = ApiClient.convertToType(data['user_id'], 'Number');
+            if (data.hasOwnProperty('id')) {
+                obj['id'] = ApiClient.convertToType(data['id'], 'String');
             }
             if (data.hasOwnProperty('email')) {
                 obj['email'] = ApiClient.convertToType(data['email'], 'String');
@@ -62,6 +62,9 @@ class OrganizationUser {
             if (data.hasOwnProperty('first_name')) {
                 obj['first_name'] = ApiClient.convertToType(data['first_name'], 'String');
             }
+            if (data.hasOwnProperty('roles')) {
+                obj['roles'] = ApiClient.convertToType(data['roles'], ['String']);
+            }
         }
         return obj;
     }
@@ -72,6 +75,10 @@ class OrganizationUser {
      * @return {boolean} to indicate whether the JSON data is valid with respect to <code>OrganizationUser</code>.
      */
     static validateJSON(data) {
+        // ensure the json data is a string
+        if (data['id'] && !(typeof data['id'] === 'string' || data['id'] instanceof String)) {
+            throw new Error("Expected the field `id` to be a primitive type in the JSON string but got " + data['id']);
+        }
         // ensure the json data is a string
         if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
             throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
@@ -88,6 +95,10 @@ class OrganizationUser {
         if (data['first_name'] && !(typeof data['first_name'] === 'string' || data['first_name'] instanceof String)) {
             throw new Error("Expected the field `first_name` to be a primitive type in the JSON string but got " + data['first_name']);
         }
+        // ensure the json data is an array
+        if (!Array.isArray(data['roles'])) {
+            throw new Error("Expected the field `roles` to be an array in the JSON data but got " + data['roles']);
+        }
 
         return true;
     }
@@ -98,9 +109,9 @@ class OrganizationUser {
 
 
 /**
- * @member {Number} user_id
+ * @member {String} id
  */
-OrganizationUser.prototype['user_id'] = undefined;
+OrganizationUser.prototype['id'] = undefined;
 
 /**
  * @member {String} email
@@ -121,6 +132,11 @@ OrganizationUser.prototype['last_name'] = undefined;
  * @member {String} first_name
  */
 OrganizationUser.prototype['first_name'] = undefined;
+
+/**
+ * @member {Array.<String>} roles
+ */
+OrganizationUser.prototype['roles'] = undefined;
 
 
 
