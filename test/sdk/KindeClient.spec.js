@@ -380,7 +380,7 @@ import sinon from 'sinon';
         try {
           await instance.getRefreshToken(sessionId);
         } catch (error) {
-          expect(error.message).to.eql('Refresh token is missing');
+          expect(error.message).to.eql('Cannot get token - user is not authenticated');
         }
       });
     });
