@@ -393,7 +393,7 @@ export default class KindeClient extends ApiClient {
       this.saveToken(sessionId, res_get_token);
       return res_get_token;
     } else {
-      throw new Error('Refresh token is missing');
+      throw new Error('Cannot get token - user is not authenticated');
     }
   }
 
