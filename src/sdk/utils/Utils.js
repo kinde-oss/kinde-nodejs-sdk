@@ -92,5 +92,5 @@ export function getSessionId(request) {
     return sessionId;
   }
   const cookies = getCookie(request);
-  return cookies.sessionId;
+  return cookies.kindeSessionId || crypto.randomBytes(16).toString('hex');
 }
