@@ -124,7 +124,7 @@ export default class KindeClient extends ApiClient {
               start_page: 'login',
             });
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
-            res.cookie('sessionId', sessionId, CookieOptions);
+            res.cookie('kindeSessionId', sessionId, CookieOptions);
             return res.redirect(authorizationURL);
 
           case GrantType.PKCE:
@@ -138,7 +138,7 @@ export default class KindeClient extends ApiClient {
             }, codeChallenge);
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
             SessionStore.setDataByKey(sessionId, 'kindeOauthCodeVerifier', codeVerifier);
-            res.cookie('sessionId', sessionId, CookieOptions);
+            res.cookie('kindeSessionId', sessionId, CookieOptions);
             return res.redirect(authorizationURL);
         }
       } catch (err) {
@@ -177,7 +177,7 @@ export default class KindeClient extends ApiClient {
               start_page: 'registration',
             });
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
-            res.cookie('sessionId', sessionId, CookieOptions);
+            res.cookie('kindeSessionId', sessionId, CookieOptions);
             return res.redirect(authorizationURL);
 
           case GrantType.PKCE:
@@ -191,7 +191,7 @@ export default class KindeClient extends ApiClient {
             }, codeChallenge);
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
             SessionStore.setDataByKey(sessionId, 'kindeOauthCodeVerifier', codeVerifier);
-            res.cookie('sessionId', sessionId, CookieOptions);
+            res.cookie('kindeSessionId', sessionId, CookieOptions);
             return res.redirect(authorizationURL);
         }
       } catch (err) {
@@ -301,7 +301,7 @@ export default class KindeClient extends ApiClient {
               start_page: 'registration',
             });
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
-            res.cookie('sessionId', sessionId, CookieOptions);
+            res.cookie('kindeSessionId', sessionId, CookieOptions);
             return res.redirect(authorizationURL);
 
           case GrantType.PKCE:
@@ -316,7 +316,7 @@ export default class KindeClient extends ApiClient {
             }, codeChallenge);
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
             SessionStore.setDataByKey(sessionId, 'kindeOauthCodeVerifier', codeVerifier);
-            res.cookie('sessionId', sessionId, CookieOptions);
+            res.cookie('kindeSessionId', sessionId, CookieOptions);
             return res.redirect(authorizationURL);
         }
       } catch (err) {
@@ -542,7 +542,7 @@ export default class KindeClient extends ApiClient {
   clearSession(sessionId, response) {
     SessionStore.removeData(sessionId);
     delete this.authentications.kindeBearerAuth.accessToken;
-    response.clearCookie('sessionId');
+    response.clearCookie('kindeSessionId');
   }
 
   /**
