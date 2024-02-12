@@ -97,6 +97,7 @@ export default class KindeClient extends ApiClient {
    * @property {Object} request - The HTTP request object
    * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
    * @property {String} request.query.org_code - Organization code
+   * @property {String} request.query.post_login_redirect_url - URL to redirect the user after login
    */
   login() {
     return async (req, res, next) => {
@@ -104,6 +105,7 @@ export default class KindeClient extends ApiClient {
       const {
         state = randomString(),
         org_code,
+        post_login_redirect_url = '',
       } = req.query;
 
       if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken') && !this.isTokenExpired(sessionId)) {
@@ -130,6 +132,9 @@ export default class KindeClient extends ApiClient {
               org_code,
               start_page: 'login',
             });
+            if (post_login_redirect_url) {
+              SessionStore.setDataByKey(sessionId, 'kindePostLoginRedirectUrl', post_login_redirect_url);
+            }
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
             res.cookie('kindeSessionId', sessionId, CookieOptions);
             return res.redirect(authorizationURL);
@@ -143,6 +148,9 @@ export default class KindeClient extends ApiClient {
               org_code,
               start_page: 'login',
             }, codeChallenge);
+            if (post_login_redirect_url) {
+              SessionStore.setDataByKey(sessionId, 'kindePostLoginRedirectUrl', post_login_redirect_url);
+            }
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
             SessionStore.setDataByKey(sessionId, 'kindeOauthCodeVerifier', codeVerifier);
             res.cookie('kindeSessionId', sessionId, CookieOptions);
@@ -160,6 +168,7 @@ export default class KindeClient extends ApiClient {
    * @property {Object} request - The HTTP request object
    * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
    * @property {String} request.query.org_code - Organization code
+   * @property {String} request.query.post_login_redirect_url - URL to redirect the user after login
    */
   register() {
     return (req, res, next) => {
@@ -167,6 +176,7 @@ export default class KindeClient extends ApiClient {
       const {
         state = randomString(),
         org_code,
+        post_login_redirect_url = '',
       } = req.query;
 
       if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken') && !this.isTokenExpired(sessionId)) {
@@ -183,6 +193,9 @@ export default class KindeClient extends ApiClient {
               org_code,
               start_page: 'registration',
             });
+            if (post_login_redirect_url) {
+              SessionStore.setDataByKey(sessionId, 'kindePostLoginRedirectUrl', post_login_redirect_url);
+            }
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
             res.cookie('kindeSessionId', sessionId, CookieOptions);
             return res.redirect(authorizationURL);
@@ -196,6 +209,9 @@ export default class KindeClient extends ApiClient {
               org_code,
               start_page: 'registration',
             }, codeChallenge);
+            if (post_login_redirect_url) {
+              SessionStore.setDataByKey(sessionId, 'kindePostLoginRedirectUrl', post_login_redirect_url);
+            }
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
             SessionStore.setDataByKey(sessionId, 'kindeOauthCodeVerifier', codeVerifier);
             res.cookie('kindeSessionId', sessionId, CookieOptions);
@@ -244,20 +260,28 @@ export default class KindeClient extends ApiClient {
 
         // Determine the grant type and get the access token
         switch (this.grantType) {
-          case GrantType.AUTHORIZATION_CODE:
+          case GrantType.AUTHORIZATION_CODE: {
             auth = new AuthorizationCode();
             res_get_token = await auth.getToken(this, code);
             if (res_get_token?.error) {
               const msg = res_get_token?.error_description || res_get_token?.error;
               return next(new Error(msg));
             }
+            const postLoginRedirectUrlFromStore = SessionStore.getDataByKey(sessionId, 'kindePostLoginRedirectUrl')
+            if (postLoginRedirectUrlFromStore) {
+              SessionStore.removeDataByKey(sessionId, 'kindePostLoginRedirectUrl');
+            }
             this.saveToken(sessionId, res_get_token);
-            if (this.postLoginRedirectUri) {
-              return res.redirect(this.postLoginRedirectUri);
+            const postLoginRedirectUrl = postLoginRedirectUrlFromStore
+              ? postLoginRedirectUrlFromStore
+              : this.postLoginRedirectUri;
+            if (postLoginRedirectUrl) {
+              return res.redirect(postLoginRedirectUrl);
             }
             return next();
+          }
 
-          case GrantType.PKCE:
+          case GrantType.PKCE: {
             const codeVerifier = SessionStore.getDataByKey(sessionId, 'kindeOauthCodeVerifier');
             if (!codeVerifier) {
               return next(new Error('Not found code_verifier'));
@@ -268,11 +292,19 @@ export default class KindeClient extends ApiClient {
               const msg = res_get_token?.error_description || res_get_token?.error;
               return next(new Error(msg));
             }
+            const postLoginRedirectUrlFromStore = SessionStore.getDataByKey(sessionId, 'kindePostLoginRedirectUrl')
+            if (postLoginRedirectUrlFromStore) {
+              SessionStore.removeDataByKey(sessionId, 'kindePostLoginRedirectUrl');
+            }
             this.saveToken(sessionId, res_get_token);
-            if (this.postLoginRedirectUri) {
-              return res.redirect(this.postLoginRedirectUri);
+            const postLoginRedirectUrl = postLoginRedirectUrlFromStore
+              ? postLoginRedirectUrlFromStore
+              : this.postLoginRedirectUri;
+            if (postLoginRedirectUrl) {
+              return res.redirect(postLoginRedirectUrl);
             }
             return next();
+          }
         }
       } catch (err) {
         this.clearSession(sessionId, res);
