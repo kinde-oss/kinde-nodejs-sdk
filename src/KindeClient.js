@@ -17,6 +17,7 @@ import { SDK_VERSION } from "./sdk/utils/SDKVersion";
  * @property {String} options.clientSecret - Client secret of the application
  * @property {String} options.redirectUri - Redirection URI registered in the authorization server
  * @property {String} options.logoutRedirectUri - URI to redirect the user after logout
+ * @property {String} options.postLoginRedirectUri - URI to redirect the user after login
  * @property {String} options.grantType - Grant type for the authentication process (client_credentials, authorization_code or pkce)
  * @property {String} options.audience - API Identifier for the target API (Optional)
  * @property {String} options.scope - List of scopes requested by the application (default: 'openid profile email offline')
@@ -31,6 +32,7 @@ export default class KindeClient extends ApiClient {
       clientSecret,
       redirectUri,
       logoutRedirectUri,
+      postLoginRedirectUri = '',
       grantType,
       audience = '',
       scope = 'openid profile email offline',
@@ -72,6 +74,11 @@ export default class KindeClient extends ApiClient {
       throw new Error('Please provide logoutRedirectUri');
     }
     this.logoutRedirectUri = logoutRedirectUri;
+
+    if (postLoginRedirectUri && typeof postLoginRedirectUri !== 'string') {
+      throw new Error('Provided postLoginRedirectUri must be a string');
+    }
+    this.postLoginRedirectUri = postLoginRedirectUri
 
     this.audience = audience;
     this.scope = scope;
@@ -245,6 +252,9 @@ export default class KindeClient extends ApiClient {
               return next(new Error(msg));
             }
             this.saveToken(sessionId, res_get_token);
+            if (this.postLoginRedirectUri) {
+              return res.redirect(this.postLoginRedirectUri);
+            }
             return next();
 
           case GrantType.PKCE:
@@ -259,6 +269,9 @@ export default class KindeClient extends ApiClient {
               return next(new Error(msg));
             }
             this.saveToken(sessionId, res_get_token);
+            if (this.postLoginRedirectUri) {
+              return res.redirect(this.postLoginRedirectUri);
+            }
             return next();
         }
       } catch (err) {
