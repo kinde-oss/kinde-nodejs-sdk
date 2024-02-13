@@ -85,6 +85,16 @@ import sinon from 'sinon';
         expect(KindeManagementApi.SessionStore.getDataByKey('session-id', 'kindeOauthState')).to.be('random_state');
       });
 
+      it('stores provided "post_login_redirect_url" query param to memory', async () => {
+        const sessionId = 'session-id';
+        req.query = { post_login_redirect_url: '/post-login-url' };
+        req.headers.cookie = `kindeSessionId=${sessionId}`;
+        KindeManagementApi.SessionStore.setData(sessionId, {});
+        await instance.login()(req, res, next);
+        const cachedPostLoginParam = KindeManagementApi.SessionStore.getDataByKey(sessionId, 'kindePostLoginRedirectUrl');
+        expect(cachedPostLoginParam).to.be(req.query.post_login_redirect_url);
+      });
+
       it('should call login throw an error', async () => {
         req.query = { state: 'random_state', org_code: 'org-code' };
         await instance.login()(req, {}, next);
@@ -126,6 +136,16 @@ import sinon from 'sinon';
         expect(KindeManagementApi.SessionStore.getDataByKey('session-id', 'kindeOauthState')).to.be('random_state');
       });
 
+      it('stores provided "post_login_redirect_url" query param to memory', async () => {
+        const sessionId = 'session-id';
+        req.query = { post_login_redirect_url: '/post-login-url' };
+        req.headers.cookie = `kindeSessionId=${sessionId}`;
+        KindeManagementApi.SessionStore.setData(sessionId, {});
+        await instance.login()(req, res, next);
+        const cachedPostLoginParam = KindeManagementApi.SessionStore.getDataByKey(sessionId, 'kindePostLoginRedirectUrl');
+        expect(cachedPostLoginParam).to.be(req.query.post_login_redirect_url);
+      });
+
       it('should call register throw an error', async () => {
         await instance.register()(req, {}, next);
         expect(next.calledOnce).to.be(true);
@@ -157,6 +177,7 @@ import sinon from 'sinon';
       };
       const base64Payload = Buffer.from(JSON.stringify(payloadAccessToken)).toString('base64');
       const validToken = `header.${base64Payload}.signature`;
+      const sessionId = 'session-id';
       beforeEach(() => {
         req = {
           headers: {
@@ -173,6 +194,7 @@ import sinon from 'sinon';
       });
 
       afterEach(() => {
+        KindeManagementApi.SessionStore.removeData(sessionId);
         sandbox.restore();
       });
 
@@ -195,6 +217,67 @@ import sinon from 'sinon';
         expect(saveTokenStub.calledOnce).to.be(true);
         getTokenStub.restore();
         saveTokenStub.restore();
+      });
+
+      it('redirects to cached "kindePostLoginRedirectUrl" when one exists', async () => {
+        const cachedPostLoginParam = '/post-login-url';
+        req.query = { state: 'random_state', code: 'code' };
+        req.headers.cookie = `kindeSessionId=${sessionId}`;
+        KindeManagementApi.SessionStore.setData(sessionId, { 
+          kindeOauthState: 'random_state', 
+          kindePostLoginRedirectUrl: cachedPostLoginParam,
+        });
+        const getTokenStub = sinon.stub(KindeManagementApi.AuthorizationCode.prototype, 'getToken').resolves({
+          access_token: validToken,
+          id_token: validToken,
+          expires_in: 86399,
+          refresh_token: 'my.refresh-token.example',
+        });
+
+        await instance.callback()(req, res, next);
+        expect(res.redirect.calledOnce).to.be(true);
+        expect(res.redirect.firstCall.args[0]).to.be(cachedPostLoginParam);
+        expect(KindeManagementApi.SessionStore.getDataByKey(sessionId, 'kindePostLoginRedirectUrl')).to.be(undefined);
+        getTokenStub.restore();
+      });
+
+      it('redirects to "this.postLoginRedirectUri" when "kindePostLoginRedirectUrl" is not cached but env-variable exists', async () => {
+        req.query = { state: 'random_state', code: 'code' };
+        req.headers.cookie = `kindeSessionId=${sessionId}`;
+        KindeManagementApi.SessionStore.setData(sessionId, { kindeOauthState: 'random_state' });
+        const getTokenStub = sinon.stub(KindeManagementApi.AuthorizationCode.prototype, 'getToken').resolves({
+          access_token: validToken,
+          id_token: validToken,
+          expires_in: 86399,
+          refresh_token: 'my.refresh-token.example',
+        });
+        const removeDataByKeyStub = sinon.stub(KindeManagementApi.SessionStore, 'removeDataByKey');
+
+        const postLoginRedirectUri = '/post-login-url';
+        const clientOptions = {...options, postLoginRedirectUri, };
+        const newInstance = new KindeManagementApi.KindeClient(clientOptions);
+        await newInstance.callback()(req, res, next);
+        expect(res.redirect.calledOnce).to.be(true);
+        expect(removeDataByKeyStub.notCalled).to.be(true);
+        expect(res.redirect.firstCall.args[0]).to.be(postLoginRedirectUri);
+        removeDataByKeyStub.restore();
+        getTokenStub.restore();
+      });
+
+      it('no post login redirect if neither "kindePostLoginRedirectUrl" is cached or env-variable exists', async () => {
+        req.query = { state: 'random_state', code: 'code' };
+        req.headers.cookie = `kindeSessionId=${sessionId}`;
+        KindeManagementApi.SessionStore.setData(sessionId, { kindeOauthState: 'random_state' });
+        const getTokenStub = sinon.stub(KindeManagementApi.AuthorizationCode.prototype, 'getToken').resolves({
+          access_token: validToken,
+          id_token: validToken,
+          expires_in: 86399,
+          refresh_token: 'my.refresh-token.example',
+        });
+        await instance.callback()(req, res, next);
+        expect(res.redirect.notCalled).to.be(true);
+        expect(next.calledOnce).to.be(true);
+        getTokenStub.restore();
       });
 
       it('should call callback throws an error', async () => {
