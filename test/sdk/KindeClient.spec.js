@@ -76,7 +76,7 @@ import sinon from 'sinon';
       it('should call login successfully', async () => {
         req.query = { state: 'random_state', org_code: 'org-code' };
         KindeManagementApi.SessionStore.setData('session-id', {});
-        req.headers.cookie = 'sessionId=session-id';
+        req.headers.cookie = 'kindeSessionId=session-id';
         sandbox.stub(KindeManagementApi.AuthorizationCode.prototype, 'generateAuthorizationURL').returns('https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=login');
         await instance.login()(req, res, next);
         expect(res.cookie.calledOnce).to.be(true);
@@ -127,7 +127,7 @@ import sinon from 'sinon';
       it('should call register successfully', async () => {
         req.query = { state: 'random_state', org_code: 'org-code' };
         KindeManagementApi.SessionStore.setData('session-id', {});
-        req.headers.cookie = 'sessionId=session-id';
+        req.headers.cookie = 'kindeSessionId=session-id';
         sandbox.stub(KindeManagementApi.AuthorizationCode.prototype, 'generateAuthorizationURL').returns('https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=registration');
         await instance.register()(req, res, next);
         expect(res.cookie.calledOnce).to.be(true);
@@ -203,7 +203,7 @@ import sinon from 'sinon';
         KindeManagementApi.SessionStore.setData('session-id', {
           kindeOauthState: 'random_state'
         });
-        req.headers.cookie = 'sessionId=session-id';
+        req.headers.cookie = 'kindeSessionId=session-id';
         const getTokenStub = sinon.stub(KindeManagementApi.AuthorizationCode.prototype, 'getToken').resolves({
           access_token: validToken,
           id_token: validToken,
@@ -311,7 +311,7 @@ import sinon from 'sinon';
       it('should call createOrg successfully', async () => {
         req.query = { state: 'random_state', org_code: 'org-code' };
         KindeManagementApi.SessionStore.setData('session-id', {});
-        req.headers.cookie = 'sessionId=session-id';
+        req.headers.cookie = 'kindeSessionId=session-id';
         sandbox.stub(KindeManagementApi.AuthorizationCode.prototype, 'generateAuthorizationURL').returns('https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&start_page=registration&is_create_org=true&org_name=org_name');
         await instance.createOrg()(req, res, next);
         expect(res.cookie.calledOnce).to.be(true);
@@ -331,7 +331,7 @@ import sinon from 'sinon';
       it('should call logout successfully', () => {
         const req = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         const res = {
@@ -365,7 +365,7 @@ import sinon from 'sinon';
       it('should call getToken successfully', async () => {
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         KindeManagementApi.SessionStore.setData('session-id', {
@@ -486,7 +486,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         sandbox.stub(instance, 'isTokenExpired').returns(false);
@@ -498,7 +498,7 @@ import sinon from 'sinon';
         KindeManagementApi.SessionStore.setData('session-id', {});
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         const isAuthenticated = await instance.isAuthenticated(request);
@@ -524,7 +524,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         sandbox.stub(instance, 'isAuthenticated').returns(true);
@@ -541,7 +541,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         const defaultValue = true;
@@ -559,7 +559,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         sandbox.stub(instance, 'isAuthenticated').returns(true);
@@ -576,7 +576,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         const defaultValue = 123;
@@ -605,7 +605,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         const defaultValue = true;
@@ -620,7 +620,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         const defaultValue = true;
@@ -635,7 +635,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         sandbox.stub(instance, 'isAuthenticated').returns(true);
@@ -652,7 +652,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         sandbox.stub(instance, 'isAuthenticated').returns(true);
@@ -680,7 +680,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         sandbox.stub(instance, 'isAuthenticated').returns(true);
@@ -694,7 +694,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         const defaultValue = 'default-value';
@@ -709,7 +709,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         sandbox.stub(instance, 'isAuthenticated').returns(true);
@@ -726,7 +726,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         sandbox.stub(instance, 'isAuthenticated').returns(true);
@@ -754,7 +754,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         sandbox.stub(instance, 'isAuthenticated').returns(true);
@@ -768,7 +768,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         const defaultValue = 42;
@@ -783,7 +783,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         sandbox.stub(instance, 'isAuthenticated').returns(true);
@@ -800,7 +800,7 @@ import sinon from 'sinon';
         });
         const request = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         sandbox.stub(instance, 'isAuthenticated').returns(true);
@@ -838,7 +838,7 @@ import sinon from 'sinon';
         });
         const req = {
           headers: {
-            cookie: 'sessionId=session-id',
+            cookie: 'kindeSessionId=session-id',
           },
         };
         const isAuthenticatedStub = sinon.stub(instance, 'isAuthenticated').returns(true);  
@@ -879,7 +879,7 @@ import sinon from 'sinon';
         KindeManagementApi.SessionStore.setData('session-id', {
           kindeIdToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
         });
-        req.headers.cookie = 'sessionId=session-id';
+        req.headers.cookie = 'kindeSessionId=session-id';
         sandbox.stub(instance, 'isAuthenticated').returns(true);
         const claims = instance.getClaims(req, 'id_token');
         expect(claims).to.be.an('object');
