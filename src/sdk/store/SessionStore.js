@@ -43,6 +43,17 @@ const createSessionStore = () => {
   };
 
   /**
+   * Remove data in the session store for a specific sessionId and key.
+   * @param {string} sessionId - The session ID.
+   * @param {string} key - The key to store the data.
+   */
+  const removeDataByKey = (sessionId, key) => {
+    if (store[sessionId] && store[sessionId][key]) {
+      delete store[sessionId][key];
+    }
+  }
+
+  /**
    * Remove data from the session store for a specific sessionId.
    * @param {string} sessionId - The session ID.
    */
@@ -57,6 +68,7 @@ const createSessionStore = () => {
     setData,
     getDataByKey,
     setDataByKey,
+    removeDataByKey,
     removeData,
   };
 };

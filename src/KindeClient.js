@@ -17,6 +17,7 @@ import { SDK_VERSION } from "./sdk/utils/SDKVersion";
  * @property {String} options.clientSecret - Client secret of the application
  * @property {String} options.redirectUri - Redirection URI registered in the authorization server
  * @property {String} options.logoutRedirectUri - URI to redirect the user after logout
+ * @property {String} options.postLoginRedirectUri - URI to redirect the user after login
  * @property {String} options.grantType - Grant type for the authentication process (client_credentials, authorization_code or pkce)
  * @property {String} options.audience - API Identifier for the target API (Optional)
  * @property {String} options.scope - List of scopes requested by the application (default: 'openid profile email offline')
@@ -31,6 +32,7 @@ export default class KindeClient extends ApiClient {
       clientSecret,
       redirectUri,
       logoutRedirectUri,
+      postLoginRedirectUri = '',
       grantType,
       audience = '',
       scope = 'openid profile email offline',
@@ -73,6 +75,11 @@ export default class KindeClient extends ApiClient {
     }
     this.logoutRedirectUri = logoutRedirectUri;
 
+    if (postLoginRedirectUri && typeof postLoginRedirectUri !== 'string') {
+      throw new Error('Provided postLoginRedirectUri must be a string');
+    }
+    this.postLoginRedirectUri = postLoginRedirectUri
+
     this.audience = audience;
     this.scope = scope;
     this.kindeSdkLanguage = kindeSdkLanguage;
@@ -90,6 +97,7 @@ export default class KindeClient extends ApiClient {
    * @property {Object} request - The HTTP request object
    * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
    * @property {String} request.query.org_code - Organization code
+   * @property {String} request.query.post_login_redirect_url - URL to redirect the user after login
    */
   login() {
     return async (req, res, next) => {
@@ -97,6 +105,7 @@ export default class KindeClient extends ApiClient {
       const {
         state = randomString(),
         org_code,
+        post_login_redirect_url = '',
       } = req.query;
 
       if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken') && !this.isTokenExpired(sessionId)) {
@@ -123,6 +132,9 @@ export default class KindeClient extends ApiClient {
               org_code,
               start_page: 'login',
             });
+            if (post_login_redirect_url) {
+              SessionStore.setDataByKey(sessionId, 'kindePostLoginRedirectUrl', post_login_redirect_url);
+            }
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
             res.cookie('kindeSessionId', sessionId, CookieOptions);
             return res.redirect(authorizationURL);
@@ -136,6 +148,9 @@ export default class KindeClient extends ApiClient {
               org_code,
               start_page: 'login',
             }, codeChallenge);
+            if (post_login_redirect_url) {
+              SessionStore.setDataByKey(sessionId, 'kindePostLoginRedirectUrl', post_login_redirect_url);
+            }
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
             SessionStore.setDataByKey(sessionId, 'kindeOauthCodeVerifier', codeVerifier);
             res.cookie('kindeSessionId', sessionId, CookieOptions);
@@ -153,6 +168,7 @@ export default class KindeClient extends ApiClient {
    * @property {Object} request - The HTTP request object
    * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
    * @property {String} request.query.org_code - Organization code
+   * @property {String} request.query.post_login_redirect_url - URL to redirect the user after login
    */
   register() {
     return (req, res, next) => {
@@ -160,6 +176,7 @@ export default class KindeClient extends ApiClient {
       const {
         state = randomString(),
         org_code,
+        post_login_redirect_url = '',
       } = req.query;
 
       if (SessionStore.getDataByKey(sessionId, 'kindeAccessToken') && !this.isTokenExpired(sessionId)) {
@@ -176,6 +193,9 @@ export default class KindeClient extends ApiClient {
               org_code,
               start_page: 'registration',
             });
+            if (post_login_redirect_url) {
+              SessionStore.setDataByKey(sessionId, 'kindePostLoginRedirectUrl', post_login_redirect_url);
+            }
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
             res.cookie('kindeSessionId', sessionId, CookieOptions);
             return res.redirect(authorizationURL);
@@ -189,6 +209,9 @@ export default class KindeClient extends ApiClient {
               org_code,
               start_page: 'registration',
             }, codeChallenge);
+            if (post_login_redirect_url) {
+              SessionStore.setDataByKey(sessionId, 'kindePostLoginRedirectUrl', post_login_redirect_url);
+            }
             SessionStore.setDataByKey(sessionId, 'kindeOauthState', state);
             SessionStore.setDataByKey(sessionId, 'kindeOauthCodeVerifier', codeVerifier);
             res.cookie('kindeSessionId', sessionId, CookieOptions);
@@ -237,17 +260,28 @@ export default class KindeClient extends ApiClient {
 
         // Determine the grant type and get the access token
         switch (this.grantType) {
-          case GrantType.AUTHORIZATION_CODE:
+          case GrantType.AUTHORIZATION_CODE: {
             auth = new AuthorizationCode();
             res_get_token = await auth.getToken(this, code);
             if (res_get_token?.error) {
               const msg = res_get_token?.error_description || res_get_token?.error;
               return next(new Error(msg));
             }
+            const postLoginRedirectUrlFromStore = SessionStore.getDataByKey(sessionId, 'kindePostLoginRedirectUrl')
+            if (postLoginRedirectUrlFromStore) {
+              SessionStore.removeDataByKey(sessionId, 'kindePostLoginRedirectUrl');
+            }
             this.saveToken(sessionId, res_get_token);
+            const postLoginRedirectUrl = postLoginRedirectUrlFromStore
+              ? postLoginRedirectUrlFromStore
+              : this.postLoginRedirectUri;
+            if (postLoginRedirectUrl) {
+              return res.redirect(postLoginRedirectUrl);
+            }
             return next();
+          }
 
-          case GrantType.PKCE:
+          case GrantType.PKCE: {
             const codeVerifier = SessionStore.getDataByKey(sessionId, 'kindeOauthCodeVerifier');
             if (!codeVerifier) {
               return next(new Error('Not found code_verifier'));
@@ -258,8 +292,19 @@ export default class KindeClient extends ApiClient {
               const msg = res_get_token?.error_description || res_get_token?.error;
               return next(new Error(msg));
             }
+            const postLoginRedirectUrlFromStore = SessionStore.getDataByKey(sessionId, 'kindePostLoginRedirectUrl')
+            if (postLoginRedirectUrlFromStore) {
+              SessionStore.removeDataByKey(sessionId, 'kindePostLoginRedirectUrl');
+            }
             this.saveToken(sessionId, res_get_token);
+            const postLoginRedirectUrl = postLoginRedirectUrlFromStore
+              ? postLoginRedirectUrlFromStore
+              : this.postLoginRedirectUri;
+            if (postLoginRedirectUrl) {
+              return res.redirect(postLoginRedirectUrl);
+            }
             return next();
+          }
         }
       } catch (err) {
         this.clearSession(sessionId, res);
