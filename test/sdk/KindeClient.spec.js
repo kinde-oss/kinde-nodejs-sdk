@@ -141,7 +141,7 @@ import sinon from 'sinon';
         req.query = { post_login_redirect_url: '/post-login-url' };
         req.headers.cookie = `kindeSessionId=${sessionId}`;
         KindeManagementApi.SessionStore.setData(sessionId, {});
-        await instance.login()(req, res, next);
+        await instance.register()(req, res, next);
         const cachedPostLoginParam = KindeManagementApi.SessionStore.getDataByKey(sessionId, 'kindePostLoginRedirectUrl');
         expect(cachedPostLoginParam).to.be(req.query.post_login_redirect_url);
       });
