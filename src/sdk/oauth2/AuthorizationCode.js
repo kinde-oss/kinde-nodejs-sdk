@@ -8,6 +8,7 @@ export default class AuthorizationCode {
    * @property {Boolean} options.is_create_org - Flag indicating if the user is creating a new organization
    * @property {String} options.org_code - Organization code
    * @property {String} options.org_name - Organization name
+   * @property {String} options.login_hint - Email to pre-fill login page
    * @returns {String} The authorization URL to redirect the user to
    */
   generateAuthorizationURL(client, options) {
@@ -17,6 +18,7 @@ export default class AuthorizationCode {
       is_create_org,
       org_code,
       org_name,
+      login_hint,
     } = options;
 
     const searchParams = {
@@ -29,6 +31,7 @@ export default class AuthorizationCode {
       ...(!!client.audience && { audience: client.audience }),
       ...(!!is_create_org && { is_create_org, org_name }),
       ...(!!org_code && { org_code }),
+      ...(!!login_hint && { login_hint }),
     };
 
     return `${client.authorizationEndpoint}?${new URLSearchParams(searchParams).toString()}`;
