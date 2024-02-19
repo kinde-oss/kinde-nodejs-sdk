@@ -173,6 +173,7 @@ export default class KindeClient extends ApiClient {
    * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
    * @property {String} request.query.org_code - Organization code
    * @property {String} request.query.post_login_redirect_url - URL to redirect the user after login
+   * @property {String} request.query.login_hint - Email to pre-fill login page
    */
   register() {
     return (req, res, next) => {
@@ -180,6 +181,7 @@ export default class KindeClient extends ApiClient {
       const {
         state = randomString(),
         org_code,
+        login_hint = '',
         post_login_redirect_url = '',
       } = req.query;
 
@@ -195,6 +197,7 @@ export default class KindeClient extends ApiClient {
             authorizationURL = auth.generateAuthorizationURL(this, {
               state,
               org_code,
+              login_hint,
               start_page: 'registration',
             });
             if (post_login_redirect_url) {
@@ -211,6 +214,7 @@ export default class KindeClient extends ApiClient {
             authorizationURL = auth.generateAuthorizationURL(this, {
               state,
               org_code,
+              login_hint,
               start_page: 'registration',
             }, codeChallenge);
             if (post_login_redirect_url) {
