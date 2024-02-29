@@ -8,6 +8,9 @@ export default class PKCE {
    * @property {Boolean} options.is_create_org - Flag to indicate if the user wants to create an organization
    * @property {String} options.org_code - Organization code
    * @property {String} options.org_name - Organization name
+   * @property {String} options.lang - language to display for page
+   * @property {String} options.login_hint - email or phone-number to pre-fill page
+   * @property {String} options.connection_id - connection id string corresponding to social sign in
    * @param {String} codeChallenge - Code challenge used in the PKCE flow.
    * @returns {String} url - The authorization URL to redirect the user to
    */
@@ -18,6 +21,9 @@ export default class PKCE {
       is_create_org,
       org_code,
       org_name,
+      lang,
+      login_hint,
+      connection_id,
     } = options;
 
     const searchParams = {
@@ -32,6 +38,9 @@ export default class PKCE {
       ...(!!client.audience && { audience: client.audience }),
       ...(!!is_create_org && { is_create_org, org_name }),
       ...(!!org_code && { org_code }),
+      ...(!!lang && { lang }),
+      ...(!!login_hint && { login_hint }),
+      ...(!!connection_id && { connection_id }),
     };
 
     return `${client.authorizationEndpoint}?${new URLSearchParams(searchParams).toString()}`;

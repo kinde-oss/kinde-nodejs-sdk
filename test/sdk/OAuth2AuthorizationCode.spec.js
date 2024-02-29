@@ -48,6 +48,9 @@ import sinon from 'sinon';
           is_create_org: true,
           org_code: 'org_code',
           org_name: 'org_name',
+          lang: 'lang',
+          login_hint: 'test@test.com',
+          connection_id: 'connection_id',
         };
         const result = instance.generateAuthorizationURL(client, options);
         const expectedSearchParams = {
@@ -61,6 +64,9 @@ import sinon from 'sinon';
           is_create_org: true,
           org_name: 'org_name',
           org_code: 'org_code',
+          lang: 'lang',
+          login_hint: 'test@test.com',
+          connection_id: 'connection_id',
         };
         expect(result).to.be(`${client.authorizationEndpoint}?${new URLSearchParams(expectedSearchParams).toString()}`);
       });

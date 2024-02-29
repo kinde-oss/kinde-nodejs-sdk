@@ -74,14 +74,20 @@ import sinon from 'sinon';
       });
 
       it('should call login successfully', async () => {
-        req.query = { state: 'random_state', org_code: 'org-code' };
+        req.query = { 
+          state: 'random_state', 
+          org_code: 'org-code', 
+          lang: 'lang',
+          login_hint: 'test@test.com',
+          connection_id: 'connnection_id',
+        }
         KindeManagementApi.SessionStore.setData('session-id', {});
         req.headers.cookie = 'kindeSessionId=session-id';
-        sandbox.stub(KindeManagementApi.AuthorizationCode.prototype, 'generateAuthorizationURL').returns('https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=login');
+        sandbox.stub(KindeManagementApi.AuthorizationCode.prototype, 'generateAuthorizationURL').returns('https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=login&lang=lang&login_hint=test@test.com&connection_id=connection_id');
         await instance.login()(req, res, next);
         expect(res.cookie.calledOnce).to.be(true);
         expect(res.redirect.calledOnce).to.be(true);
-        expect(res.redirect.getCall(0).args[0]).to.be(`https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=login`);
+        expect(res.redirect.getCall(0).args[0]).to.be(`https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=login&lang=lang&login_hint=test@test.com&connection_id=connection_id`);
         expect(KindeManagementApi.SessionStore.getDataByKey('session-id', 'kindeOauthState')).to.be('random_state');
       });
 
@@ -125,14 +131,20 @@ import sinon from 'sinon';
       });
 
       it('should call register successfully', async () => {
-        req.query = { state: 'random_state', org_code: 'org-code' };
+        req.query = { 
+          state: 'random_state', 
+          org_code: 'org-code', 
+          lang: 'lang',
+          login_hint: 'test@test.com',
+          connection_id: 'connnection_id',
+        }
         KindeManagementApi.SessionStore.setData('session-id', {});
         req.headers.cookie = 'kindeSessionId=session-id';
-        sandbox.stub(KindeManagementApi.AuthorizationCode.prototype, 'generateAuthorizationURL').returns('https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=registration');
+        sandbox.stub(KindeManagementApi.AuthorizationCode.prototype, 'generateAuthorizationURL').returns('https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=login&lang=lang&login_hint=test@test.com&connection_id=connection_id');
         await instance.register()(req, res, next);
         expect(res.cookie.calledOnce).to.be(true);
         expect(res.redirect.calledOnce).to.be(true);
-        expect(res.redirect.getCall(0).args[0]).to.be(`https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=registration`);
+        expect(res.redirect.getCall(0).args[0]).to.be(`https://example.com/oauth2/auth?response_type=code&client_id=client_id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile%20email%20offline&state=random_state&org_code=org_code&start_page=login&lang=lang&login_hint=test@test.com&connection_id=connection_id`);
         expect(KindeManagementApi.SessionStore.getDataByKey('session-id', 'kindeOauthState')).to.be('random_state');
       });
 

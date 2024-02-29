@@ -97,6 +97,9 @@ export default class KindeClient extends ApiClient {
    * @property {Object} request - The HTTP request object
    * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
    * @property {String} request.query.org_code - Organization code
+   * @property {String} request.query.lang - language to display for login page
+   * @property {String} request.query.login_hint - email or phone-number to pre-fill login page
+   * @property {String} request.query.connection_id - connection id string corresponding to social sign in
    * @property {String} request.query.post_login_redirect_url - URL to redirect the user after login
    */
   login() {
@@ -105,6 +108,9 @@ export default class KindeClient extends ApiClient {
       const {
         state = randomString(),
         org_code,
+        lang = '',
+        login_hint = '',
+        connection_id = '',
         post_login_redirect_url = '',
       } = req.query;
 
@@ -130,6 +136,9 @@ export default class KindeClient extends ApiClient {
             authorizationURL = auth.generateAuthorizationURL(this, {
               state,
               org_code,
+              lang,
+              login_hint,
+              connection_id,
               start_page: 'login',
             });
             if (post_login_redirect_url) {
@@ -146,6 +155,9 @@ export default class KindeClient extends ApiClient {
             authorizationURL = auth.generateAuthorizationURL(this, {
               state,
               org_code,
+              lang,
+              login_hint,
+              connection_id,
               start_page: 'login',
             }, codeChallenge);
             if (post_login_redirect_url) {
@@ -168,6 +180,9 @@ export default class KindeClient extends ApiClient {
    * @property {Object} request - The HTTP request object
    * @property {String} request.query.state - Optional parameter used to pass a value to the authorization server
    * @property {String} request.query.org_code - Organization code
+   * @property {String} request.query.lang - language to display for register page
+   * @property {String} request.query.login_hint - email or phone-number to pre-fill register page
+   * @property {String} request.query.connection_id - connection id string corresponding to social sign in
    * @property {String} request.query.post_login_redirect_url - URL to redirect the user after login
    */
   register() {
@@ -176,6 +191,9 @@ export default class KindeClient extends ApiClient {
       const {
         state = randomString(),
         org_code,
+        lang = '',
+        login_hint = '',
+        connection_id = '',
         post_login_redirect_url = '',
       } = req.query;
 
@@ -191,6 +209,9 @@ export default class KindeClient extends ApiClient {
             authorizationURL = auth.generateAuthorizationURL(this, {
               state,
               org_code,
+              lang,
+              login_hint,
+              connection_id,
               start_page: 'registration',
             });
             if (post_login_redirect_url) {
@@ -207,6 +228,9 @@ export default class KindeClient extends ApiClient {
             authorizationURL = auth.generateAuthorizationURL(this, {
               state,
               org_code,
+              lang,
+              login_hint,
+              connection_id,
               start_page: 'registration',
             }, codeChallenge);
             if (post_login_redirect_url) {
