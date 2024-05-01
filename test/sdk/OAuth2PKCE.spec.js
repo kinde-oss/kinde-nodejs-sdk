@@ -45,6 +45,9 @@ import sinon from 'sinon';
           start_page: 'login',
           state: 'random-state',
           org_code: 'org123',
+          lang: 'lang',
+          login_hint: 'test@test.com',
+          connection_id: 'connection_id',
         };
         const codeChallenge = 'codechallenge';      
         const expectedSearchParams = new URLSearchParams({
@@ -57,6 +60,9 @@ import sinon from 'sinon';
           code_challenge: codeChallenge,
           code_challenge_method: 'S256',
           org_code: 'org123',
+          lang: 'lang',
+          login_hint: 'test@test.com',
+          connection_id: 'connection_id',
         });
         const result = instance.generateAuthorizationURL(client, options, codeChallenge);      
         expect(result).to.be(`${client.authorizationEndpoint}?${new URLSearchParams(expectedSearchParams).toString()}`);
