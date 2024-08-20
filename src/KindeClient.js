@@ -36,7 +36,7 @@ export default class KindeClient extends ApiClient {
       grantType,
       audience = '',
       scope = 'openid profile email offline',
-      kindeSdkLanguage = 'JavaScript',
+      kindeSdkLanguage = 'Node.js',
       kindeSdkLanguageVersion = SDK_VERSION,
     } = options;
 
