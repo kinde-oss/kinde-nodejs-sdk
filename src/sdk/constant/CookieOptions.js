@@ -1,5 +1,5 @@
 const CookieOptions = {
-  maxAge: 86399 * 1000,
+  maxAge: 29 * 86399 * 1000,
   secure: true,
   httpOnly: true,
 };
